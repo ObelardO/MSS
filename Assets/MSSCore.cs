@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#define MSS
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +9,7 @@ namespace Obel.MSS
     public static class MSSCore
     {
 
-    }
+    }   
 
     public class MSSCoreBehaviour : MonoBehaviour
     {
