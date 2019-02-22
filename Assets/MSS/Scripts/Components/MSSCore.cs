@@ -1,4 +1,5 @@
 ﻿#define MSS
+#define MSS_1_6_0
 
 using System.Collections;
 using System.Collections.Generic;
@@ -11,10 +12,9 @@ namespace Obel.MSS
 
     }   
 
+    [DisallowMultipleComponent]
     public class MSSCoreBehaviour : MonoBehaviour
     {
-        public string a = string.Empty;
-
         private static MSSCoreBehaviour _instance;
         [HideInInspector] public static MSSCoreBehaviour instance
         {

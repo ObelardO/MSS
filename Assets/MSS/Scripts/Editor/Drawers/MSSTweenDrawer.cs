@@ -6,7 +6,7 @@ using Obel.MSS;
 
 namespace Obel.MSS.Editor
 {
-    [CustomPropertyDrawer(typeof(MSSTweenData))]
+    [CustomPropertyDrawer(typeof(IMSSTween))]
     public class MSSTweenDataDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)

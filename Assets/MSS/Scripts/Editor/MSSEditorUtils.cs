@@ -27,10 +27,6 @@ namespace Obel.MSS.Editor
                                         styleLabel = GUI.skin.label,
                                         styleFoldout = EditorStyles.foldout;
 
-
-
-        //halfBlackBox = new GUIStyle(helpBox) { skin.colo}
-
         #endregion
 
         #region Callbacks
@@ -60,8 +56,6 @@ namespace Obel.MSS.Editor
 
                 foreach (T item in list) onDrawItem(item);
 
-                
-
                 EditorGUILayout.EndFadeGroup();
             }
 
@@ -72,8 +66,6 @@ namespace Obel.MSS.Editor
         {
             DrawPanel(state, name, onDraw, null, null, onDrowHeader);
         }
-        
-
 
         public static void DrawPanel(AnimBool state, string name, Action onDraw, GUIStyle foldStyle = null, GUIStyle backStyle = null, Action onDrowHeader = null)
         {

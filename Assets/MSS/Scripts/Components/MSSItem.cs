@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Obel.MSS
 {
-    [System.Serializable, ExecuteInEditMode, DisallowMultipleComponent, AddComponentMenu("MSS/Item")]
+    [System.Serializable, /*ExecuteInEditMode,*/ DisallowMultipleComponent, AddComponentMenu("MSS/Item")]
     public class MSSItem : MonoBehaviour
     {
         /// <summary>List of all contained states in this item</summary>
@@ -21,13 +21,24 @@ namespace Obel.MSS
 
         public void AddState()
         {
-            states.Add(new MSSState(this));
+            states.Add(new MSSState(gameObject));
         }
 
         public bool RemoveState(MSSState removingState)
         {
-            foreach(MSSState state in states) if (state == removingState) { states.Remove(removingState); return true; }
+            foreach(MSSState state in states)
+                if (state == removingState)
+                {
+                    states.Remove(removingState);
+                    return true;
+                }
+
             return false;
+        }
+
+        private void OnDrawGizmos()
+        {
+            
         }
     }
 }
