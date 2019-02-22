@@ -15,6 +15,8 @@ namespace Obel.MSS
     [DisallowMultipleComponent]
     public class MSSCoreBehaviour : MonoBehaviour
     {
+        [HideInInspector] public string a;
+
         private static MSSCoreBehaviour _instance;
         [HideInInspector] public static MSSCoreBehaviour instance
         {
@@ -22,14 +24,18 @@ namespace Obel.MSS
             {
                 if (_instance == null)
                 {
-                    GameObject gameObject = new GameObject("MSS Behaviour");
+                    GameObject gameObject = new GameObject /*("MSS Behaviour");*/ { name = "MSS Behaviour", hideFlags = HideFlags.HideAndDontSave };
                     _instance = gameObject.AddComponent<MSSCoreBehaviour>();
                     DontDestroyOnLoad(gameObject);
                 }
 
                 return _instance;
             }
-        
+        }
+
+        private void Awake()
+        {
+            if (_instance != null) DestroyImmediate(this);
         }
 
         private void Update()

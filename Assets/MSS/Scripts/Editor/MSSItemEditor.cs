@@ -11,6 +11,7 @@ using System.Linq;
 namespace Obel.MSS.Editor
 {
 
+    /*
     public static class MSSStateWrapperExtantions
     {
         public static MSSStateWrapper GetWrapperForState(this List<MSSStateWrapper> wrappers, MSSState state)
@@ -21,64 +22,53 @@ namespace Obel.MSS.Editor
 
     public class MSSStateWrapper
     {
-        public MSSItem parent;
         public MSSState state;
-        public ReorderableList tweens;
+
+        public ReorderableList tweensList;
         public AnimBool stateFade;
         public AnimBool tweenFade;
 
-        MSSStateWrapper(SerializedObject serializedObject, MSSState state, UnityAction onRepaint = null)
+        private int stateID;
+
+        MSSStateWrapper(int stateID, MSSState state, UnityAction onRepaint)
         {
             this.state = state;
-
-            tweens = new ReorderableList(serializedObject, serializedObject.FindProperty("Tweens"), true, true, true, true);
+            this.stateID = stateID;
 
             stateFade = new AnimBool(false);
+            stateFade.valueChanged.AddListener(onRepaint);
+
             tweenFade = new AnimBool(false);
+            tweenFade.valueChanged.AddListener(onRepaint);
 
-            if (onRepaint == null)
-            {
-                stateFade.target = false;
-                tweenFade.target = false;
-            }
-            else
-            {
-                stateFade.valueChanged.AddListener(onRepaint);
-                tweenFade.valueChanged.AddListener(onRepaint);
-            }
+            tweensList = new ReorderableList(state.tweens, typeof(IMSSTween), true, true, true, true);
 
-            tweens = new ReorderableList(state.tweens, typeof(IMSSTween), true, true, true, true);
-
-            tweens.drawElementCallback = (Rect rect, int index, bool selected, bool focused) =>
+            tweensList.drawElementCallback = (Rect rect, int index, bool selected, bool focused) =>
             {
-                //SerializedProperty property = serializedObject.FindProperty("state\tweens").GetArrayElementAtIndex(index);
-                //EditorGUI.PropertyField(rect, property, GUIContent.none);
-                EditorGUI.LabelField(rect, state.tweens[index].name);
+                EditorGUI.LabelField(rect, state.tweens[index].name + "[" + index + "]");
             };
-            tweens.drawHeaderCallback = rect =>
+            tweensList.drawHeaderCallback = rect =>
             {
                 EditorGUI.LabelField(rect, "Tweens");
             };
-            tweens.elementHeightCallback = (int index) =>
+            tweensList.elementHeightCallback = (int index) =>
             {
-                float height = 60;
-                return height;
+                return 60;
             };
-            tweens.onAddCallback += rect =>
+            tweensList.onAddCallback += rect =>
             {
-                Undo.RecordObject(serializedObject.targetObject, "[MSS] add tween");
+                Undo.RecordObject(state.gameObject, "[MSS] add tween");
                 state.tweens.Add(new MSSTweenPosition(state));
             };
-            tweens.onRemoveCallback += rect =>
+            tweensList.onRemoveCallback += rect =>
             {
-                Undo.RecordObject(serializedObject.targetObject, "[MSS] remove tween");
-                state.tweens.RemoveAt(tweens.index);
+                Undo.RecordObject(state.gameObject, "[MSS] remove tween");
+                state.tweens.RemoveAt(tweensList.index);
             };
-
         }
 
         public static void Generate(SerializedObject serializedObject, ref List<MSSStateWrapper> wrappers, List<MSSState> states, UnityAction onRepaint = null)
-        {
+        {   
             wrappers = wrappers.Where(w => states.Contains(w.state)).ToList();
 
             List<MSSState> statesToAdd = new List<MSSState>();
@@ -90,8 +80,7 @@ namespace Obel.MSS.Editor
                 if (!stateExist) statesToAdd.Add(state);
             }
 
-            foreach (MSSState state in statesToAdd)
-                wrappers.Add(new MSSStateWrapper(serializedObject, state, onRepaint));
+            for (int i = 0; i < statesToAdd.Count; i++) wrappers.Add(new MSSStateWrapper(i, statesToAdd[i], onRepaint));
         }
 
         public static void DrawAll(ref List<MSSStateWrapper> wrappers)
@@ -112,9 +101,22 @@ namespace Obel.MSS.Editor
 
         public void Draw()
         {
-            tweens.DoLayoutList();
+            tweensList.DoLayoutList();
         }
     }
+    */
+
+    /*
+    public class MSSStateWrapper
+    {
+        public MSSState state;
+
+        public ReorderableList tweensList;
+        public AnimBool stateFade;
+        public AnimBool tweenFade;
+    }
+    */
+
 
 
     [CustomEditor(typeof(MSSItem))]
@@ -128,11 +130,13 @@ namespace Obel.MSS.Editor
 
         #region Private
 
-        private static AnimBool foldOutStates;
-        private static MSSItem item;
-        private static List<MSSStateWrapper> statesWrappers = new List<MSSStateWrapper>();
-        private static MSSStateWrapper drawingStateWrapper;
+        private static MSSItem drawingItem;
+  
+        //private static List<MSSStateWrapper> statesWrappers = new List<MSSStateWrapper>();
+        //private static MSSStateWrapper drawingStateWrapper;
+
         private static MSSState drawingState;
+        private static SerializedObject serializedItem;
 
         private static MSSState stateToRemove;
 
@@ -140,52 +144,57 @@ namespace Obel.MSS.Editor
 
         public void OnDisable()
         {
-            statesWrappers.Clear();
+            //statesWrappers.Clear();
         }
 
         public void OnEnable()
         {
-            if (foldOutStates == null) foldOutStates = new AnimBool(false);
-            foldOutStates.valueChanged.AddListener(Repaint);
+            drawingItem = (MSSItem)target;
 
-            item = (MSSItem)target;
+            serializedItem = serializedObject;
 
-            statesWrappers.Clear();
-            ReGenerateWrappers();
+            //statesWrappers.Clear();
+            //ReGenerateWrappers();
         }
 
+        /*
         private void ReGenerateWrappers()
         {
-            if (statesWrappers.Count == item.states.Count) return;
-            MSSStateWrapper.Generate(serializedObject, ref statesWrappers, item.states, Repaint);
+            if (statesWrappers.Count == drawingItem.count) return;
+
+            //MSSStateWrapper.Generate(serializedItem, ref statesWrappers, drawingItem.states, Repaint);
         }
+        */
 
         #region InspectorGUI
 
         public override void OnInspectorGUI()
         {
-            ReGenerateWrappers();
+           // ReGenerateWrappers();
 
             serializedObject.Update();
 
             EditorGUILayout.Space();
 
+            /*
             foreach(MSSState state in item.states)
+                MSSEditorUtils.DrawPanel(drawingStateWrapper.stateFade, state.name, OnDrawStatePanel, OnStateDrawHeader);
+            */
+
+            /*
             {
                 drawingStateWrapper = statesWrappers.GetWrapperForState(state);
                 drawingState = state;
 
                 MSSEditorUtils.DrawPanel(drawingStateWrapper.stateFade, state.name, OnDrawStatePanel, OnStateDrawHeader);
             }
+            */
 
             //EditorGUILayout.Space();
 
-            if (GUILayout.Button("ADD NEW STATE"))
-            {
-                OnAddState();
-            }
+            if (GUILayout.Button("ADD NEW STATE")) OnAddState();
 
-            RemoveMarkedStates();
+            //RemoveMarkedStates();
             CloseInspector();
         }
 
@@ -193,9 +202,9 @@ namespace Obel.MSS.Editor
         {
             if (stateToRemove == null) return;
 
-            Undo.RecordObject(item, "[MSS] remove state");
+            Undo.RecordObject(drawingItem, "[MSS] remove state");
 
-            item.RemoveState(stateToRemove);
+            drawingItem.RemoveState(stateToRemove);
             stateToRemove = null;
         }
 
@@ -205,15 +214,17 @@ namespace Obel.MSS.Editor
 
             EditorUtility.SetDirty(target);
 
-            //DrawDefaultInspector();
+            DrawDefaultInspector();
         }
 
         public void OnDrawState(MSSState state)
         {
+            /*
             drawingStateWrapper = statesWrappers.GetWrapperForState(state);
             drawingState = state;
 
             MSSEditorUtils.DrawPanel(drawingStateWrapper.stateFade, state.name, OnDrawStatePanel, OnStateDrawHeader);
+            */    
         }
 
         public void OnStateDrawHeader()
@@ -221,7 +232,7 @@ namespace Obel.MSS.Editor
             if (GUILayout.Button("X"))
             {
                 OnRemoveState(drawingState);
-                ReGenerateWrappers();
+                //ReGenerateWrappers();
                 return;
             }
         }
@@ -229,21 +240,19 @@ namespace Obel.MSS.Editor
         public void OnDrawStatePanel()
         {
             EditorGUILayout.Space();
-            MSSStateWrapper.DrawAllInState(ref statesWrappers, drawingState);
+           // MSSStateWrapper.DrawAllInState(ref statesWrappers, drawingState);
         }
 
 
         public void OnAddState()
         {
-            Undo.RecordObject(item, "[MSS] new state");
+            Undo.RecordObject(drawingItem, "[MSS] new state");
 
-            foldOutStates.target = true;
+            drawingItem.AddState();
+            //ReGenerateWrappers();
 
-            item.AddState();
-            ReGenerateWrappers();
-
-            statesWrappers.ForEach(sw => sw.stateFade.target = false);
-            statesWrappers.Last().stateFade.target = true;
+            //statesWrappers.ForEach(sw => sw.stateFade.target = false);
+            //statesWrappers.Last().stateFade.target = true;
         }
 
         public void OnRemoveState(MSSState state)

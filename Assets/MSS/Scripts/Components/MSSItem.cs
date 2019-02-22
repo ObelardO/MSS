@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace Obel.MSS
 {
-    [System.Serializable, /*ExecuteInEditMode,*/ DisallowMultipleComponent, AddComponentMenu("MSS/Item")]
+    [System.Serializable, ExecuteInEditMode, DisallowMultipleComponent, AddComponentMenu("MSS/Item")]
     public class MSSItem : MonoBehaviour
     {
         /// <summary>List of all contained states in this item</summary>
-        public List<MSSState> states = new List<MSSState>();
+        [SerializeField] public List<MSSState> states = new List<MSSState>();
 
         /// <summary>Count of states list</summary>
         public int count { get { return states.Count; } }
@@ -18,6 +18,11 @@ namespace Obel.MSS
 
         /// <summary>Last added state</summary>
         public MSSState last { get { return count == 0 ? null : this[count - 1]; } }
+
+        private void Start()
+        {
+            MSSCoreBehaviour.instance.a = "a";
+        }
 
         public void AddState()
         {

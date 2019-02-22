@@ -31,6 +31,7 @@ namespace Obel.MSS
         position, rotation, scale, transform
     }
 
+    
     public interface IMSSTween
     {
         string name { get; }
@@ -38,6 +39,7 @@ namespace Obel.MSS
         MSSState state { get; set; }
     }
 
+    [System.Serializable]
     public class MSSTweenPosition : IMSSTween
     {
         public string name { get { return state.gameObject.name; } }
