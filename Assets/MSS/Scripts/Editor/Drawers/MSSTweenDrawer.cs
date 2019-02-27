@@ -6,6 +6,7 @@ using Obel.MSS;
 
 namespace Obel.MSS.Editor
 {
+    /*
     [CustomPropertyDrawer(typeof(IMSSTween))]
     public class MSSTweenDrawer : PropertyDrawer
     {
@@ -17,4 +18,5 @@ namespace Obel.MSS.Editor
             EditorGUI.EndProperty();
         }
     }
+    */
 }

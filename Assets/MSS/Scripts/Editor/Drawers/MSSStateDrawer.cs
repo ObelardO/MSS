@@ -6,6 +6,7 @@ using Obel.MSS;
 
 namespace Obel.MSS.Editor
 {
+    /*
     [CustomPropertyDrawer(typeof(MSSState))]
     public class MSSStateDrawer : PropertyDrawer
     {
@@ -19,4 +20,5 @@ namespace Obel.MSS.Editor
             EditorGUI.EndProperty();
         }
     }
+    */
 }

@@ -12,7 +12,7 @@ namespace Obel.MSS
 
     }   
 
-    [DisallowMultipleComponent]
+    [DisallowMultipleComponent, ExecuteInEditMode]
     public class MSSCoreBehaviour : MonoBehaviour
     {
         [HideInInspector] public string a;
