@@ -31,20 +31,28 @@ namespace Obel.MSS
         position, rotation, scale, transform
     }
 
-    
-    public interface IMSSTween
-    {
-        string name { get; }
 
-        MSSState state { get; set; }
+
+    [System.Serializable]
+    public abstract class MSSTween
+    {
+        //string name { get; }
+
+        //MSSState state { get; set; }
+
+        public int a;
+
+        //public string name { get { return "tween"; } }
+
+        public MSSState state { get; set; }
     }
 
     [System.Serializable]
-    public class MSSTweenPosition : IMSSTween
+    public class MSSTweenPosition : MSSTween
     {
-        public string name { get { return state.gameObject.name; } }
+        //public string name { get { return state.gameObject.name; } }
 
-        public MSSState state { get; set; }
+        //public MSSState state { get; set; }
 
         public Vector3 tweenValue;
 

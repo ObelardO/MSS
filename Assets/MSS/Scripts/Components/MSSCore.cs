@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Obel.MSS
 {
+
     public static class MSSCore
     {
 
@@ -26,7 +27,8 @@ namespace Obel.MSS
                 {
                     GameObject gameObject = new GameObject /*("MSS Behaviour");*/ { name = "MSS Behaviour", hideFlags = HideFlags.HideAndDontSave };
                     _instance = gameObject.AddComponent<MSSCoreBehaviour>();
-                    DontDestroyOnLoad(gameObject);
+                    if (Application.isPlaying)
+                        DontDestroyOnLoad(gameObject);
                 }
 
                 return _instance;

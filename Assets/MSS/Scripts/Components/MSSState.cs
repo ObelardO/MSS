@@ -10,23 +10,36 @@ namespace Obel.MSS
         public string name;
         public GameObject gameObject;
 
-        [SerializeField] public List<IMSSTween> tweens = new List<IMSSTween>();
+        [SerializeField] public List<MSSTween> tweens = new List<MSSTween>();
+        [SerializeField] public MSSTween tween;
 
-        /*
         /// <summary>Count of tweens list</summary>
-        [SerializeField] public int count { get { return tweens.Count; } }
+        public int count { get { return tweens.Count; } }
 
         /// <summary>Tweens list</summary>
-        public IMSSTween this[int i] { get { return i >= 0 && i < count ? tweens[i] : null; } }
+        public MSSTween this[int i] { get { return i >= 0 && i < count ? tweens[i] : null; } }
 
         /// <summary>Last added tween</summary>
-        public IMSSTween last { get { return count == 0 ? null : this[count - 1]; } }
+        public MSSTween last { get { return count == 0 ? null : this[count - 1]; } }
+
+        /*
+        public void InitTweensList()
+        {
+            
+        }
         */
+
+        public void AddTween()
+        {
+            tweens.Add(new MSSTweenPosition(this) as MSSTween);
+        }
 
         public MSSState(GameObject gameObject, string name = "new state")
         {
             this.gameObject = gameObject;
             this.name = name;
+
+            //InitTweensList();
         }
     }
 }

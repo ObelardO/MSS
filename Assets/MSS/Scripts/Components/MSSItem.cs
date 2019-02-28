@@ -26,7 +26,7 @@ namespace Obel.MSS
 
         public void AddState()
         {
-            states.Add(new MSSState(gameObject));
+            states.Add(new MSSState(gameObject, "state " + count));
         }
 
         public bool RemoveState(MSSState removingState)
