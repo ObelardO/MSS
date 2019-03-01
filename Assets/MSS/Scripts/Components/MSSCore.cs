@@ -25,7 +25,7 @@ namespace Obel.MSS
             {
                 if (_instance == null)
                 {
-                    GameObject gameObject = new GameObject /*("MSS Behaviour");*/ { name = "MSS Behaviour", hideFlags = HideFlags.HideAndDontSave };
+                    GameObject gameObject = new GameObject { name = "MSS Behaviour", hideFlags = HideFlags.HideAndDontSave };
                     _instance = gameObject.AddComponent<MSSCoreBehaviour>();
                     if (Application.isPlaying)
                         DontDestroyOnLoad(gameObject);

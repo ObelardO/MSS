@@ -1,5 +1,6 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+//using UnityEditor;
 using UnityEngine;
 
 namespace Obel.MSS
@@ -7,6 +8,10 @@ namespace Obel.MSS
     [System.Serializable, ExecuteInEditMode, DisallowMultipleComponent, AddComponentMenu("MSS/Item")]
     public class MSSItem : MonoBehaviour
     {
+
+        //ScriptableObject MSSBase;
+
+        /*
         /// <summary>List of all contained states in this item</summary>
         [SerializeField] public List<MSSState> states = new List<MSSState>();
 
@@ -45,5 +50,6 @@ namespace Obel.MSS
         {
             
         }
+        */
     }
 }

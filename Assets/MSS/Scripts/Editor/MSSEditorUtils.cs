@@ -1,122 +1,82 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
-using System;
-using Obel.MSS;
-using UnityEditor.AnimatedValues;
+using System.IO;
+using UnityEngine;
+using UnityEditor;
 
 namespace Obel.MSS.Editor
 {
-
     public static class MSSEditorUtils
     {
 
-        #region Colors
-
-        public static readonly Color halfBlack = new Color(0f, 0f, 0f, 0.5f);
-
-        #endregion
-
-        #region Styles
-
-        public static readonly GUIStyle styleBox = GUI.skin.box,
-                                        stylehelpBox = EditorStyles.helpBox,
-                                        styleLabel = GUI.skin.label,
-                                        styleFoldout = EditorStyles.foldout;
-
-        #endregion
-
-        #region Callbacks
-
-        private delegate void PanelElementCallbackDelegate();
-
-        #endregion
-
-        #region Drawing
-
-        public static void DrawListPanel<T>(List<T> list, AnimBool state, string name, Action<T> onDrawItem, bool drawAddButton = false, Action onAddItem = null) where T : class
+        public static void DrawGenericProperty<T>(ref T propertyValue)
         {
-            GUILayout.Space(3);
+            DrawGenericProperty(ref propertyValue, Color.white, null, null);
+        }
 
-            EditorGUILayout.BeginVertical(styleBox);
+        public static void DrawGenericProperty<T>(ref T propertyValue, Object recordingObject = null)
+        {
+            DrawGenericProperty(ref propertyValue, Color.white, null, recordingObject);
+        }
 
-            EditorGUILayout.BeginHorizontal();
-            state.target = EditorGUILayout.Foldout(state.target, "   " + name, true, GUI.skin.label);
-            if (drawAddButton && GUILayout.Button("Add new")) onAddItem();
-            EditorGUILayout.EndHorizontal();
+        public static void DrawGenericProperty<T>(ref T propertyValue, Color propertyColor, Object recordingObject = null)
+        {
+            DrawGenericProperty(ref propertyValue, propertyColor, null, recordingObject);
+        }
 
-            if (state.faded > 0)
+        public static void DrawGenericProperty<T>(ref T propertyValue, string propertyName)
+        {
+            DrawGenericProperty(ref propertyValue, Color.white, new GUIContent(propertyName), null);
+        }
+
+        public static void DrawGenericProperty<T>(ref T propertyValue, string propertyName, Object recordingObject = null)
+        {
+            DrawGenericProperty(ref propertyValue, Color.white, new GUIContent(propertyName), recordingObject);
+        }
+
+        public static void DrawGenericProperty<T>(ref T propertyValue, GUIContent propertyName = null, Object recordingObject = null)
+        {
+            DrawGenericProperty(ref propertyValue, Color.white, propertyName, recordingObject);
+        }
+
+        public static void DrawGenericProperty<T>(ref T propertyValue, Color propertyColor, GUIContent propertyName = null, Object recordingObject = null)
+        {
+            System.Type propertyType = typeof(T);
+
+            EditorGUI.BeginChangeCheck();
+            GUI.changed = false;
+            if (propertyName != null)
             {
-                EditorGUILayout.BeginFadeGroup(state.faded);
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel(propertyName);
+            }
+            GUI.color = propertyColor;
 
-                GUI.color = Color.white * state.faded;
+            object value = propertyValue;
+            object enteredValue = propertyValue;
 
-                foreach (T item in list) onDrawItem(item);
+            T displayedValue = (T)value;
 
-                EditorGUILayout.EndFadeGroup();
+            if (propertyType == typeof(float)) enteredValue = EditorGUILayout.FloatField((float)(object)displayedValue);
+            else if (propertyType == typeof(bool)) enteredValue = EditorGUILayout.Toggle((bool)(object)displayedValue);
+            else if (propertyType == typeof(int)) enteredValue = EditorGUILayout.IntField((int)(object)displayedValue);
+            else if (propertyType == typeof(string)) enteredValue = EditorGUILayout.TextField((string)(object)displayedValue);
+            else if (propertyType == typeof(Vector2)) enteredValue = EditorGUILayout.Vector2Field(string.Empty, (Vector2)(object)displayedValue);
+            else if (propertyType == typeof(Vector3)) enteredValue = EditorGUILayout.Vector3Field(string.Empty, (Vector3)(object)displayedValue);
+            else if (propertyType == typeof(Vector4)) enteredValue = EditorGUILayout.Vector4Field(string.Empty, (Vector4)(object)displayedValue);
+            else if (propertyType == typeof(AnimationCurve)) enteredValue = EditorGUILayout.CurveField((AnimationCurve)(object)displayedValue);
+            //else if (propertyType == typeof(Transform)) enteredValue = EditorGUILayout.ObjectField(string.Empty, (Transform)(object)propertyValue, typeof(Transform));
+
+            if (EditorGUI.EndChangeCheck() || enteredValue != (object)displayedValue)
+            {
+                if (recordingObject != null) Undo.RecordObject(recordingObject, "[MSS] property");
+                propertyValue = (T)enteredValue;
             }
 
-            EditorGUILayout.EndVertical();
+            if (propertyName != null) EditorGUILayout.EndHorizontal();
+            GUI.color = Color.white;
         }
 
-        public static void DrawPanel(AnimBool state, string name, Action onDraw, Action onDrowHeader)
-        {
-            DrawPanel(state, name, onDraw, null, null, onDrowHeader);
-        }
-
-        public static void DrawPanel(AnimBool state, string name, Action onDraw, GUIStyle foldStyle = null, GUIStyle backStyle = null, Action onDrowHeader = null)
-        {
-            GUILayout.Space(3);
-
-            EditorGUILayout.BeginVertical(backStyle == null ? styleBox : backStyle);
-
-            EditorGUILayout.BeginHorizontal();
-            state.target = EditorGUILayout.Foldout(state.target, "   " + name, true, foldStyle == null ? styleLabel : foldStyle);
-            if (onDrowHeader != null) onDrowHeader();
-            EditorGUILayout.EndHorizontal();
-
-            if (state.faded > 0)
-            {
-                EditorGUILayout.BeginFadeGroup(state.faded);
-
-                GUI.color = Color.white * state.faded;
-
-                onDraw();
-
-                EditorGUILayout.EndFadeGroup();
-            }
-
-            EditorGUILayout.EndVertical();
-        }
-
-        public static void BeginBlackVertical()
-        {
-            GUI.backgroundColor = halfBlack;
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUI.backgroundColor = Color.white;
-        }
-
-        #endregion
-
-        public static T GetObjectBySerializedProperty<T>(FieldInfo fieldInfo, SerializedProperty property) where T : class
-        {
-            var obj = fieldInfo.GetValue(property.serializedObject.targetObject);
-            if (obj == null) { return null; }
-
-            T actualObject = null;
-            if (obj.GetType().IsArray)
-            {
-                var index = Convert.ToInt32(new string(property.propertyPath.Where(c => char.IsDigit(c)).ToArray()));
-                actualObject = ((T[])obj)[index];
-            }
-            else
-            {
-                actualObject = obj as T;
-            }
-            return actualObject;
-        }
     }
 }
