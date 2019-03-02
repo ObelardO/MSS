@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-//using UnityEditor;
 using UnityEngine;
 
 namespace Obel.MSS
@@ -8,48 +7,7 @@ namespace Obel.MSS
     [System.Serializable, ExecuteInEditMode, DisallowMultipleComponent, AddComponentMenu("MSS/Item")]
     public class MSSItem : MonoBehaviour
     {
-
-        //ScriptableObject MSSBase;
-
-        /*
-        /// <summary>List of all contained states in this item</summary>
-        [SerializeField] public List<MSSState> states = new List<MSSState>();
-
-        /// <summary>Count of states list</summary>
-        public int count { get { return states.Count; } }
-
-        /// <summary>States list</summary>
-        public MSSState this[int i] { get { return i >= 0 && i < count ? states[i] : null; } }
-
-        /// <summary>Last added state</summary>
-        public MSSState last { get { return count == 0 ? null : this[count - 1]; } }
-
-        private void Start()
-        {
-            MSSCoreBehaviour.instance.a = "a";
-        }
-
-        public void AddState()
-        {
-            states.Add(new MSSState(gameObject, "state " + count));
-        }
-
-        public bool RemoveState(MSSState removingState)
-        {
-            foreach(MSSState state in states)
-                if (state == removingState)
-                {
-                    states.Remove(removingState);
-                    return true;
-                }
-
-            return false;
-        }
-
-        private void OnDrawGizmos()
-        {
-            
-        }
-        */
+        [SerializeField]
+        public /*u*/int dataBaseID = /*u*/int.MaxValue; 
     }
 }

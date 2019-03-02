@@ -9,41 +9,47 @@ namespace Obel.MSS.Editor
 {
     public static class MSSStateDataEditor
     {
+        #region GUI
+
         public static void OnGUI(MSSStateData stateData)
         {
             MSSEditorUtils.DrawGenericProperty(ref stateData.stateName, "name", stateData);
 
             stateData.tweensData.ToList().ForEach(tweenData => MSSTweenDataEditor.OnGUI(stateData, tweenData, new Vector3()));
 
-            if (GUILayout.Button("Add position")) AddTweenData<MSSTweenDataPosition>(stateData);
-            if (GUILayout.Button("Add rotation")) AddTweenData<MSSTweenDataRotation>(stateData);
-            if (GUILayout.Button("Delete state")) MSSDataBaseEditor.RemoveStateData(stateData);
-
-            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+                if (GUILayout.Button("Add position")) AddTweenData<MSSTweenDataPosition>(stateData);
+                if (GUILayout.Button("Add rotation")) AddTweenData<MSSTweenDataRotation>(stateData);
+            EditorGUILayout.EndHorizontal();
         }
 
+        #endregion
+
+        #region Collection editor
 
         public static void RemoveTweensData(MSSStateData stateData)
         {
             stateData.tweensData.ToList().ForEach(t => RemoveTweenData(t, stateData, false));
         }
 
-        public static void AddTweenData<T>(MSSStateData stateData) where T : MSSTweenDataBase
+        public static void AddTweenData<T>(MSSStateData stateData) where T : MSSTweenData
         {
             Undo.RecordObject(stateData, "[MSS] Add a new tween");
             stateData.tweensData.Add(MSSDataBaseEditor.SaveAsset<T>(OnTweenDataInstanced, "[MSS][TWEEN]"));
         }
 
-        private static void OnTweenDataInstanced(MSSTweenDataBase tween)
+        private static void OnTweenDataInstanced(MSSTweenData tween)
         {
             //tween.parentStateData = this;
         }
 
-        public static void RemoveTweenData<T>(T tween, MSSStateData stateData, bool useRectording = true) where T : MSSTweenDataBase
+        public static void RemoveTweenData<T>(T tween, MSSStateData stateData, bool useRectording = true) where T : MSSTweenData
         {
             if (useRectording) Undo.RecordObject(stateData, "[MSS] Remove a tween");
             stateData.tweensData.Remove(tween);
             MSSDataBaseEditor.RemoveAsset(tween);
         }
+
+        #endregion
     }
 }

@@ -7,7 +7,6 @@ using UnityEngine;
 
 namespace Obel.MSS
 {
-
     public static class MSSCore
     {
 

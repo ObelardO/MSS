@@ -6,19 +6,19 @@ using UnityEngine;
 
 namespace Obel.MSS
 {
-    [Serializable]
+    //[Serializable]
     public class MSSStateData : ScriptableObject
     {
         [SerializeField]    
         public string stateName;
 
         [SerializeField]
-        public List<MSSTweenDataBase> tweensData;
+        public List<MSSTweenData> tweensData;
 
         public void OnEnable ()
         {
 	        if (tweensData == null)
-                tweensData = new List<MSSTweenDataBase>();
+                tweensData = new List<MSSTweenData>();
 
             //hideFlags = HideFlags.HideInHierarchy;
         }

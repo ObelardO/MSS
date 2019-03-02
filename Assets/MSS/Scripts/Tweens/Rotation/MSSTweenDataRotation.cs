@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Obel.MSS
 {
     [Serializable]
-    public class MSSTweenDataRotation : MSSTweenDataBase
+    public class MSSTweenDataRotation : MSSTweenData
     {
         public override string tweenName { get { return "Rotation"; } }
 

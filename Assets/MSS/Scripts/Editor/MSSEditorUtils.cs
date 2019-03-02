@@ -9,6 +9,7 @@ namespace Obel.MSS.Editor
 {
     public static class MSSEditorUtils
     {
+        #region Generic properties drawer
 
         public static void DrawGenericProperty<T>(ref T propertyValue)
         {
@@ -78,5 +79,6 @@ namespace Obel.MSS.Editor
             GUI.color = Color.white;
         }
 
+        #endregion
     }
 }

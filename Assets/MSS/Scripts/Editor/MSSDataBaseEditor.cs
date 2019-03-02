@@ -11,11 +11,9 @@ using System;
 
 namespace Obel.MSS.Editor
 {
-
     [CustomEditor(typeof(MSSDataBase))]
     public class MSSDataBaseEditor : UnityEditor.Editor
     {
-
         private static string AssetPath = "Assets/MSSDataBase-DONT-DELETE-THIS.asset";
 
         private static MSSDataBase _instance;
@@ -33,28 +31,31 @@ namespace Obel.MSS.Editor
             }
         }
 
+        #region Collection editor
 
-        public static void AddState()
+        public static void AddStateGroupsData(int instanceID)
         {
-            Undo.RecordObject(instance, "[MSS] Add a new state");
-            
-            instance.statesData.Add(SaveAsset<MSSStateData>(StateDataInstanced, "[MSS][State]"));
+            Undo.RecordObject(MSSDataBaseEditor.instance, "[MSS] Add group");
+
+            MSSDataBaseEditor.instance.stateGroupsData.Add(instanceID, MSSDataBaseEditor.SaveAsset<MSSStateGroupData>(StateGroupsDataInstanced, "[MSS][Group]"));
         }
 
-        private static void StateDataInstanced(MSSStateData stateData)
+        private static void StateGroupsDataInstanced(MSSStateGroupData stateGroupData)
         {
-            stateData.name = stateData.stateName;
+            //stateGroupData.name = stateGroupData.stateName;
         }
 
-        public static void RemoveStateData(MSSStateData state)
+        public static void RemoveStateGroupsData(int instanceID, MSSStateGroupData stateGroupData)
         {
-            Undo.RecordObject(instance, "[MSS] Remove a state");
+            Undo.RecordObject(MSSDataBaseEditor.instance, "[MSS] Remove a state");
 
-            MSSStateDataEditor.RemoveTweensData(state);
-
-            instance.statesData.Remove(state);
-            RemoveAsset(state);
+            MSSDataBaseEditor.instance.stateGroupsData.Remove(instanceID);
+            MSSDataBaseEditor.RemoveAsset(stateGroupData);
         }
+
+        #endregion
+
+        #region GUI
 
         public override void OnInspectorGUI()
         {
@@ -69,12 +70,16 @@ namespace Obel.MSS.Editor
                 return;
             }
 
-            instance.statesData.ToList().ForEach(s => MSSStateDataEditor.OnGUI(s));
+            instance.stateGroupsData.ToList().ForEach(stateGroupDataDic => MSSStateGroupDataEditor.OnGUI(stateGroupDataDic.Value));
 
             EditorGUILayout.Space();
 
-            if (GUILayout.Button("Add State")) AddState();
+            if (GUILayout.Button("Add Group")) AddStateGroupsData((int)(Time.time * 1000));
         }
+
+        #endregion
+
+        #region Work with Assets 
 
         private static MSSDataBase CreateDataBaseAsset()
         {
@@ -94,7 +99,6 @@ namespace Obel.MSS.Editor
 
         public static T SaveAsset<T>(Action<T> instancedCallback = null, string assetName = null) where T : ScriptableObject
         {
-
             T newAsset = ScriptableObject.CreateInstance<T>();
 
             if (instancedCallback != null) instancedCallback(newAsset);
@@ -121,6 +125,8 @@ namespace Obel.MSS.Editor
 
             return removingAsset;
         }
+
+        #endregion
     }
 
 }

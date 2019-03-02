@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+
 namespace Obel.MSS.Editor
 {
     public class MSSDataBaseEditorWindow : EditorWindow
@@ -26,10 +27,14 @@ namespace Obel.MSS.Editor
             AssetDatabase.Refresh();
         }
 
+        #region GUI
+
         void OnGUI()
         {
             GUILayout.Label(windowTitleContent, EditorStyles.boldLabel);
             MSSDataBaseEditor.OnGUI();
         }
+
+        #endregion
     }
 }

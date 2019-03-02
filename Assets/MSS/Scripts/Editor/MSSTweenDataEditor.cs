@@ -13,18 +13,18 @@ namespace Obel.MSS.Editor
 {
     public class MSSTweenDataEditor : UnityEditor.Editor
     {
-        public static void OnGUI<T>(MSSStateData stateData, MSSTweenDataBase tweenData, T tweenValue)
+        #region GUI
+
+        public static void OnGUI<T>(MSSStateData stateData, MSSTweenData tweenData, T tweenValue)
         {
             EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField(tweenData.tweenName);
-                if (GUILayout.Button("X")) MSSStateDataEditor.RemoveTweenData(tweenData, stateData);
+                if (GUILayout.Button("x")) MSSStateDataEditor.RemoveTweenData(tweenData, stateData);
             EditorGUILayout.EndHorizontal();
 
             MSSEditorUtils.DrawGenericProperty(ref tweenValue, tweenData);
         }
+
+        #endregion
     }
-
-
-    
-
 }
