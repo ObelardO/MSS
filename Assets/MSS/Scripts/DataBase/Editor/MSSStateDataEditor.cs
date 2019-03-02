@@ -27,15 +27,10 @@ namespace Obel.MSS.Editor
 
         #region Collection editor
 
-        public static void RemoveTweensData(MSSStateData stateData)
-        {
-            stateData.tweensData.ToList().ForEach(t => RemoveTweenData(t, stateData, false));
-        }
-
         public static void AddTweenData<T>(MSSStateData stateData) where T : MSSTweenData
         {
             Undo.RecordObject(stateData, "[MSS] Add a new tween");
-            stateData.tweensData.Add(MSSDataBaseEditor.SaveAsset<T>(OnTweenDataInstanced, "[MSS][TWEEN]"));
+            stateData.tweensData.Add(MSSDataBaseEditor.SaveAsset<T>(OnTweenDataInstanced, "[MSS][Tween]"));
         }
 
         private static void OnTweenDataInstanced(MSSTweenData tween)
@@ -48,6 +43,11 @@ namespace Obel.MSS.Editor
             if (useRectording) Undo.RecordObject(stateData, "[MSS] Remove a tween");
             stateData.tweensData.Remove(tween);
             MSSDataBaseEditor.RemoveAsset(tween);
+        }
+
+        public static void RemoveTweensData(MSSStateData stateData)
+        {
+            stateData.tweensData.ToList().ForEach(tweenData => RemoveTweenData(tweenData, stateData, false));
         }
 
         #endregion

@@ -9,10 +9,11 @@ namespace Obel.MSS
     //[Serializable]
     public class MSSDataBase : ScriptableObject
     {
-
+        //[SerializeField]
+        //public Dictionary<int, MSSStateGroupData> stateGroupsData;
 
         [SerializeField]
-        public Dictionary<int, MSSStateGroupData> stateGroupsData;
+        public List<MSSStateGroupData> stateGroupsData;
 
         //[SerializeField]
         //public List<MSSStateData> statesData;
@@ -23,7 +24,7 @@ namespace Obel.MSS
             //    statesData = new List<MSSStateData>();
 
             if (stateGroupsData == null)
-                stateGroupsData = new Dictionary<int, MSSStateGroupData>();
+                stateGroupsData = new List<MSSStateGroupData>();
 
             //hideFlags = HideFlags.HideInHierarchy;
         }

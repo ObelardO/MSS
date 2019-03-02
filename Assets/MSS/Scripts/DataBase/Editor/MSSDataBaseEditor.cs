@@ -33,11 +33,14 @@ namespace Obel.MSS.Editor
 
         #region Collection editor
 
-        public static void AddStateGroupsData(int instanceID)
+        public static void AddStateGroupsData(int objectID)
         {
             Undo.RecordObject(MSSDataBaseEditor.instance, "[MSS] Add group");
 
-            MSSDataBaseEditor.instance.stateGroupsData.Add(instanceID, MSSDataBaseEditor.SaveAsset<MSSStateGroupData>(StateGroupsDataInstanced, "[MSS][Group]"));
+            MSSStateGroupData newStateGroupData = MSSDataBaseEditor.SaveAsset<MSSStateGroupData>(StateGroupsDataInstanced, "[MSS][Group]");
+            newStateGroupData.objectID = objectID;
+
+            MSSDataBaseEditor.instance.stateGroupsData.Add(newStateGroupData);
         }
 
         private static void StateGroupsDataInstanced(MSSStateGroupData stateGroupData)
@@ -45,12 +48,14 @@ namespace Obel.MSS.Editor
             //stateGroupData.name = stateGroupData.stateName;
         }
 
-        public static void RemoveStateGroupsData(int instanceID, MSSStateGroupData stateGroupData)
+        public static void RemoveStateGroupsData(/*int instanceID, */MSSStateGroupData stateGroupData)
         {
             Undo.RecordObject(MSSDataBaseEditor.instance, "[MSS] Remove a state");
-
-            MSSDataBaseEditor.instance.stateGroupsData.Remove(instanceID);
+            MSSDataBaseEditor.instance.stateGroupsData.Remove(/*instanceID*/stateGroupData);
+            MSSStateGroupDataEditor.RemoveStatesData(stateGroupData);
             MSSDataBaseEditor.RemoveAsset(stateGroupData);
+
+            //MSSStateDataEditor.RemoveTweensData(stateGroupData);
         }
 
         #endregion
@@ -70,7 +75,7 @@ namespace Obel.MSS.Editor
                 return;
             }
 
-            instance.stateGroupsData.ToList().ForEach(stateGroupDataDic => MSSStateGroupDataEditor.OnGUI(stateGroupDataDic.Value));
+            instance.stateGroupsData.ToList().ForEach(stateGroupData => MSSStateGroupDataEditor.OnGUI(stateGroupData));
 
             EditorGUILayout.Space();
 

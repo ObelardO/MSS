@@ -9,6 +9,9 @@ namespace Obel.MSS
     public class MSSStateGroupData : ScriptableObject
     {
         [SerializeField]
+        public int objectID;
+
+        [SerializeField]
         public List<MSSStateData> statesData;
 
         private void OnEnable()

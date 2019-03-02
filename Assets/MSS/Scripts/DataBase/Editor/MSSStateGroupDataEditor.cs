@@ -12,7 +12,10 @@ namespace Obel.MSS.Editor
 
         public static void OnGUI(MSSStateGroupData stateGroupData)
         {
-            EditorGUILayout.LabelField("STATE GROUP", EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("STATE GROUP", EditorStyles.boldLabel);
+                if (GUILayout.Button("x")) MSSDataBaseEditor.RemoveStateGroupsData(stateGroupData);
+            EditorGUILayout.EndHorizontal();
 
             stateGroupData.statesData.ToList().ForEach(stateData =>
             {
@@ -47,11 +50,17 @@ namespace Obel.MSS.Editor
             stateData.name = stateData.stateName;
         }
 
-        public static void RemoveStateData(MSSStateGroupData stateGroupData, MSSStateData stateData)
+        public static void RemoveStateData(MSSStateGroupData stateGroupData, MSSStateData stateData, bool useRectording = true)
         {
-            Undo.RecordObject(stateGroupData, "[MSS] Remove state");
+            if (useRectording) Undo.RecordObject(stateGroupData, "[MSS] Remove state");
             stateGroupData.statesData.Remove(stateData);
+            MSSStateDataEditor.RemoveTweensData(stateData);
             MSSDataBaseEditor.RemoveAsset(stateData);
+        }
+
+        public static void RemoveStatesData(MSSStateGroupData stateGroupData)
+        {
+            stateGroupData.statesData.ToList().ForEach(stateData => RemoveStateData(stateGroupData, stateData, false));
         }
 
         #endregion
