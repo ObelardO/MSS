@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace Obel.MSS
 {
-    //[Serializable]
     public class MSSStateGroupData : ScriptableObject
     {
         [SerializeField]
@@ -18,6 +17,9 @@ namespace Obel.MSS
         {
             if (statesData == null)
                 statesData = new List<MSSStateData>();
+
+            //hideFlags = HideFlags.HideInHierarchy;
+
         }
     }
 }

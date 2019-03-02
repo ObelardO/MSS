@@ -6,27 +6,15 @@ using UnityEngine;
 
 namespace Obel.MSS
 {
-    //[Serializable]
     public class MSSDataBase : ScriptableObject
     {
-        //[SerializeField]
-        //public Dictionary<int, MSSStateGroupData> stateGroupsData;
-
         [SerializeField]
         public List<MSSStateGroupData> stateGroupsData;
 
-        //[SerializeField]
-        //public List<MSSStateData> statesData;
-
         public void OnEnable()
         {
-            //if (statesData == null)
-            //    statesData = new List<MSSStateData>();
-
             if (stateGroupsData == null)
                 stateGroupsData = new List<MSSStateGroupData>();
-
-            //hideFlags = HideFlags.HideInHierarchy;
         }
     }
 }

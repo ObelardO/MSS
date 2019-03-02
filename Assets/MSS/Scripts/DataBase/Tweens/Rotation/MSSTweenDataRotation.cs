@@ -12,13 +12,5 @@ namespace Obel.MSS
 
         [SerializeField]
         public Vector3 tweenValue;
-
-        /*
-        public override void OnGUI()
-        {
-            base.OnGUI();
-            MSSEditorUtils.DrawGenericProperty(ref tweenValue, this);
-        }
-        */
     }
 }

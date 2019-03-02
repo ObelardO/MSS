@@ -35,7 +35,7 @@ namespace Obel.MSS.Editor
 
         private static void OnTweenDataInstanced(MSSTweenData tween)
         {
-            //tween.parentStateData = this;
+
         }
 
         public static void RemoveTweenData<T>(T tween, MSSStateData stateData, bool useRectording = true) where T : MSSTweenData

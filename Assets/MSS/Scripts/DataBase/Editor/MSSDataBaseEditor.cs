@@ -45,17 +45,15 @@ namespace Obel.MSS.Editor
 
         private static void StateGroupsDataInstanced(MSSStateGroupData stateGroupData)
         {
-            //stateGroupData.name = stateGroupData.stateName;
+
         }
 
-        public static void RemoveStateGroupsData(/*int instanceID, */MSSStateGroupData stateGroupData)
+        public static void RemoveStateGroupsData(MSSStateGroupData stateGroupData)
         {
             Undo.RecordObject(MSSDataBaseEditor.instance, "[MSS] Remove a state");
-            MSSDataBaseEditor.instance.stateGroupsData.Remove(/*instanceID*/stateGroupData);
+            MSSDataBaseEditor.instance.stateGroupsData.Remove(stateGroupData);
             MSSStateGroupDataEditor.RemoveStatesData(stateGroupData);
             MSSDataBaseEditor.RemoveAsset(stateGroupData);
-
-            //MSSStateDataEditor.RemoveTweensData(stateGroupData);
         }
 
         #endregion

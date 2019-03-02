@@ -5,13 +5,9 @@ using UnityEngine;
 
 namespace Obel.MSS
 {
-    //[Serializable]
     public class MSSTweenData : ScriptableObject
     {
         public virtual string tweenName { get; }
-
-        [SerializeField]
-        //public MSSStateData parentStateData;
 
         public void OnEnable()
         {

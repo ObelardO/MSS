@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace Obel.MSS
 {
-    //[Serializable]
     public class MSSStateData : ScriptableObject
     {
         [SerializeField]    
