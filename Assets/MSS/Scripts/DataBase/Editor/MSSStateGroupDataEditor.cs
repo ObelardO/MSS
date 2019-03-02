@@ -60,7 +60,7 @@ namespace Obel.MSS.Editor
 
         public static void RemoveStatesData(MSSStateGroupData stateGroupData)
         {
-            stateGroupData.statesData.ToList().ForEach(stateData => RemoveStateData(stateGroupData, stateData, false));
+            stateGroupData.statesData.ToList().ForEach(stateData => RemoveStateData(stateGroupData, stateData));
         }
 
         #endregion

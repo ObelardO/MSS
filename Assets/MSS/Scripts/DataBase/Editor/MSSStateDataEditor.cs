@@ -47,7 +47,7 @@ namespace Obel.MSS.Editor
 
         public static void RemoveTweensData(MSSStateData stateData)
         {
-            stateData.tweensData.ToList().ForEach(tweenData => RemoveTweenData(tweenData, stateData, false));
+            stateData.tweensData.ToList().ForEach(tweenData => RemoveTweenData(tweenData, stateData));
         }
 
         #endregion
