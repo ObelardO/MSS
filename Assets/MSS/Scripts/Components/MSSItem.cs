@@ -8,6 +8,14 @@ namespace Obel.MSS
     public class MSSItem : MonoBehaviour
     {
         [SerializeField]
-        public int dataBaseID = int.MaxValue; 
+        public int dataBaseID = int.MaxValue;
+
+        [SerializeField]
+        public MSSStateGroupData stateGroupData;
+
+        private void Awake()
+        {
+
+        }
     }
 }

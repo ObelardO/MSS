@@ -8,7 +8,7 @@ namespace Obel.MSS
     [Serializable]
     public class MSSTweenDataPosition : MSSTweenData
     {
-        public override string tweenName { get { return "Position"; } }
+        public override string tweenName => "Position";
 
         [SerializeField]
         public Vector3 tweenValue;

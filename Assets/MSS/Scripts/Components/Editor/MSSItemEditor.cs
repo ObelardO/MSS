@@ -18,7 +18,15 @@ namespace Obel.MSS.Editor
 
         private void OnEnable()
         {
-            item = target as MSSItem;
+            item = (MSSItem)target;
+
+            int objectID = item.GetInstanceID();
+
+            if (item.stateGroupData == null || item.stateGroupData.objectID != objectID)
+            {
+                MSSDataBaseEditor.AddStateGroupsData(objectID);
+                item.stateGroupData = MSSDataBaseEditor.GetStateGroupData(objectID);
+            }
         }
 
         #region GUI
@@ -28,6 +36,8 @@ namespace Obel.MSS.Editor
             serializedObject.Update();
 
             item.dataBaseID = EditorGUILayout.IntField("id", item.dataBaseID);
+
+            MSSStateGroupDataEditor.OnGUI(item.stateGroupData);
 
             serializedObject.ApplyModifiedProperties();
         }

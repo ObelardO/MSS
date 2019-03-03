@@ -11,6 +11,7 @@ using System;
 
 namespace Obel.MSS.Editor
 {
+
     [CustomEditor(typeof(MSSDataBase))]
     public class MSSDataBaseEditor : UnityEditor.Editor
     {
@@ -41,6 +42,9 @@ namespace Obel.MSS.Editor
             newStateGroupData.objectID = objectID;
 
             MSSDataBaseEditor.instance.stateGroupsData.Add(newStateGroupData);
+
+            MSSStateGroupDataEditor.AddStateData(newStateGroupData);
+            MSSStateGroupDataEditor.AddStateData(newStateGroupData);
         }
 
         private static void StateGroupsDataInstanced(MSSStateGroupData stateGroupData)
@@ -56,6 +60,11 @@ namespace Obel.MSS.Editor
             MSSDataBaseEditor.RemoveAsset(stateGroupData);
         }
 
+        public static MSSStateGroupData GetStateGroupData(int objectID)
+        {
+            return instance.stateGroupsData.Where(stateGroupData => stateGroupData.objectID == objectID).FirstOrDefault();
+        }
+        
         #endregion
 
         #region GUI
@@ -86,7 +95,7 @@ namespace Obel.MSS.Editor
 
         private static MSSDataBase CreateDataBaseAsset()
         {
-            MSSDataBase mssDataBase = CreateInstance<MSSDataBase>();
+            MSSDataBase mssDataBase = ScriptableObject.CreateInstance<MSSDataBase>();
             AssetDatabase.CreateAsset(mssDataBase, AssetPath);
             AssetDatabase.SaveAssets();
 
@@ -121,7 +130,7 @@ namespace Obel.MSS.Editor
             if (useRecording)
                 Undo.DestroyObjectImmediate(removingAsset);
             else
-                DestroyImmediate(removingAsset, true);
+                UnityEngine.Object.DestroyImmediate(removingAsset, true);
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
