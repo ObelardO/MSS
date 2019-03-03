@@ -5,21 +5,19 @@ using UnityEngine;
 
 namespace Obel.MSS
 {
-    public class MSSStateGroupData : ScriptableObject
+    [Serializable]
+    public class MSSStateGroupData : MSSDataBaseCollection<MSSStateData>
+
     {
         [SerializeField]
         public int objectID;
 
-        [SerializeField]
-        public List<MSSStateData> statesData;
+       //  public List<MSSDataBaseCollection> statesData;
 
         private void OnEnable()
         {
-            if (statesData == null)
-                statesData = new List<MSSStateData>();
-
-            //hideFlags = HideFlags.HideInHierarchy;
-
+            if (items == null)
+                items = new List<MSSStateData>();
         }
     }
 }

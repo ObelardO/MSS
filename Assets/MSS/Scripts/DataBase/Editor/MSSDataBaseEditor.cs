@@ -11,7 +11,6 @@ using System;
 
 namespace Obel.MSS.Editor
 {
-
     [CustomEditor(typeof(MSSDataBase))]
     public class MSSDataBaseEditor : UnityEditor.Editor
     {
@@ -41,7 +40,7 @@ namespace Obel.MSS.Editor
             MSSStateGroupData newStateGroupData = MSSDataBaseEditor.SaveAsset<MSSStateGroupData>(StateGroupsDataInstanced, "[MSS][Group]");
             newStateGroupData.objectID = objectID;
 
-            MSSDataBaseEditor.instance.stateGroupsData.Add(newStateGroupData);
+            instance.Add(newStateGroupData);
 
             MSSStateGroupDataEditor.AddStateData(newStateGroupData);
             MSSStateGroupDataEditor.AddStateData(newStateGroupData);
@@ -55,14 +54,16 @@ namespace Obel.MSS.Editor
         public static void RemoveStateGroupsData(MSSStateGroupData stateGroupData)
         {
             Undo.RecordObject(MSSDataBaseEditor.instance, "[MSS] Remove a state");
-            MSSDataBaseEditor.instance.stateGroupsData.Remove(stateGroupData);
+
+            instance.Remove(stateGroupData, false);
+
             MSSStateGroupDataEditor.RemoveStatesData(stateGroupData);
             MSSDataBaseEditor.RemoveAsset(stateGroupData);
         }
 
         public static MSSStateGroupData GetStateGroupData(int objectID)
         {
-            return instance.stateGroupsData.Where(stateGroupData => stateGroupData.objectID == objectID).FirstOrDefault();
+            return instance.Find(objectID);
         }
         
         #endregion
@@ -71,6 +72,7 @@ namespace Obel.MSS.Editor
 
         public override void OnInspectorGUI()
         {
+            Debug.Log("DATABASE INSPECTOR");
             OnGUI();
         }
 
@@ -82,7 +84,7 @@ namespace Obel.MSS.Editor
                 return;
             }
 
-            instance.stateGroupsData.ToList().ForEach(stateGroupData => MSSStateGroupDataEditor.OnGUI(stateGroupData));
+            instance.ForEach(stateGroupData => MSSStateGroupDataEditor.OnGUI(stateGroupData));
 
             EditorGUILayout.Space();
 
@@ -109,7 +111,7 @@ namespace Obel.MSS.Editor
             return mssDataBase;
         }
 
-        public static T SaveAsset<T>(Action<T> instancedCallback = null, string assetName = null) where T : ScriptableObject
+        public static T SaveAsset<T>(Action<T> instancedCallback = null, string assetName = null) where T : MSSDataBaseCollectionItem
         {
             T newAsset = ScriptableObject.CreateInstance<T>();
 
@@ -125,7 +127,7 @@ namespace Obel.MSS.Editor
             return newAsset;
         }
 
-        public static T RemoveAsset<T>(T removingAsset, bool useRecording = true) where T : ScriptableObject
+        public static T RemoveAsset<T>(T removingAsset, bool useRecording = true) where T : MSSDataBaseCollectionItem
         {
             if (useRecording)
                 Undo.DestroyObjectImmediate(removingAsset);

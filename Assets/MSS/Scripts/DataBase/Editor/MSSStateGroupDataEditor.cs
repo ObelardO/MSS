@@ -17,7 +17,7 @@ namespace Obel.MSS.Editor
                 if (GUILayout.Button("x")) MSSDataBaseEditor.RemoveStateGroupsData(stateGroupData);
             EditorGUILayout.EndHorizontal();
 
-            stateGroupData.statesData.ToList().ForEach(stateData =>
+            stateGroupData.ForEach(stateData =>
             {
                 MSSStateDataEditor.OnGUI(stateData);
                 OnStateDataGUI(stateGroupData, stateData);
@@ -42,7 +42,7 @@ namespace Obel.MSS.Editor
         public static void AddStateData(MSSStateGroupData stateGroupData)
         {
             Undo.RecordObject(stateGroupData, "[MSS] Add state");
-            stateGroupData.statesData.Add(MSSDataBaseEditor.SaveAsset<MSSStateData>(StateDataInstanced, "[MSS][State]"));
+            stateGroupData.Add(MSSDataBaseEditor.SaveAsset<MSSStateData>(StateDataInstanced, "[MSS][State]"));
         }
 
         private static void StateDataInstanced(MSSStateData stateData)
@@ -53,14 +53,14 @@ namespace Obel.MSS.Editor
         public static void RemoveStateData(MSSStateGroupData stateGroupData, MSSStateData stateData, bool useRectording = true)
         {
             if (useRectording) Undo.RecordObject(stateGroupData, "[MSS] Remove state");
-            stateGroupData.statesData.Remove(stateData);
+            stateGroupData.Remove(stateData, false);
             MSSStateDataEditor.RemoveTweensData(stateData);
             MSSDataBaseEditor.RemoveAsset(stateData);
         }
 
         public static void RemoveStatesData(MSSStateGroupData stateGroupData)
         {
-            stateGroupData.statesData.ToList().ForEach(stateData => RemoveStateData(stateGroupData, stateData));
+            stateGroupData.ForEach(stateData => RemoveStateData(stateGroupData, stateData));
         }
 
         #endregion

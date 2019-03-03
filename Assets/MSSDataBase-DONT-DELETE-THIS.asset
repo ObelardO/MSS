@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcebc61d65f489943a0ff08b6bb8e9c8, type: 3}
   m_Name: MSSDataBase-DONT-DELETE-THIS
   m_EditorClassIdentifier: 
-  stateGroupsData: []
+  items: []

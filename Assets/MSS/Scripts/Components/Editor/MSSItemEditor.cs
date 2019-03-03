@@ -37,7 +37,14 @@ namespace Obel.MSS.Editor
 
             item.dataBaseID = EditorGUILayout.IntField("id", item.dataBaseID);
 
-            MSSStateGroupDataEditor.OnGUI(item.stateGroupData);
+            if (item.stateGroupData == null)
+            {
+                Debug.Log("NUUUL!");
+            }
+            else
+            {
+                MSSStateGroupDataEditor.OnGUI(item.stateGroupData);
+            }
 
             serializedObject.ApplyModifiedProperties();
         }
