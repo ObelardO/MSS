@@ -11,11 +11,16 @@ namespace Obel.MSS.Editor
     {
         #region GUI
 
-        public static void OnGUI(MSSStateData stateData)
+        public static void OnGUI(MSSStateGroupData stateGroupData, MSSStateData stateData)
         {
-            MSSEditorUtils.DrawGenericProperty(ref stateData.stateName, "name", stateData);
+            EditorGUILayout.BeginHorizontal();
+                MSSEditorUtils.DrawGenericProperty(ref stateData.stateName, "name", stateData);
+                if (GUILayout.Button("x")) MSSStateGroupDataEditor.RemoveStateData(stateGroupData, stateData);
+            EditorGUILayout.EndHorizontal();
 
-            stateData.ForEach(tweenData => MSSTweenDataEditor.OnGUI(stateData, tweenData, new Vector3()));
+            if (stateData == null) return;
+
+            stateData.ForEach(tweenData => MSSTweenDataEditor.OnGUI(stateData, tweenData));
 
             EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("Add position")) AddTweenData<MSSTweenDataPosition>(stateData);
@@ -38,16 +43,16 @@ namespace Obel.MSS.Editor
 
         }
 
-        public static void RemoveTweenData<T>(T tween, MSSStateData stateData, bool useRectording = true) where T : MSSTweenData
+        public static void RemoveTweenData<T>(T tween, MSSStateData stateData, bool useUndo = true) where T : MSSTweenData
         {
-            if (useRectording) Undo.RecordObject(stateData, "[MSS] Remove a tween");
+            if (useUndo) Undo.RecordObject(stateData, "[MSS] Remove a tween");
             stateData.Remove(tween, false);
             MSSDataBaseEditor.RemoveAsset(tween);
         }
 
-        public static void RemoveTweensData(MSSStateData stateData)
+        public static void RemoveTweensData(MSSStateData stateData, bool useUndo = true)
         {
-            stateData.ForEach(tweenData => RemoveTweenData(tweenData, stateData));
+            stateData.ForEach(tweenData => RemoveTweenData(tweenData, stateData, useUndo));
         }
 
         #endregion

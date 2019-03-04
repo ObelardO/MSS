@@ -26,7 +26,7 @@ namespace Obel.MSS
 
         public void ForEach(Action<T> forEachCallback)
         {
-            for (int i = Count - 1; i > -1; i--) forEachCallback(items[i]);
+            items.ToList().ForEach(item => forEachCallback(item));
         }
 
         public T AddNew()

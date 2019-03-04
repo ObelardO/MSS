@@ -6,11 +6,11 @@ using UnityEngine;
 namespace Obel.MSS
 {
     [Serializable]
-    public class MSSTweenDataPosition : MSSTweenData
+    public class MSSTweenDataPosition : MSSTweenData//, IMSSTweenData
     {
         public override string tweenName => "Position";
 
         [SerializeField]
         public Vector3 tweenValue;
     }
-}
+} 

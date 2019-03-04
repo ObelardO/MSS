@@ -20,7 +20,7 @@ namespace Obel.MSS.Editor
         {
             item = (MSSItem)target;
 
-            int objectID = item.GetInstanceID();
+            int objectID = item.gameObject.GetInstanceID();
 
             if (item.stateGroupData == null || item.stateGroupData.objectID != objectID)
             {

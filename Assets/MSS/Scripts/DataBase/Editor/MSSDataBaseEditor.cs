@@ -21,11 +21,9 @@ namespace Obel.MSS.Editor
         {
             get
             {
-                if (_instance == null)
-                    _instance = LoadDataBaseAsset();
+                if (_instance == null) _instance = LoadDataBaseAsset();
 
-                if (_instance == null)
-                    _instance = CreateDataBaseAsset();
+                if (_instance == null) _instance = CreateDataBaseAsset();
 
                 return _instance;
             }
@@ -53,11 +51,11 @@ namespace Obel.MSS.Editor
 
         public static void RemoveStateGroupsData(MSSStateGroupData stateGroupData)
         {
+            MSSStateGroupDataEditor.RemoveStatesData(stateGroupData);
+
             Undo.RecordObject(MSSDataBaseEditor.instance, "[MSS] Remove a state");
 
             instance.Remove(stateGroupData, false);
-
-            MSSStateGroupDataEditor.RemoveStatesData(stateGroupData);
             MSSDataBaseEditor.RemoveAsset(stateGroupData);
         }
 
@@ -72,7 +70,6 @@ namespace Obel.MSS.Editor
 
         public override void OnInspectorGUI()
         {
-            Debug.Log("DATABASE INSPECTOR");
             OnGUI();
         }
 

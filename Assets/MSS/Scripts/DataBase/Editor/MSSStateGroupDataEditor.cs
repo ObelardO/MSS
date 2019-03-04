@@ -17,10 +17,12 @@ namespace Obel.MSS.Editor
                 if (GUILayout.Button("x")) MSSDataBaseEditor.RemoveStateGroupsData(stateGroupData);
             EditorGUILayout.EndHorizontal();
 
+            if (stateGroupData == null) return;
+
             stateGroupData.ForEach(stateData =>
             {
-                MSSStateDataEditor.OnGUI(stateData);
-                OnStateDataGUI(stateGroupData, stateData);
+                MSSStateDataEditor.OnGUI(stateGroupData, stateData);
+                //OnStateDataGUI(stateGroupData, stateData);
 
                 EditorGUILayout.Space();
             });
@@ -34,10 +36,12 @@ namespace Obel.MSS.Editor
 
         #region Collection editor
 
+        /*
         private static void OnStateDataGUI(MSSStateGroupData stateGroupData, MSSStateData stateData)
         {
             if (GUILayout.Button("Delete state")) MSSStateGroupDataEditor.RemoveStateData(stateGroupData, stateData);
         }
+        */
 
         public static void AddStateData(MSSStateGroupData stateGroupData)
         {
@@ -50,17 +54,17 @@ namespace Obel.MSS.Editor
             stateData.name = stateData.stateName;
         }
 
-        public static void RemoveStateData(MSSStateGroupData stateGroupData, MSSStateData stateData, bool useRectording = true)
+        public static void RemoveStateData(MSSStateGroupData stateGroupData, MSSStateData stateData, bool useUndo = true)
         {
-            if (useRectording) Undo.RecordObject(stateGroupData, "[MSS] Remove state");
+            MSSStateDataEditor.RemoveTweensData(stateData, useUndo);
+            if (useUndo) Undo.RecordObject(stateGroupData, "[MSS] Remove state");
             stateGroupData.Remove(stateData, false);
-            MSSStateDataEditor.RemoveTweensData(stateData);
             MSSDataBaseEditor.RemoveAsset(stateData);
         }
 
-        public static void RemoveStatesData(MSSStateGroupData stateGroupData)
+        public static void RemoveStatesData(MSSStateGroupData stateGroupData, bool useUndo = true)
         {
-            stateGroupData.ForEach(stateData => RemoveStateData(stateGroupData, stateData));
+            stateGroupData.ForEach(stateData => RemoveStateData(stateGroupData, stateData, useUndo));
         }
 
         #endregion

@@ -12,8 +12,6 @@ namespace Obel.MSS
         [SerializeField]
         public int objectID;
 
-       //  public List<MSSDataBaseCollection> statesData;
-
         private void OnEnable()
         {
             if (items == null)
