@@ -5,20 +5,35 @@ using UnityEngine;
 
 namespace Obel.MSS
 {
-    public interface IMSSTweenDataValue<T> where T : struct
-    {
-        T tweenValue { set; get; }
-    }
+    /*
+    [Serializable]
+    public abstract class Generic { }
 
     [Serializable]
-    public class MSSTweenData : MSSDataBaseCollectionItem
+    public abstract class Generic<T> : Generic {
+        public T value;
+    }
+    [Serializable]
+    public class GenericInt : Generic<int> { }
+    [Serializable]
+    public class GenericFloat : Generic<float> { }
+
+    [CustomPropertyDrawer (typeof (Generic), true)]
+    public class IngredientDrawer : PropertyDrawer {
+        public override void OnGUI (Rect position, SerializedProperty property, GUIContent label) {
+            EditorGUI.BeginProperty (position, label, property);
+            position = EditorGUI.PrefixLabel (position, GUIUtility.GetControlID (FocusType.Passive), label);
+            EditorGUI.PropertyField (position, property.FindPropertyRelative ("value"), GUIContent.none);
+            EditorGUI.EndProperty ();
+        }
+    }
+    */
+
+    [Serializable]
+    public abstract class MSSTweenData : MSSDataBaseCollectionItem
     {
         public virtual string tweenName { get; }
 
-        public virtual Type tweenValueType { get; }
-        public virtual Type tweenDataType { get; }
-
-      
         public void OnEnable()
         {
             //hideFlags = HideFlags.HideInHierarchy;
