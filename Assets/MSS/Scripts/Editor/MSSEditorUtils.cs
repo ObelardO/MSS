@@ -9,6 +9,13 @@ namespace Obel.MSS.Editor
 {
     public static class MSSEditorUtils
     {
+
+        public static void DrawMessageBox(string message, MessageType type = MessageType.Info)
+        {
+            EditorGUILayout.HelpBox(message, type);
+        }
+
+
         #region Generic properties drawer
 
         public static void DrawGenericProperty<T>(ref T propertyValue)

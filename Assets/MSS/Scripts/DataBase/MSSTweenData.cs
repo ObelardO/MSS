@@ -5,14 +5,9 @@ using UnityEngine;
 
 namespace Obel.MSS
 {
-
-    public interface IMSSTweenData
+    public interface IMSSTweenDataValue<T> where T : struct
     {
-        /*
-        void Set<T>(T val) where T : struct;
-        T Get<T>() where T : struct;
-        void GetType();
-        */
+        T tweenValue { set; get; }
     }
 
     [Serializable]
@@ -20,8 +15,10 @@ namespace Obel.MSS
     {
         public virtual string tweenName { get; }
 
+        public virtual Type tweenValueType { get; }
+        public virtual Type tweenDataType { get; }
 
-
+      
         public void OnEnable()
         {
             //hideFlags = HideFlags.HideInHierarchy;

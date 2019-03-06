@@ -22,6 +22,13 @@ namespace Obel.MSS.Editor
 
             stateData.ForEach(tweenData => MSSTweenDataEditor.OnGUI(stateData, tweenData));
 
+            SerializedObject  ssd = new SerializedObject(stateData);
+            Debug.Log(ssd.FindProperty("items"));
+            for (int i = 0; i < stateData.Count; i++)
+            {
+                EditorGUILayout.PropertyField(ssd.FindProperty("items").GetArrayElementAtIndex(i));
+            }
+
             EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("Add position")) AddTweenData<MSSTweenDataPosition>(stateData);
                 if (GUILayout.Button("Add rotation")) AddTweenData<MSSTweenDataRotation>(stateData);

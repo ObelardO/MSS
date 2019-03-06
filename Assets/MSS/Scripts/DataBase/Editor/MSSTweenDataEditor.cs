@@ -1,19 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
-using UnityEditorInternal;
 using Obel.MSS;
-using UnityEditor.AnimatedValues;
-using UnityEngine.Events;
-using System.Linq;
-using System;
 
 namespace Obel.MSS.Editor
 {
-    public class MSSTweenDataEditor : UnityEditor.Editor
+    public class MSSTweenDataEditor
     {
         #region GUI
+
+        public virtual void OnGUISpecifics(MSSTweenData tweenData)
+        {
+
+        }
 
         public static void OnGUI(MSSStateData stateData, MSSTweenData tweenData)
         {
@@ -24,10 +22,49 @@ namespace Obel.MSS.Editor
 
             if ((MSSTweenData)tweenData == null) return;
 
+            //OnGUISpecifics(tweenData);
+
+            /*
+            if (tweenData is MSSTweenDataPosition)
+            {
+                MSSEditorUtils.DrawMessageBox("POSITION", MessageType.Warning);
+            }
+            */
+
+            /*
+            if (tweenData is MSSTweenDataRotation)
+            {
+                MSSEditorUtils.DrawMessageBox("ROTATION", MessageType.Warning);
+            }
+            */
+
+
+            /*
+            SerializedObject serializedTween = new SerializedObject(tweenData);
+
+            //serializedTween.
+
+            SerializedProperty serializedProperty = serializedTween.FindProperty("_tweenValue");
+
+            if (serializedProperty == null)
+            {
+                MSSEditorUtils.DrawMessageBox("invalid property", MessageType.Warning);
+            }
+            */
+
+            //tweenData = 
+
+            //DrawProperty(tweenData, "_tweenValue");
+
             //EditorGUI.BeginChangeCheck();
             //T tweenValue = (MSSTweenDataProxy)tweenData.tweenValue;
-            Vector3 a = Vector3.zero;
-            MSSEditorUtils.DrawGenericProperty(ref a);//, tweenData.tweenName);
+
+            /*
+            Type tweenValueType = tweenData.tween
+            */
+            //var tweenValue = ((IMSSTweenDataValue<Vector3>)tweenData).tweenValue;
+
+            //MSSEditorUtils.DrawGenericProperty(ref a);//, tweenData.tweenName);
             //if (EditorGUI.EndChangeCheck())
             //{
             //    Undo.RecordObject((MSSTweenData)tweenData, "[MSS][Tween] edit");
@@ -36,5 +73,32 @@ namespace Obel.MSS.Editor
         }
 
         #endregion
+
+        /*
+        #region Properties via reflections
+
+        private delegate void SetValue<T>(T value);
+        private delegate T GetValue<T>();
+
+        public static void DrawProperty<T>(T obj, string propertyName)
+        {
+            if (!PropertyIsValid(obj, propertyName))
+            {
+                MSSEditorUtils.DrawMessageBox("invalid property: " + propertyName, MessageType.Warning);
+                return;
+            }
+
+            MSSEditorUtils.DrawMessageBox("Valid!", MessageType.Info);
+        }
+
+        private static bool PropertyIsValid<T>(T obj, string propertyName)
+        {
+            Type type = typeof(T);
+            PropertyInfo property = type.GetProperty(propertyName);
+            return property != null;
+        }
+
+        #endregion
+        */
     }
 }
