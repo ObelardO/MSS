@@ -16,6 +16,14 @@ namespace Obel.MSS.Editor
     {
         private static string AssetPath = "Assets/MSSDataBase-DONT-DELETE-THIS.asset";
 
+        /*
+                    if (Event.current.type == EventType.ValidateCommand && Event.current.commandName == "UndoRedoPerformed")
+            {
+                data.PathModifiedByUndo();
+            }
+
+        */
+
         private static MSSDataBase _instance;
         public static MSSDataBase instance
         {
