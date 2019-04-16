@@ -20,12 +20,17 @@ namespace Obel.MSS.Editor
         {
             item = (MSSItem)target;
 
+            GetStateGroup();
+        }
+
+        private void GetStateGroup()
+        {
             int objectID = item.gameObject.GetInstanceID();
 
-            if (item.stateGroupData == null || item.stateGroupData.objectID != objectID)
+            if (item.stateGroup == null || item.stateGroup.objectID != objectID)
             {
-                MSSDataBaseEditor.AddStateGroupsData(objectID);
-                item.stateGroupData = MSSDataBaseEditor.GetStateGroupData(objectID);
+                MSSBaseEditor.AddStateGroupsData(objectID);
+                item.stateGroup = MSSBaseEditor.GetStateGroupData(objectID);
             }
         }
 
@@ -37,13 +42,14 @@ namespace Obel.MSS.Editor
 
             item.dataBaseID = EditorGUILayout.IntField("id", item.dataBaseID);
 
-            if (item.stateGroupData == null)
+            if (item.stateGroup == null)
             {
                 Debug.Log("NUUUL!");
+                GetStateGroup();
             }
             else
             {
-                MSSStateGroupDataEditor.OnGUI(item.stateGroupData);
+                MSSStateGroupEditor.OnGUI(item.stateGroup);
             }
 
             serializedObject.ApplyModifiedProperties();

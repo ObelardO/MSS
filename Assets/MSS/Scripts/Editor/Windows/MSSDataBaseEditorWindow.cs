@@ -22,7 +22,7 @@ namespace Obel.MSS.Editor
         private static void UndoCallback()
         {
             Debug.Log("UNDO!!");
-            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(MSSDataBaseEditor.instance));
+            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(MSSBaseEditor.instance));
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
@@ -32,7 +32,7 @@ namespace Obel.MSS.Editor
         void OnGUI()
         {
             GUILayout.Label(windowTitleContent, EditorStyles.boldLabel);
-            MSSDataBaseEditor.OnGUI();
+            MSSBaseEditor.OnGUI();
         }
 
         #endregion

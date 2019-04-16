@@ -8,14 +8,14 @@ namespace Obel.MSS
 {
     /*
         DataBase <- Collection, Item
-        - StateGroupData <- Collection, Item
-          - StateData <- Collection, Item
-            - TweenData <- Item
+        - StateGroup <- Collection, Item
+          - State <- Collection, Item
+            - Tween <- Item
     */
 
     [Serializable]
-    public class MSSDataBaseCollection<T> : MSSDataBaseCollectionItem
-        where T : MSSDataBaseCollectionItem
+    public class MSSCollection<T> : MSSCollectionItem
+        where T : MSSCollectionItem
     {
         [SerializeField]
         protected List<T> items;
@@ -23,6 +23,12 @@ namespace Obel.MSS
         public int Count => items.Count;
         public T Last => items[Count - 1];
         public T this[int i] => items[i];
+        public T First => items[0];
+
+        public virtual void Init()
+        {
+            if (items == null) items = new List<T>();
+        }
 
         public void ForEach(Action<T> forEachCallback)
         {
@@ -62,28 +68,27 @@ namespace Obel.MSS
         }
     }
 
-    public interface IMSSDataBaseCollectionItem
+    public interface IMSSCollectionItem
     {
 
     }
 
-    public class MSSDataBaseCollectionItem : ScriptableObject, IMSSDataBaseCollectionItem
+    public class MSSCollectionItem : ScriptableObject, IMSSCollectionItem
     {
 
     }
 
     [Serializable]
-    public class MSSDataBase : MSSDataBaseCollection<MSSStateGroupData>
+    public class MSSBase : MSSCollection<MSSStateGroup>
     {
         public void OnEnable()
         {
-            if (items == null)
-                items = new List<MSSStateGroupData>();
+            Init();
         }
 
-        public override MSSStateGroupData Find(object id)
+        public override MSSStateGroup Find(object id)
         {
-            foreach (MSSStateGroupData item in items)
+            foreach (MSSStateGroup item in items)
                 if (item.objectID == (int)id) return item;
 
             return null;

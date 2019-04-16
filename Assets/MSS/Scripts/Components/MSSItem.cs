@@ -11,7 +11,7 @@ namespace Obel.MSS
         public int dataBaseID = int.MaxValue;
 
         [SerializeField]
-        public MSSStateGroupData stateGroupData;
+        public MSSStateGroup stateGroup;
 
         private void Awake()
         {

@@ -1,26 +1,65 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using Obel.MSS;
+using System;
+using System.Reflection;
 
 namespace Obel.MSS.Editor
 {
-    public class MSSTweenDataEditor
+    public class MSSTweenEditor
     {
         #region GUI
 
+
+        /*
+        private static MSSTweenDataEditor _instance;
+        public static MSSTweenDataEditor instance 
+        {
+            get
+            {
+                if (_instance == null) _instance = new MSSTweenDataEditor();
+                return _instance;
+            }
+        }
+        */
+
+        /*
         public virtual void OnGUISpecifics(MSSTweenData tweenData)
         {
 
         }
-
-        public static void OnGUI(MSSStateData stateData, MSSTweenData tweenData)
+        */
+        /*
+        public delegate void OnTweenGUI(MSSStateData stateData, MSSTweenData tweenData);
+        public static event OnTweenGUI onTweenGUI;
+        
+        public virtual void OnTweenGUI(MSSStateData stateData, MSSTweenData tweenData)
         {
-            EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField(tweenData.tweenName);
-                if (GUILayout.Button("x")) MSSStateDataEditor.RemoveTweenData(tweenData, stateData);
-            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.LabelField("TWEEN");
+        }
+        */
 
-            if ((MSSTweenData)tweenData == null) return;
+        public static void OnGUI(MSSState state, MSSTween tween)
+        {
+            //instance.OnTweenGUI(stateData, tweenData);
+
+
+            //OnTweenGUI(stateData, tweenData);
+
+
+            //EditorGUILayout.BeginHorizontal();
+
+            // onTweenGUI(stateData, tweenData);
+
+            //EditorGUILayout.LabelField(tweenData.tweenName);
+            //if (GUILayout.Button("x")) MSSStateDataEditor.RemoveTweenData(tweenData, stateData);
+            //EditorGUILayout.EndHorizontal();
+
+            if ((MSSTween)tween == null) return;
+
+
+            DrawProperty(tween, "_tweenValue");
+
 
             //OnGUISpecifics(tweenData);
 
@@ -37,9 +76,8 @@ namespace Obel.MSS.Editor
                 MSSEditorUtils.DrawMessageBox("ROTATION", MessageType.Warning);
             }
             */
-
-
             /*
+
             SerializedObject serializedTween = new SerializedObject(tweenData);
 
             //serializedTween.
@@ -50,6 +88,11 @@ namespace Obel.MSS.Editor
             {
                 MSSEditorUtils.DrawMessageBox("invalid property", MessageType.Warning);
             }
+            else
+            {
+                EditorGUILayout.PropertyField(serializedProperty);
+            }
+
             */
 
             //tweenData = 
@@ -74,7 +117,7 @@ namespace Obel.MSS.Editor
 
         #endregion
 
-        /*
+        
         #region Properties via reflections
 
         private delegate void SetValue<T>(T value);
@@ -99,6 +142,6 @@ namespace Obel.MSS.Editor
         }
 
         #endregion
-        */
+        
     }
 }

@@ -7,15 +7,14 @@ using UnityEngine;
 namespace Obel.MSS
 {
     [Serializable]
-    public class MSSStateData : MSSDataBaseCollection<MSSTweenData>
+    public class MSSState : MSSCollection<MSSTween>
     {
         [SerializeField]
         public string stateName;
 
         private void OnEnable()
         {
-            if (items == null)
-                items = new List<MSSTweenData>();
+            Init();
         }
     }
 }

@@ -6,16 +6,14 @@ using UnityEngine;
 namespace Obel.MSS
 {
     [Serializable]
-    public class MSSStateGroupData : MSSDataBaseCollection<MSSStateData>
-
+    public class MSSStateGroup : MSSCollection<MSSState>
     {
         [SerializeField]
         public int objectID;
 
         private void OnEnable()
         {
-            if (items == null)
-                items = new List<MSSStateData>();
+            Init();
         }
     }
 }
