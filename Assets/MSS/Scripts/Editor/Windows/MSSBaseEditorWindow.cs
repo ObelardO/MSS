@@ -7,14 +7,14 @@ using UnityEditor;
 
 namespace Obel.MSS.Editor
 {
-    public class MSSDataBaseEditorWindow : EditorWindow
+    public class MSSBaseEditorWindow : EditorWindow
     {
         private static GUIContent windowTitleContent = new GUIContent("MSS DataBase");
 
         [MenuItem("Window/MSS/DataBase")]
         static void Init()
         {
-            MSSDataBaseEditorWindow w = GetWindow<MSSDataBaseEditorWindow>();
+            MSSBaseEditorWindow w = GetWindow<MSSBaseEditorWindow>();
             w.titleContent = windowTitleContent;
             Undo.undoRedoPerformed = UndoCallback;
         }

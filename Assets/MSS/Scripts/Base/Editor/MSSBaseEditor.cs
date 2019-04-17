@@ -11,9 +11,6 @@ using System;
 
 namespace Obel.MSS.Editor
 {
-
-
-
     [CustomEditor(typeof(MSSBase))]
     public class MSSBaseEditor : UnityEditor.Editor
     {

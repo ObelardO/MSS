@@ -4,22 +4,15 @@ using Obel.MSS;
 
 namespace Obel.MSS.Editor
 {
-    /*
-    [CustomPropertyDrawer(typeof(MSSTweenData))]
-    public class MSSTweenDataRotationEditor : PropertyDrawer
+    public static class MSSTweenRotationEditor
     {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        #region GUI
+
+        public static void OnGUI(MSSTweenRotation tween)
         {
-            EditorGUI.BeginProperty(position, label, property);
-            // Draw label
-            label.text += "_p";
-
-            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
-
-            //EditorGUI.PropertyField(position, property.FindPropertyRelative("tweenValue"), GUIContent.none);
-
-            EditorGUI.EndProperty();
+            MSSTweenEditor.DrawHeader(tween);
         }
+
+        #endregion
     }
-    */
 }

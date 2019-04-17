@@ -4,6 +4,8 @@ using System.Linq;
 using System.IO;
 using UnityEngine;
 using UnityEditor;
+using System;
+using Object = UnityEngine.Object;
 
 namespace Obel.MSS.Editor
 {
@@ -15,6 +17,32 @@ namespace Obel.MSS.Editor
             EditorGUILayout.HelpBox(message, type);
         }
 
+        /*
+        #region Properties via reflections
+
+        private delegate void SetValue<T>(T value);
+        private delegate T GetValue<T>();
+
+        public static void DrawProperty<T>(T obj, string propertyName)
+        {
+            if (!PropertyIsValid(obj, propertyName))
+            {
+                MSSEditorUtils.DrawMessageBox("invalid property: " + propertyName, MessageType.Warning);
+                return;
+            }
+
+            MSSEditorUtils.DrawMessageBox("Valid!", MessageType.Info);
+        }
+
+        private static bool PropertyIsValid<T>(T obj, string propertyName)
+        {
+            Type type = typeof(T);
+            PropertyInfo property = type.GetProperty(propertyName);
+            return property != null;
+        }
+
+        #endregion
+        */
 
         #region Generic properties drawer
 

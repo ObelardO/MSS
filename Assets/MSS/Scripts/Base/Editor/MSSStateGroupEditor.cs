@@ -13,17 +13,13 @@ namespace Obel.MSS.Editor
         public static void OnGUI(MSSStateGroup stateGroup)
         {
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("STATE GROUP", EditorStyles.boldLabel);
-            if (GUILayout.Button("x")) MSSBaseEditor.RemoveStateGroups(stateGroup);
+                EditorGUILayout.LabelField("STATE GROUP", EditorStyles.boldLabel);
+                if (GUILayout.Button("x")) MSSBaseEditor.RemoveStateGroups(stateGroup);
             EditorGUILayout.EndHorizontal();
 
             if (stateGroup == null) return;
 
-            stateGroup.ForEach(state =>
-            {
-                MSSStateEditor.OnGUI(stateGroup, state);
-                EditorGUILayout.Space();
-            });
+            stateGroup.ForEach(state => MSSStateEditor.OnGUI(stateGroup, state));
 
             if (GUILayout.Button("Add state")) AddState(stateGroup);
 
@@ -33,13 +29,6 @@ namespace Obel.MSS.Editor
         #endregion
 
         #region Collection editor
-
-        /*
-        private static void OnStateDataGUI(MSSStateGroupData stateGroupData, MSSStateData stateData)
-        {
-            if (GUILayout.Button("Delete state")) MSSStateGroupDataEditor.RemoveStateData(stateGroupData, stateData);
-        }
-        */
 
         public static void AddState(MSSStateGroup stateGroup)
         {

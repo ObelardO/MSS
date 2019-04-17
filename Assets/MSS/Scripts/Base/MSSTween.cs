@@ -14,11 +14,20 @@ namespace Obel.MSS
     [Serializable]
     public class MSSTween : MSSCollectionItem
     {
-        public virtual string tweenName { get; }
+        public virtual string title { get; }
       
         public void OnEnable()
         {
             //hideFlags = HideFlags.HideInHierarchy;
         }
+
+#if UNITY_EDITOR
+        public virtual void OnGUI()
+        {
+
+        }
+#endif
+
     }
+
 }

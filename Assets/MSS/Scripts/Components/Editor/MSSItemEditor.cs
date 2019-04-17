@@ -29,6 +29,9 @@ namespace Obel.MSS.Editor
 
             if (item.stateGroup == null || item.stateGroup.objectID != objectID)
             {
+                item.stateGroup = MSSBaseEditor.GetStateGroupData(objectID);
+                if (item.stateGroup != null) return;
+
                 MSSBaseEditor.AddStateGroupsData(objectID);
                 item.stateGroup = MSSBaseEditor.GetStateGroupData(objectID);
             }
@@ -46,6 +49,7 @@ namespace Obel.MSS.Editor
             {
                 Debug.Log("NUUUL!");
                 GetStateGroup();
+                return;
             }
             else
             {
