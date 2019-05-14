@@ -819,8 +819,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66cc2e5637c3a3246892bccb81517fcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataBaseID: 2147483647
-  stateGroup: {fileID: 114656757328433854, guid: d85be050e07b0054f970b2c659ea1fde,
+  dataBaseID: 10988
+  stateGroup: {fileID: 114006809126952556, guid: d85be050e07b0054f970b2c659ea1fde,
     type: 2}
 --- !u!65 &1701378271
 BoxCollider:
@@ -888,7 +888,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1701378269}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 10}
+  m_LocalPosition: {x: 1.608, y: 0, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -976,5 +976,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66cc2e5637c3a3246892bccb81517fcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataBaseID: 2147483647
+  dataBaseID: 11000
   stateGroup: {fileID: 0}

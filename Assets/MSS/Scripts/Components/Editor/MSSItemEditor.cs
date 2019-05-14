@@ -14,7 +14,8 @@ namespace Obel.MSS.Editor
     [CustomEditor(typeof(MSSItem))]
     public class MSSItemEditor : UnityEditor.Editor
     {
-        public static MSSItem item;
+        public MSSItem item;
+        public static MSSItem sharedItem;
 
         private void OnEnable()
         {
@@ -43,7 +44,13 @@ namespace Obel.MSS.Editor
         {
             serializedObject.Update();
 
+            EditorGUI.BeginChangeCheck();
             item.dataBaseID = EditorGUILayout.IntField("id", item.dataBaseID);
+            if (EditorGUI.EndChangeCheck())
+            {
+                item.stateGroup = null;
+                GetStateGroup();
+            }
 
             if (item.stateGroup == null)
             {
@@ -53,7 +60,11 @@ namespace Obel.MSS.Editor
             }
             else
             {
+                sharedItem = item;
+
                 MSSStateGroupEditor.OnGUI(item.stateGroup);
+
+                sharedItem = null;
             }
 
             serializedObject.ApplyModifiedProperties();

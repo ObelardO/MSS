@@ -11,7 +11,7 @@ namespace Obel.MSS.Editor
         public static void OnGUI(MSSTweenRotation tween)
         {
             MSSTweenEditor.DrawHeader(tween, 
-                () => tween.tweenValue = MSSEditorUtils.GetInspectorRotation(MSSItemEditor.item.transform));
+                () => tween.tweenValue = MSSEditorUtils.GetInspectorRotation(MSSItemEditor.sharedItem.transform));
 
             MSSEditorUtils.DrawGenericProperty(ref tween.tweenValue, tween);
             MSSEditorUtils.DrawGenericProperty(ref tween.rotationMode, "Rotation mode", tween);

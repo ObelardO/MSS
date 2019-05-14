@@ -81,6 +81,8 @@ namespace Obel.MSS
     [Serializable]
     public class MSSBase : MSSCollection<MSSStateGroup>
     {
+        public static MSSBase instance;
+
         public void OnEnable()
         {
             Init();

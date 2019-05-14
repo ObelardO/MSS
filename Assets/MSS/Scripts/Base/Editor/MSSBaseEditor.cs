@@ -16,16 +16,16 @@ namespace Obel.MSS.Editor
     {
         private static string AssetPath = "Assets/MSSDataBase-DONT-DELETE-THIS.asset";
 
-        private static MSSBase _instance;
+        
         public static MSSBase instance
         {
             get
             {
-                if (_instance == null) _instance = LoadDataBaseAsset();
+                if (MSSBase.instance == null) MSSBase.instance = LoadDataBaseAsset();
 
-                if (_instance == null) _instance = CreateDataBaseAsset();
+                if (MSSBase.instance == null) MSSBase.instance = CreateDataBaseAsset();
 
-                return _instance;
+                return MSSBase.instance;
             }
         }
 

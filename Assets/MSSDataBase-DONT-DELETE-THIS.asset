@@ -13,124 +13,8 @@ MonoBehaviour:
   m_Name: MSSDataBase-DONT-DELETE-THIS
   m_EditorClassIdentifier: 
   items:
-  - {fileID: 114575766285080414}
-  - {fileID: 114672245945338662}
-  - {fileID: 114656757328433854}
---- !u!114 &114053151390110860
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00c34b5ccc366e4419ab2a274e9b8ea4, type: 3}
-  m_Name: '[MSS][Tween]'
-  m_EditorClassIdentifier: 
-  tweenValue: {x: 0, y: 0, z: 0}
-  rotationMode: 0
---- !u!114 &114076217431285274
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cefb2e2f445400149be92063c66596fc, type: 3}
-  m_Name: '[MSS][State]'
-  m_EditorClassIdentifier: 
-  items: []
-  stateName: opened
---- !u!114 &114168072529945072
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cefb2e2f445400149be92063c66596fc, type: 3}
-  m_Name: '[MSS][State]'
-  m_EditorClassIdentifier: 
-  items: []
-  stateName: closed
---- !u!114 &114286983724671728
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cefb2e2f445400149be92063c66596fc, type: 3}
-  m_Name: '[MSS][State]'
-  m_EditorClassIdentifier: 
-  items:
-  - {fileID: 114489762301999656}
-  - {fileID: 114053151390110860}
-  stateName: closed
---- !u!114 &114356544884711768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cefb2e2f445400149be92063c66596fc, type: 3}
-  m_Name: '[MSS][State]'
-  m_EditorClassIdentifier: 
-  items: []
-  stateName: closed
---- !u!114 &114370646937598292
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cefb2e2f445400149be92063c66596fc, type: 3}
-  m_Name: '[MSS][State]'
-  m_EditorClassIdentifier: 
-  items: []
-  stateName: opened
---- !u!114 &114489762301999656
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37cbcf827c655504194c56c1e166bd40, type: 3}
-  m_Name: '[MSS][Tween]'
-  m_EditorClassIdentifier: 
-  tweenValue: {x: 0, y: 0, z: 0}
---- !u!114 &114514603880831174
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cefb2e2f445400149be92063c66596fc, type: 3}
-  m_Name: '[MSS][State]'
-  m_EditorClassIdentifier: 
-  items:
-  - {fileID: 114661356954319124}
-  stateName: opened
---- !u!114 &114575766285080414
+  - {fileID: 114006809126952556}
+--- !u!114 &114006809126952556
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -143,10 +27,9 @@ MonoBehaviour:
   m_Name: '[MSS][Group]'
   m_EditorClassIdentifier: 
   items:
-  - {fileID: 114356544884711768}
-  - {fileID: 114370646937598292}
-  objectID: -5100
---- !u!114 &114656757328433854
+  - {fileID: 114454313500435644}
+  objectID: 10988
+--- !u!114 &114213045831384228
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -155,14 +38,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3468f633fa3ebb34b8690c6a2b7971ad, type: 3}
-  m_Name: '[MSS][Group]'
+  m_Script: {fileID: 11500000, guid: cefb2e2f445400149be92063c66596fc, type: 3}
+  m_Name: '[MSS][State]'
   m_EditorClassIdentifier: 
-  items:
-  - {fileID: 114286983724671728}
-  - {fileID: 114514603880831174}
-  objectID: -1820
---- !u!114 &114661356954319124
+  items: []
+  stateName: 
+--- !u!114 &114454313500435644
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -171,37 +52,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37cbcf827c655504194c56c1e166bd40, type: 3}
-  m_Name: '[MSS][Tween]'
+  m_Script: {fileID: 11500000, guid: cefb2e2f445400149be92063c66596fc, type: 3}
+  m_Name: '[MSS][State]'
   m_EditorClassIdentifier: 
-  tweenValue: {x: 0, y: 0, z: 0}
---- !u!114 &114672245945338662
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3468f633fa3ebb34b8690c6a2b7971ad, type: 3}
-  m_Name: '[MSS][Group]'
-  m_EditorClassIdentifier: 
-  items:
-  - {fileID: 114168072529945072}
-  - {fileID: 114076217431285274}
-  objectID: -11302
---- !u!114 &114747401810000482
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00c34b5ccc366e4419ab2a274e9b8ea4, type: 3}
-  m_Name: '[MSS][Tween]'
-  m_EditorClassIdentifier: 
-  tweenValue: {x: 0, y: 0, z: 0}
-  rotationMode: 0
+  items: []
+  stateName: 

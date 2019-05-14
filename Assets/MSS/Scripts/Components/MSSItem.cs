@@ -15,7 +15,12 @@ namespace Obel.MSS
 
         private void Awake()
         {
+            dataBaseID = gameObject.GetInstanceID();
+        }
 
+        private void Reset()
+        {
+            dataBaseID = gameObject.GetInstanceID();
         }
     }
 }
