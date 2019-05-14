@@ -11,6 +11,23 @@ namespace Obel.MSS.Editor
 {
     public static class MSSEditorUtils
     {
+        public static Vector3 GetInspectorRotation(this Transform transform)
+        {
+            Vector3 result = Vector3.zero;
+            MethodInfo mth = typeof(Transform).GetMethod("GetLocalEulerAngles", BindingFlags.Instance | BindingFlags.NonPublic);
+            PropertyInfo pi = typeof(Transform).GetProperty("rotationOrder", BindingFlags.Instance | BindingFlags.NonPublic);
+            object rotationOrder = null;
+            if (pi != null)
+            {
+                rotationOrder = pi.GetValue(transform, null);
+            }
+            if (mth != null)
+            {
+                object retVector3 = mth.Invoke(transform, new object[] { rotationOrder });
+                result = (Vector3)retVector3;
+            }
+            return result;
+        }
 
         public static void DrawMessageBox(string message, MessageType type = MessageType.Info)
         {
@@ -102,7 +119,7 @@ namespace Obel.MSS.Editor
             else if (propertyType == typeof(Vector3)) enteredValue = EditorGUILayout.Vector3Field(string.Empty, (Vector3)(object)displayedValue);
             else if (propertyType == typeof(Vector4)) enteredValue = EditorGUILayout.Vector4Field(string.Empty, (Vector4)(object)displayedValue);
             else if (propertyType == typeof(AnimationCurve)) enteredValue = EditorGUILayout.CurveField((AnimationCurve)(object)displayedValue);
-            //else if (propertyType == typeof(Transform)) enteredValue = EditorGUILayout.ObjectField(string.Empty, (Transform)(object)propertyValue, typeof(Transform));
+            else if (propertyType == typeof(MSSRotationMode)) enteredValue = EditorGUILayout.EnumPopup((MSSRotationMode)(object)displayedValue);
 
             if (EditorGUI.EndChangeCheck() || enteredValue != (object)displayedValue)
             {

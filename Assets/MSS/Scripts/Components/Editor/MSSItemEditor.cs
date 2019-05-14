@@ -14,7 +14,7 @@ namespace Obel.MSS.Editor
     [CustomEditor(typeof(MSSItem))]
     public class MSSItemEditor : UnityEditor.Editor
     {
-        private MSSItem item;
+        public static MSSItem item;
 
         private void OnEnable()
         {

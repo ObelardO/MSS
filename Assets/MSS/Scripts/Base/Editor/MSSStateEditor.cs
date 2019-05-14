@@ -19,6 +19,8 @@ namespace Obel.MSS.Editor
         {
             currentState = state;
 
+            EditorGUILayout.BeginVertical(GUI.skin.box);
+
             EditorGUILayout.BeginHorizontal();
                 MSSEditorUtils.DrawGenericProperty(ref state.stateName, "name", state);
                 if (GUILayout.Button("x")) MSSStateGroupEditor.RemoveState(stateGroup, state);
@@ -33,6 +35,11 @@ namespace Obel.MSS.Editor
                 if (GUILayout.Button("Add rotation")) AddTween<MSSTweenRotation>(state);
             EditorGUILayout.EndHorizontal();
 
+            EditorGUILayout.EndVertical();
+
+            GUILayout.Space(3);
+
+            /*
             GUILayout.BeginHorizontal();
             //GUILayout.FlexibleSpace();
             EditorGUI.BeginDisabledGroup(!_activeParent);
@@ -62,18 +69,20 @@ namespace Obel.MSS.Editor
             ListGUI();
 
             EditorGUILayout.Space();
+            */
         }
 
         #endregion
 
 
         #region ListMenu
-
+        /*
         private static string _searchString = string.Empty;
         private static bool _activeParent = true;
         private static Vector2 _scrollPosition;
         private static Styles _styles;
-
+        */
+        /*
         static void ListGUI()
         {
             if (_styles == null)
@@ -116,6 +125,7 @@ namespace Obel.MSS.Editor
             GUILayout.EndScrollView();
             GUILayout.EndArea();
         }
+        */
 
 
         #endregion

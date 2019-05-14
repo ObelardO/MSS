@@ -10,7 +10,10 @@ namespace Obel.MSS.Editor
 
         public static void OnGUI(MSSTweenPosition tween)
         {
-            MSSTweenEditor.DrawHeader(tween);
+            MSSTweenEditor.DrawHeader(tween,
+                () => tween.tweenValue = MSSItemEditor.item.gameObject.transform.localPosition); 
+
+            MSSEditorUtils.DrawGenericProperty(ref tween.tweenValue, tween);
         }
 
         #endregion

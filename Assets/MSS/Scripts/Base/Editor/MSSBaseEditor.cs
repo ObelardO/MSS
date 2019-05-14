@@ -42,6 +42,9 @@ namespace Obel.MSS.Editor
 
             MSSStateGroupEditor.AddState(newStateGroup);
             MSSStateGroupEditor.AddState(newStateGroup);
+
+            instance.Last[0].stateName = "closed";
+            instance.Last[1].stateName = "opened";
         }
 
         private static void StateGroupsInstanced(MSSStateGroup stateGroup)
