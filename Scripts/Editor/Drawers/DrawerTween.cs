@@ -8,6 +8,7 @@ using UnityEditorInternal;
 
 namespace Obel.MSS.Editor
 {
+    /*
     [CustomPropertyDrawer(typeof(Tween))]
     public class DrawerTween : PropertyDrawer
     {
@@ -94,7 +95,7 @@ namespace Obel.MSS.Editor
             //EditorGUI.indentLevel = indent;
 
             //EditorGUI.EndProperty();
-        }
+        //}
 
         /*
         private void DrawHeader(Rect rect)
@@ -115,5 +116,5 @@ namespace Obel.MSS.Editor
         }
         */
 
-    }
+    //}
 }

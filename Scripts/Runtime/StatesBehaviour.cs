@@ -8,5 +8,15 @@ namespace Obel.MSS
     public class StatesBehaviour : MonoBehaviour
     {
         public StatesGroup statesGroup;
+
+        private void OnEnable()
+        {
+
+        }
+
+        private void OnDisable()
+        {
+
+        }
     }
 }

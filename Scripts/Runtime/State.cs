@@ -8,7 +8,7 @@ namespace Obel.MSS
     [Serializable]
     public class State
     {
-        public string name;
+        public string name = "new state";
         public float delay;
         public float duration;
 
