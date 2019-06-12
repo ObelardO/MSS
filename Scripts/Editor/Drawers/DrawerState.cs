@@ -2,80 +2,117 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.AnimatedValues;
 
 namespace Obel.MSS.Editor
 {
 
-    /*[CustomPropertyDrawer(typeof(State))]
+    [CustomPropertyDrawer(typeof(State))]
     public class DrawerState : PropertyDrawer
     {
         private static GUIContent contentLabel = new GUIContent("Name"),
-            delayLabel = new GUIContent("Delay"),
-            durationLabel = new GUIContent("Duration"),
-            testLabel = new GUIContent("Test");
+                                  delayLabel = new GUIContent("Delay"),
+                                  durationLabel = new GUIContent("Duration"),
+                                  testLabel = new GUIContent("Test");
 
-        public static State drawingState;
+        public static StateEditorValues editorValues;
+
+        private SerializedProperty property;
+        private GUIContent label;
+        private Rect rect;
 
         public override void OnGUI(Rect rect, SerializedProperty property, GUIContent label)
         {
-            //StateEditorValues editorValues = GetStateEditorValues();
+            this.rect = rect;
+            this.label = label;
+            this.property = property;
 
-      
+            DrawHeader();
+            DrawProperties();
+        }
+
+        private void DrawHeader()
+        {
+            Rect rectBackground = new Rect(rect.x, rect.y, rect.width, rect.height - 6);
+            EditorGUI.DrawRect(rectBackground, Color.white * 0.4f);
+
+            Rect rectFoldOutBack = new Rect(rect.x, rect.y, rect.width, 20);
+            GUI.Box(rectFoldOutBack, GUIContent.none, GUI.skin.box);
+
+            Rect rectStateTabColor = new Rect(rect.x, rect.y, 2, 20);
+            Color tabColor = Color.gray;
+            if (editorValues.state.isOpenedState) tabColor = HelperEditor.Colors.greenColor;
+            if (editorValues.state.isClosedState) tabColor = HelperEditor.Colors.redColor;
+            EditorGUI.DrawRect(rectStateTabColor, tabColor);
+
+            Rect rectToggle = new Rect(rect.x + 5, rect.y, 20, 20);
+
+            if (editorValues.state.isDefaultState)
+            {
+                EditorGUI.BeginDisabledGroup(true);
+                EditorGUI.Toggle(rectToggle, GUIContent.none, true);
+                EditorGUI.EndDisabledGroup();
+            }
+            else
+            {
+                EditorGUI.PropertyField(rectToggle, property.FindPropertyRelative("_enabled"), GUIContent.none);
+            }
+
+            Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, 20);
+            editorValues.foldout.target = EditorGUI.Foldout(rectFoldout, editorValues.foldout.target,
+                new GUIContent(editorValues.state.name), true, HelperEditor.Styles.Foldout/*, GUI.skin.label*/);
+        }
+
+        private void DrawProperties()
+        {
+            if (editorValues.foldout.faded == 0) return;
+
+            HelperEditor.Colors.PushGUIColor();
+
+            GUI.color *= editorValues.foldout.faded;
+
+            //EditorGUI.BeginProperty(rect, label, property);
+            EditorGUI.BeginDisabledGroup(editorValues.foldout.faded < 0.2f || !editorValues.state.enabled);
+
+            Rect layOut = rect;
+
+            //Rect rectName = new Rect(rect.x + 4, rect.y + 26, rect.width - 8, 16);
+
+            layOut = new Rect(layOut.x + 4, layOut.y + 20, layOut.width - 126, 16);
+            EditorGUI.LabelField(layOut, "Name", HelperEditor.Styles.greyMiniLabel);
+
+            layOut.x += rect.width - 126;
+            EditorGUI.LabelField(layOut, "Delay", HelperEditor.Styles.greyMiniLabel);
+
+            layOut.x += 126 / 2 - 2;
+            EditorGUI.LabelField(layOut, "Duration", HelperEditor.Styles.greyMiniLabel);
+
+            layOut = new Rect(rect.x + 4, layOut.y + 18, rect.width - 126 - 2, 16);
+            EditorGUI.BeginDisabledGroup(editorValues.state.isDefaultState);
+            EditorGUI.PropertyField(layOut, property.FindPropertyRelative("_name"), GUIContent.none);
+            EditorGUI.EndDisabledGroup();
+
+            layOut.width = 126 / 2 - 6;
+            layOut.x += rect.width - 126 + 2;
+            EditorGUI.PropertyField(layOut, property.FindPropertyRelative("delay"), GUIContent.none);
+
+            layOut.x += 126 / 2 - 4;
+            EditorGUI.PropertyField(layOut, property.FindPropertyRelative("duration"), GUIContent.none);
+
+            EditorGUI.EndDisabledGroup();
+
+            //EditorGUI.EndProperty();
+
+            HelperEditor.Colors.PullGUIColor();
 
 
+       
 
-            EditorGUI.DrawRect(rect, Color.white * 0.4f);// BeginVertical(GUI.skin.box);
-
-
-            Rect foldOutRect = new Rect(rect.x, rect.y, rect.width, 20);
-
-
-
-
-            GUI.Box(foldOutRect, GUIContent.none, GUI.skin.box);
-
-            rect.height = 20;
-
-            rect.x += 15;
-            rect.y += 2;
-            rect.width -= 40;
-  
-
-            //editorValues.foldOut.target = EditorGUI.Foldout(rect, editorValues.foldOut.target,
-                //new GUIContent(drawingState.name), true, GUI.skin.label);
-
-
-
-            EditorGUI.BeginProperty(rect, label, property);
-
-            SerializedProperty tweensProperty = property.FindPropertyRelative("tweens");
-            
-
-            Rect nameRect = new Rect(rect.x + 4, rect.y + 60, rect.width - 8, 16);
-            //Rect delayRect = new Rect(rect.x + 4, rect.y + 22, rect.width - 8, 16);
-            Rect durationRect = new Rect(rect.x + 4, rect.y + 40, rect.width - 8, 16);
-            //Rect addButtonRect = new Rect(rect.x + 4, rect.y + 78 + 80 * tweensProperty.arraySize, rect.width - 8, 20);
-
-
-            //EditorGUI.LabelField(durationRect, "> " + editorValues.foldOut.faded);
-
-            
-            //EditorGUI.DrawRect(new Rect(rect.x + 2, rect.y + 2, rect.width - 2, rect.height - 6), Color.white * 0.4f);
-            EditorGUI.PropertyField(nameRect, property.FindPropertyRelative("name"), contentLabel);
+            // EditorGUILayout.EndFadeGroup();
             /*
             EditorGUI.PropertyField(delayRect, property.FindPropertyRelative("delay"), delayLabel);
             EditorGUI.PropertyField(durationRect, property.FindPropertyRelative("duration"), durationLabel);
             */
-            //State stateKey = drawingState;
 
-            // TODO
-
-
-            //   editorValues.editing = EditorGUI.Toggle(addButtonRect, testLabel, editorValues.editing);
-
-
-            // Debug.Log(statesDictionary.Count);
 
             /*
             for (int i = 0; i < tweensProperty.arraySize; i++)
@@ -94,49 +131,6 @@ namespace Obel.MSS.Editor
                 drawingState.tweens.Add(new Tween());
             }
             */
-
-    /*
-            EditorGUI.EndProperty();
         }
-        */
-
-        /*
-        private Dictionary<string, StateEditorValues> statesDictionary = new Dictionary<string, StateEditorValues>();
-
-        private class StateEditorValues
-        {
-            public bool editing;
-            public AnimBool foldOut;
-
-            public StateEditorValues()
-            {
-
-                foldOut = new AnimBool(false);
-                
-
-
-                foldOut.valueChanged.AddListener(() => StatesBehaviourEditor.instance.Repaint());
-            }
-
-            //public bool 
-        }
-
-        private StateEditorValues GetStateEditorValues()
-        {
-            StateEditorValues editorValues;
-
-            if (statesDictionary.ContainsKey(drawingState.name))
-            {
-                editorValues = statesDictionary[drawingState.name];
-            }
-            else
-            {
-                editorValues = new StateEditorValues();
-                statesDictionary.Add(drawingState.name, editorValues);
-            }
-
-            return editorValues; 
-        }
-        */
-    //}
+    }
 }
