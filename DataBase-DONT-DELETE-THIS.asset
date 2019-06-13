@@ -74,7 +74,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _parent: {fileID: 114841770815447722}
   _id: 6
-  items: []
+  items:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   title: 
   delay: 0
   duration: 1
@@ -208,8 +228,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f62a99f092504746b006ee7abe2c0db, type: 3}
   m_Name: Obel.MSS.State
   m_EditorClassIdentifier: 
-  _parent: {fileID: 0}
-  _id: 0
+  _parent: {fileID: 114870773210505938}
+  _id: 4
   items: []
   title: 
   delay: 0
@@ -376,6 +396,7 @@ MonoBehaviour:
   - {fileID: 114228218352397218}
   - {fileID: 114222143634277452}
   - {fileID: 114265780414556410}
+  - {fileID: 114382720335206074}
   objectID: 0
 --- !u!114 &114920204507979202
 MonoBehaviour:
