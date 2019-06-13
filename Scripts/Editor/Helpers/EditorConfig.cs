@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Obel.MSS.Editor
 {
-    internal static class HelperEditor
+    internal static class EditorConfig
     {
         public static class Content
         {

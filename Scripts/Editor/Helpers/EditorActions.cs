@@ -8,11 +8,11 @@ namespace Obel.MSS.Editor
 {
     using Object = UnityEngine.Object;
 
-    public static class UserActions
+    public static class EditorActions
     {
-        private static List<UserAction> actions = new List<UserAction>();
+        private static List<EditorAction> actions = new List<EditorAction>();
 
-        private class UserAction
+        private class EditorAction
         {
             public Action action;
             public Object recordeble;
@@ -21,7 +21,7 @@ namespace Obel.MSS.Editor
 
         public static void Add(Action action, Object recordable = null, string reason = null)
         {
-            actions.Add(new UserAction()
+            actions.Add(new EditorAction()
             {
                 action = action,
                 recordeble = recordable,

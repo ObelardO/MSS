@@ -16,6 +16,8 @@ namespace Obel.MSS
     public class StatesBehaviour : MonoBehaviour
     {
 
+        public StatesGroup statesGroup;
+
 
         /*
         [SerializeField]

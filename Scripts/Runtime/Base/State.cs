@@ -10,15 +10,17 @@ namespace Obel.MSS
     [Serializable]
     public class State : DBCollection<Tween>
     {
+        public string title;
 
         /*
         [SerializeField]
-        private StatesBehaviour behaviour;
+        private StatesBehaviour behaviour;  // TO DO STATE GROUP ???
+        */
 
         public float delay;
         public float duration = 1;
 
-        public List<Tween> tweens = new List<Tween>();
+        //public List<Tween> tweens = new List<Tween>();
 
         [SerializeField, HideInInspector]
         private string _name;
@@ -41,21 +43,8 @@ namespace Obel.MSS
             get { return isDefaultState || _enabled; }
         }
 
-        
-        [SerializeField, HideInInspector]
-        private int _id;
-        public int id
-        {
-            private set { _id = value; }
-            get { return _id; }
-        }
-
-
-        [NonSerialized]
-        private static int idCounter;
-
-        public bool isClosedState { get { return this == behaviour.closedState; } }
-        public bool isOpenedState { get { return this == behaviour.openedState; } }
+        public bool isClosedState { get { return this == ((StatesGroup)parent).closedState; } }
+        public bool isOpenedState { get { return this == ((StatesGroup)parent).openedState; } }
         public bool isDefaultState { get { return isClosedState || isOpenedState; } }
 
         /*
