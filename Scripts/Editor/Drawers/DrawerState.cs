@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Obel.MSS.Editor
-{
+//namespace Obel.MSS.Editor
+//{
+    /*
 
     [CustomPropertyDrawer(typeof(State))]
     public class DrawerState : PropertyDrawer
@@ -31,7 +33,7 @@ namespace Obel.MSS.Editor
         }
 
         private void DrawHeader()
-        {
+        { 
             Rect rectBackground = new Rect(rect.x, rect.y, rect.width, rect.height - 6);
             EditorGUI.DrawRect(rectBackground, Color.white * 0.4f);
 
@@ -59,7 +61,51 @@ namespace Obel.MSS.Editor
 
             Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, 20);
             editorValues.foldout.target = EditorGUI.Foldout(rectFoldout, editorValues.foldout.target,
-                new GUIContent(editorValues.state.name), true, HelperEditor.Styles.Foldout/*, GUI.skin.label*/);
+                new GUIContent(editorValues.state.stateName + " | " + editorValues.state.id), true, HelperEditor.Styles.Foldout/*, GUI.skin.label*///);
+        
+
+/*
+
+
+
+}
+
+
+
+
+
+
+        private Rect LayOutRect;
+        private float LayOutOffset = 4;
+
+
+        private void LayOutControl(float width, Action control)
+        {
+            LayOutControl(new Vector2(width, 16), control);
+        }
+
+        private void LayOutControl(float width, float height, Action control)
+        {
+            LayOutControl(new Vector2(width, height), control);
+        }
+
+        private void LayOutControl(Vector2 size, Action control )
+        {
+            LayOutRect.width = size.x;
+            LayOutRect.height = size.y;
+            control();
+            LayOutRect.x += LayOutOffset + LayOutRect.width;
+        }
+
+        private void LayOutSpace()
+        {
+            LayOutSpace(LayOutOffset);
+        }
+
+        private void LayOutSpace(float height)
+        {
+            LayOutRect.x = rect.x + LayOutOffset;
+            LayOutRect.y += height + LayOutRect.height;
         }
 
         private void DrawProperties()
@@ -73,11 +119,57 @@ namespace Obel.MSS.Editor
             //EditorGUI.BeginProperty(rect, label, property);
             EditorGUI.BeginDisabledGroup(editorValues.foldout.faded < 0.2f || !editorValues.state.enabled);
 
-            Rect layOut = rect;
+            LayOutRect = new Rect(rect.x + LayOutOffset, rect.y + 20, rect.width - LayOutOffset * 2, 300);
+
+            float timeFieldWidth = 54;
+            float nameFieldWidth = rect.width - timeFieldWidth * 2 - LayOutOffset * 4;
+            
+
+            LayOutControl(nameFieldWidth, () =>
+            {
+                EditorGUI.LabelField(LayOutRect, "Name", HelperEditor.Styles.greyMiniLabel);
+            });
+
+            LayOutControl(timeFieldWidth, () =>
+            {
+                EditorGUI.LabelField(LayOutRect, "Delay", HelperEditor.Styles.greyMiniLabel);
+            });
+
+            LayOutControl(timeFieldWidth, () =>
+            {
+                EditorGUI.LabelField(LayOutRect, "Duration", HelperEditor.Styles.greyMiniLabel);
+            });
+
+            LayOutSpace();
+
+            LayOutControl(nameFieldWidth, () =>
+            {
+                EditorGUI.BeginDisabledGroup(editorValues.state.isDefaultState);
+                EditorGUI.PropertyField(LayOutRect, property.FindPropertyRelative("_name"), GUIContent.none);
+                EditorGUI.EndDisabledGroup();
+            });
+
+            LayOutControl(timeFieldWidth, () =>
+            {
+                EditorGUI.PropertyField(LayOutRect, property.FindPropertyRelative("delay"), GUIContent.none);
+            });
+
+            LayOutControl(timeFieldWidth, () =>
+            {
+                EditorGUI.PropertyField(LayOutRect, property.FindPropertyRelative("duration"), GUIContent.none);
+            });
+
+
+
+            /*
+
+            Rect rectNameTitle = new Rect(rect.x + 4, rect.y + 20, rect.width - 126, 16);
+            Rect rectDelayTitle = new Rect(rect.x + 4, rect.y + 20, rect.width - 126, 16);
 
             //Rect rectName = new Rect(rect.x + 4, rect.y + 26, rect.width - 8, 16);
 
-            layOut = new Rect(layOut.x + 4, layOut.y + 20, layOut.width - 126, 16);
+            
+            layOut = 
             EditorGUI.LabelField(layOut, "Name", HelperEditor.Styles.greyMiniLabel);
 
             layOut.x += rect.width - 126;
@@ -97,13 +189,17 @@ namespace Obel.MSS.Editor
 
             layOut.x += 126 / 2 - 4;
             EditorGUI.PropertyField(layOut, property.FindPropertyRelative("duration"), GUIContent.none);
+            */
 
+        /*
             EditorGUI.EndDisabledGroup();
+            */
+    //EditorGUI.EndProperty();
 
-            //EditorGUI.EndProperty();
 
-            HelperEditor.Colors.PullGUIColor();
-
+    /*
+        HelperEditor.Colors.PullGUIColor();
+        */
 
        
 
@@ -131,6 +227,11 @@ namespace Obel.MSS.Editor
                 drawingState.tweens.Add(new Tween());
             }
             */
+
+
+        /*
         }
     }
 }
+
+    */

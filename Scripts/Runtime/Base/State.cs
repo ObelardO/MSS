@@ -3,13 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Obel.MSS
 {
     [Serializable]
-    public class State
+    public class State : DBCollection<Tween>
     {
-        [SerializeField, HideInInspector]
+
+        /*
+        [SerializeField]
         private StatesBehaviour behaviour;
 
         public float delay;
@@ -19,7 +22,7 @@ namespace Obel.MSS
 
         [SerializeField, HideInInspector]
         private string _name;
-        public string name
+        public string stateName
         {
             private set { _name = value;}
             get
@@ -38,6 +41,7 @@ namespace Obel.MSS
             get { return isDefaultState || _enabled; }
         }
 
+        
         [SerializeField, HideInInspector]
         private int _id;
         public int id
@@ -46,14 +50,16 @@ namespace Obel.MSS
             get { return _id; }
         }
 
+
         [NonSerialized]
-        private static int idcounter;
+        private static int idCounter;
 
         public bool isClosedState { get { return this == behaviour.closedState; } }
         public bool isOpenedState { get { return this == behaviour.openedState; } }
         public bool isDefaultState { get { return isClosedState || isOpenedState; } }
 
-        public State(StatesBehaviour behaviour, string name)
+        /*
+        public State(StatesBehaviour behaviour, string name, int id)
         {
             if (behaviour == null)
             {
@@ -61,13 +67,12 @@ namespace Obel.MSS
                 return;
             }
 
-            idcounter++;
+            idCounter++;
 
             this.behaviour = behaviour;
-            this.name = name;
-            this.id = idcounter;
-
- 
+            this.stateName = name;
+            this.id = id;
         }
+        */
     }
 }

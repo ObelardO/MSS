@@ -7,7 +7,7 @@ namespace Obel.MSS
 {
     public enum DefaultState { closed, opened }
 
-    [DisallowMultipleComponent, AddComponentMenu("MSS/Behaviour")]
+    [DisallowMultipleComponent, AddComponentMenu("MSS/States")]
     #if UNITY_2018_3_OR_NEWER
         [ExecuteAlways]
     #else
@@ -15,15 +15,20 @@ namespace Obel.MSS
     #endif
     public class StatesBehaviour : MonoBehaviour
     {
+
+
+        /*
         [SerializeField]
         public List<State> states = new List<State>();
 
-        public State closedState { get { return Get(0); } }
-        public State openedState { get { return Get(1); } }
+        public State closedState { get { return Get((int)DefaultState.closed); } }
+        public State openedState { get { return Get((int)DefaultState.opened); } }
+
+        [SerializeField] private int idCounter;
 
         public State Add(string name)
         {
-            states.Add(new State(this, name));
+            states.Add(new State(this, name, ++idCounter));
 
             return states[states.Count - 1];
         }
@@ -63,5 +68,6 @@ namespace Obel.MSS
         {
 
         }
+        */
     }
 }
