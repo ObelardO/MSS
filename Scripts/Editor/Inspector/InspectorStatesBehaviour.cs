@@ -20,7 +20,7 @@ namespace Obel.MSS.Editor
         private SerializedObject serializedStatesGroup;
         private SerializedProperty statesProperty;
         private ReorderableList statesReorderableList;
-        private Dictionary<string, ReorderableList> tweensListDictionary = new Dictionary<string, ReorderableList>();
+        //private Dictionary<string, ReorderableList> tweensListDictionary = new Dictionary<string, ReorderableList>();
 
         #endregion
 
@@ -32,6 +32,7 @@ namespace Obel.MSS.Editor
 
             statesBehaviour = (StatesBehaviour)target;
 
+            StateEditorValues.Clear();
             StateEditorValues.updatingAction = Repaint;
 
             if (statesBehaviour.statesGroup == null) statesBehaviour.statesGroup = Add();
@@ -80,11 +81,21 @@ namespace Obel.MSS.Editor
                 EditorActions.Add(() =>
                 {
                     State state = EditorDataBase.SaveAsset<State>();
+
+
                     statesBehaviour.statesGroup.Add(state);
-                    StateEditorValues.Reorder(statesBehaviour.statesGroup.items);
+
+
+                    StateEditorValues.Clear();
+                    //StateEditorValues.Reorder(statesBehaviour.statesGroup.items);
                     StateEditorValues.Get(state).foldout.target = true;
+
+
+
+                    AssetDatabase.ImportAsset(EditorDataBase.AssetPath);
+                    //AssetDatabase.Refresh();
                 },
-                statesBehaviour, "[MSS] Add State");
+                statesBehaviour.statesGroup, "[MSS] Add State");
             }
 
             EditorGUI.EndDisabledGroup();
@@ -92,7 +103,11 @@ namespace Obel.MSS.Editor
             Event guiEvent = Event.current;
             if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed")
             {
+                //StateEditorValues.Clear();
                 StateEditorValues.Reorder(statesBehaviour.statesGroup.items);
+
+
+                AssetDatabase.ImportAsset(EditorDataBase.AssetPath);
             }
 
             EditorActions.Process();
@@ -120,26 +135,27 @@ namespace Obel.MSS.Editor
 
             DrawerState.editorValues = StateEditorValues.Get(statesBehaviour.statesGroup.items[index]);
 
-            SerializedProperty stateProperty = statesProperty.GetArrayElementAtIndex(index);// statesReorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            SerializedProperty stateProperty = statesProperty.GetArrayElementAtIndex(index);
 
             EditorGUI.PropertyField(rect, stateProperty, true);
 
-            if (index > 1)
+            //if (index > 1)
             {
-                if (GUI.Button(new Rect(rect.width + 5, rect.y + 1, 30, 20), EditorConfig.Content.iconToolbarMinus,
-                    EditorConfig.Styles.preButton))
+                if (GUI.Button(new Rect(rect.width + 5, rect.y + 1, 30, 20), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
                 {
                     Debug.Log("REMOVE STATE HERE!");
 
-                    /* TODO
-                    EditorActions.Add(() => statesBehaviour.states.RemoveAt(index), statesBehaviour,
-                        "[MSS] Remove State");
-                    StateEditorValues.Reorder(statesBehaviour.states);
-                    */
+                    EditorActions.Add(() =>
+                    {
+                        State removingState = statesBehaviour.statesGroup[index];
+                        statesBehaviour.statesGroup.Remove(removingState, false);
+                        EditorDataBase.RemoveAsset(removingState);
+
+                        StateEditorValues.Reorder(statesBehaviour.statesGroup.items);
+                    },
+                    statesBehaviour.statesGroup, "[MSS] Remove state");
                 }
             }
-
-            //rect.x += 150;
         }
 
         private float GetStateHeight(int index)
@@ -283,7 +299,7 @@ namespace Obel.MSS.Editor
 
 //[CustomEditor(typeof(StatesBehaviour))]
 
-
+     
 
 public class InspectorStatesBehaviour : UnityEditor.Editor
 {

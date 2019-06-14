@@ -14,7 +14,7 @@ namespace Obel.MSS
 
         /*
         [SerializeField]
-        private StatesBehaviour behaviour;  // TO DO STATE GROUP ???
+        private StatesBehaviour behaviour;  // TODO STATE GROUP ???
         */
 
         public float delay;
@@ -43,8 +43,8 @@ namespace Obel.MSS
             get { return isDefaultState || _enabled; }
         }
 
-        public bool isClosedState { get { return this == ((StatesGroup)parent).closedState; } }
-        public bool isOpenedState { get { return this == ((StatesGroup)parent).openedState; } }
+        public bool isClosedState { get { return false /* this == ((StatesGroup)parent).closedState*/; } }
+        public bool isOpenedState { get { return false /* this == ((StatesGroup)parent).openedState*/; } }
         public bool isDefaultState { get { return isClosedState || isOpenedState; } }
 
         /*

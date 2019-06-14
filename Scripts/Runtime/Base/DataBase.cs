@@ -38,19 +38,27 @@ namespace Obel.MSS
 
         public T AddNew()
         {
-            items.Add(CreateInstance<T>());
-            Last.Init(this, items.Count);
+            Add(CreateInstance<T>());
             return Last;
         }
 
         public void Add(T item)
         {
             items.Add(item);
-            Last.Init(this, items.Count);
+            Last.Init(this);
         }
+
+        /*
+        public void Remove(int id, bool destroyItem = true)
+        {
+            if (!IdIsValid(id)) return;
+            Remove(items[id], destroyItem);
+        }
+        */
 
         public void Remove(T item, bool destroyItem = true)
         {
+            if (!Contains(item)) return;
             items.Remove(item);
             if (destroyItem) DestroyImmediate(item);
         }
@@ -65,9 +73,9 @@ namespace Obel.MSS
             return items.Contains(item);
         }
 
-        public T Get(int id)
+        public T Get(int index)
         {
-            if (id < 0 || id > Count - 1) return null;
+            if (!IdIsValid(id)) return null;
 
             return items[id];
         }
@@ -75,6 +83,11 @@ namespace Obel.MSS
         public virtual T Find(object id)
         {
             return null;
+        }
+
+        private bool IdIsValid(int index)
+        {
+            return items == null || index < 0 || index > Count - 1;
         }
 
     }
@@ -86,12 +99,14 @@ namespace Obel.MSS
 
     public class DBCollectionItem : ScriptableObject, IMSSCollectionItem
     {
+
         [SerializeField] private DBCollectionItem _parent;
         public DBCollectionItem parent
         {
             private set { _parent = value; }
             get { return _parent; }
         }
+
 
         [SerializeField] private int _id;
         public int id
@@ -100,12 +115,12 @@ namespace Obel.MSS
             get { return _id;  }
         }
 
-        public void Init(DBCollectionItem parent, int id)
+        public void Init(DBCollectionItem parent/*, int id*/)
         {
             Debug.Log("INITED: " + name);
 
-            this.parent = parent;
-            this.id = id;
+            this.parent = parent == null ? this : parent;
+            this.id = base.GetHashCode();
         }
     }
 

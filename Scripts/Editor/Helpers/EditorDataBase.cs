@@ -8,7 +8,10 @@ namespace Obel.MSS.Editor
 {
     public static class EditorDataBase
     {
-        private static string AssetPath = "Assets/MSS/DataBase-DONT-DELETE-THIS.asset";
+        public static string AssetPath
+        {
+            get { return "Assets/MSS/DataBase-DONT-DELETE-THIS.asset"; }
+        }
 
         public static DataBase instance
         {
@@ -26,6 +29,8 @@ namespace Obel.MSS.Editor
             DataBase dataBase = ScriptableObject.CreateInstance<DataBase>();
             AssetDatabase.CreateAsset(dataBase, AssetPath);
             AssetDatabase.SaveAssets();
+
+            EditorUtility.SetDirty(dataBase);
 
             return dataBase;
         }
@@ -49,8 +54,8 @@ namespace Obel.MSS.Editor
             Undo.RegisterCreatedObjectUndo(newAsset, "[MSS] saving asset");
 
             AssetDatabase.AddObjectToAsset(newAsset, instance);
-            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(newAsset));
             AssetDatabase.SaveAssets();
+            //AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(instance));
             AssetDatabase.Refresh();
 
             if (instancedCallback != null) instancedCallback(newAsset);

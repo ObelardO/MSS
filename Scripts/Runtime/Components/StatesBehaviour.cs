@@ -18,6 +18,9 @@ namespace Obel.MSS
 
         public StatesGroup statesGroup;
 
+        private void OnEnable() { }
+
+        private void OnDisable() { }
 
         /*
         [SerializeField]
