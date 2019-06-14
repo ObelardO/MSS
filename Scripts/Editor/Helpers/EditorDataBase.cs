@@ -27,6 +27,7 @@ namespace Obel.MSS.Editor
         private static DataBase CreateDataBaseAsset()
         {
             DataBase dataBase = ScriptableObject.CreateInstance<DataBase>();
+
             AssetDatabase.CreateAsset(dataBase, AssetPath);
             AssetDatabase.SaveAssets();
 
@@ -54,8 +55,10 @@ namespace Obel.MSS.Editor
             Undo.RegisterCreatedObjectUndo(newAsset, "[MSS] saving asset");
 
             AssetDatabase.AddObjectToAsset(newAsset, instance);
-            AssetDatabase.SaveAssets();
-            //AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(instance));
+
+            //AssetDatabase.SaveAssets();
+
+            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(instance));
             AssetDatabase.Refresh();
 
             if (instancedCallback != null) instancedCallback(newAsset);

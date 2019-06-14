@@ -20,7 +20,6 @@ namespace Obel.MSS.Editor
         private SerializedObject serializedStatesGroup;
         private SerializedProperty statesProperty;
         private ReorderableList statesReorderableList;
-        //private Dictionary<string, ReorderableList> tweensListDictionary = new Dictionary<string, ReorderableList>();
 
         #endregion
 
@@ -61,6 +60,13 @@ namespace Obel.MSS.Editor
             };
         }
 
+
+        private void OnDisable()
+        {
+            StateEditorValues.Clear();
+            StateEditorValues.updatingAction = null;
+        }
+
         #endregion
 
         #region Inspector
@@ -86,8 +92,8 @@ namespace Obel.MSS.Editor
                     statesBehaviour.statesGroup.Add(state);
 
 
-                    StateEditorValues.Clear();
-                    //StateEditorValues.Reorder(statesBehaviour.statesGroup.items);
+                    //StateEditorValues.Clear();
+                    StateEditorValues.Reorder(statesBehaviour.statesGroup.items);
                     StateEditorValues.Get(state).foldout.target = true;
 
 
@@ -133,87 +139,22 @@ namespace Obel.MSS.Editor
         {
             rect.width += 5;
 
-            DrawerState.editorValues = StateEditorValues.Get(statesBehaviour.statesGroup.items[index]);
+            DrawerState.editorValues = StateEditorValues.Get(statesBehaviour.statesGroup[index]);
 
-            SerializedProperty stateProperty = statesProperty.GetArrayElementAtIndex(index);
-
-            EditorGUI.PropertyField(rect, stateProperty, true);
-
-            //if (index > 1)
-            {
-                if (GUI.Button(new Rect(rect.width + 5, rect.y + 1, 30, 20), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
-                {
-                    Debug.Log("REMOVE STATE HERE!");
-
-                    EditorActions.Add(() =>
-                    {
-                        State removingState = statesBehaviour.statesGroup[index];
-                        statesBehaviour.statesGroup.Remove(removingState, false);
-                        EditorDataBase.RemoveAsset(removingState);
-
-                        StateEditorValues.Reorder(statesBehaviour.statesGroup.items);
-                    },
-                    statesBehaviour.statesGroup, "[MSS] Remove state");
-                }
-            }
+            EditorGUI.PropertyField(rect, statesProperty.GetArrayElementAtIndex(index), true);
         }
 
         private float GetStateHeight(int index)
         {
-            int tweensCount = statesBehaviour.statesGroup.items[index].items.Count;
+            int tweensCount = statesBehaviour.statesGroup[index].items.Count;
 
-            StateEditorValues editorValues = StateEditorValues.Get(statesBehaviour.statesGroup.items[index]);
+            StateEditorValues editorValues = StateEditorValues.Get(statesBehaviour.statesGroup[index]);
 
             return 26 + Mathf.Lerp(0, 70 + (tweensCount == 0 ? 0 : tweensCount - 1) * 21 + 40,
                        editorValues.foldout.faded);
         }
 
         #endregion
-
-        /*EditorGUI.LabelField(rect, DrawerState.editorValues.state.name + " | " + statesBehaviour.states[index].name);
-
-        SerializedProperty tweensProperty = stateProperty.FindPropertyRelative("tweens");
-
-        string tweenListKey = stateProperty.propertyPath;
-
-        ReorderableList tweensReorderableList;
-
-        if (tweensListDictionary.ContainsKey(tweenListKey))
-        {
-            tweensReorderableList = tweensListDictionary[tweenListKey];
-        }
-        else
-        {
-            tweensReorderableList = new ReorderableList(serializedObject, tweensProperty)
-            {
-                displayAdd = true,
-                displayRemove = true,
-                draggable = false,
-
-                drawHeaderCallback = innerRect =>
-                {
-                    EditorGUI.LabelField(innerRect, "Tweens");
-                },
-
-                drawElementCallback = (innerRect, innerIndex, innerA, innerH) =>
-                {
-                    // Get element of inner list
-                    SerializedProperty tweenProperty = tweensProperty.GetArrayElementAtIndex(innerIndex);
-
-                    //SerializedProperty tweenProperty = tweenProperty.FindPropertyRelative("name");
-
-                    EditorGUI.PropertyField(innerRect, tweenProperty);
-                }
-            };
-            tweensListDictionary[tweenListKey] = tweensReorderableList;
-        }
-
-        var height = (tweensProperty.arraySize + 3) * EditorGUIUtility.singleLineHeight;
-        tweensReorderableList.DoList(new Rect(rect.x, rect.y, rect.width, height));
-
-        }
-        */
-
 
         #region DataBase methods
 
@@ -222,7 +163,18 @@ namespace Obel.MSS.Editor
             StatesGroup newStatesGroup = EditorDataBase.SaveAsset<StatesGroup>();
             EditorDataBase.instance.Add(newStatesGroup);
 
+            AddState(newStatesGroup);
+            AddState(newStatesGroup);
+
             return newStatesGroup;
+        }
+
+        public State AddState(StatesGroup statesGroup)
+        {
+            State newState = EditorDataBase.SaveAsset<State>();
+            statesGroup.Add(newState);
+
+            return newState;
         }
 
         public void Remove(StatesGroup statesGroup)
@@ -243,6 +195,7 @@ namespace Obel.MSS.Editor
 
         public State state;
         public AnimBool foldout;
+        public SerializedObject serializedState;
         public ReorderableList tweensReorderableList;
 
         public static UnityAction updatingAction;
@@ -252,21 +205,19 @@ namespace Obel.MSS.Editor
             foldout = new AnimBool(false);
             this.state = state;
 
-            statesDictionary.Add(state.id, this);
+            statesDictionary.Add(state.ID, this);
 
             if (updatingAction != null) foldout.valueChanged.AddListener(updatingAction);
 
-            // TODO
-
-            //tweensReorderableList
+            serializedState = new SerializedObject(state);
         }
 
         public static StateEditorValues Get(State state)
         {
             StateEditorValues editorValues;
 
-            if (statesDictionary.ContainsKey(state.id))
-                editorValues = statesDictionary[state.id];
+            if (statesDictionary.ContainsKey(state.ID))
+                editorValues = statesDictionary[state.ID];
             else
                 editorValues = new StateEditorValues(state);
 
@@ -282,257 +233,10 @@ namespace Obel.MSS.Editor
         {
             foreach (KeyValuePair<int, StateEditorValues> entry in statesDictionary)
                 for (int i = 0; i < reorderedStates.Count; i++)
-                    if (entry.Key.Equals(reorderedStates[i].id))
+                    if (entry.Key.Equals(reorderedStates[i].ID))
                         statesDictionary[entry.Key].state = reorderedStates[i];
         }
     }
 
     #endregion
-
 }
-
-
-
-/*
-namespace Obel.MSS.Editor
-{
-
-//[CustomEditor(typeof(StatesBehaviour))]
-
-     
-
-public class InspectorStatesBehaviour : UnityEditor.Editor
-{
-#region Properties
-
-private StatesBehaviour statesBehaviour;
-private ReorderableList statesReorderableList;
-private Dictionary<string, ReorderableList> tweensListDictionary = new Dictionary<string, ReorderableList>();
-
-#endregion
-
-#region Unity methods
-
-private void OnEnable()
-{
-statesBehaviour = (StatesBehaviour)target;
-
-StateEditorValues.updatingAction = Repaint;
-
-SerializedProperty statesProperty = serializedObject.FindProperty("states");
-
-statesReorderableList = new ReorderableList(serializedObject, statesProperty)
-{
-    displayAdd = false,
-    displayRemove = false,
-    draggable = true,
-
-    headerHeight = 0,
-    footerHeight = 0,
-
-    showDefaultBackground = false,
-
-    drawElementBackgroundCallback = DrawStateBackground,
-    drawElementCallback = DrawState,
-    elementHeightCallback = GetStateHeight,
-    onReorderCallback = OnReordered
-};
-}
-
-private void OnDisable()
-{
-StateEditorValues.updatingAction = null;
-StateEditorValues.Clear();
-}
-
-#endregion
-
-#region Inspector
-
-public override void OnInspectorGUI()
-{
-serializedObject.Update();
-
-EditorGUI.BeginDisabledGroup(!statesBehaviour.enabled);
-GUILayout.Space(6);
-
-statesReorderableList.DoLayoutList();
-
-GUILayout.Space(3);
-
-if (GUILayout.Button("Add Stete"))
-{
-    UserActions.Add(() =>
-    {
-
-        State state = statesBehaviour.Add("new state");
-        StateEditorValues.Reorder(statesBehaviour.states);
-        StateEditorValues.Get(state).foldout.target = true;
-    },
-    statesBehaviour, "[MSS] Add State");
-}
-
-EditorGUI.EndDisabledGroup();
-
-Event guiEvent = Event.current;
-if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed")
-{
-    StateEditorValues.Reorder(statesBehaviour.states);
-}
-
-UserActions.Process();
-
-serializedObject.ApplyModifiedProperties();
-}
-
-#endregion
-
-#region callbacks
-
-private void OnReordered(ReorderableList list)
-{
-StateEditorValues.Reorder(statesBehaviour.states);
-}
-
-private void DrawStateBackground(Rect rect, int index, bool isActive, bool isFocused)
-{
-EditorGUI.DrawRect(rect, Color.clear);
-}
-
-private void DrawState(Rect rect, int index, bool isActive, bool isFocused)
-{
-rect.width += 5;
-
-DrawerState.editorValues = StateEditorValues.Get(statesBehaviour.states[index]);
-
-SerializedProperty stateProperty = statesReorderableList.serializedProperty.GetArrayElementAtIndex(index);
-
-EditorGUI.PropertyField(rect, stateProperty, true);
-
-if (index > 1)
-{
-    if (GUI.Button(new Rect(rect.width + 5, rect.y + 1, 30, 20), HelperEditor.Content.iconToolbarMinus, HelperEditor.Styles.preButton))
-    {
-        UserActions.Add(() => statesBehaviour.states.RemoveAt(index), statesBehaviour, "[MSS] Remove State");
-        StateEditorValues.Reorder(statesBehaviour.states);
-    }
-}
-
-rect.x += 150;
-
-//EditorGUI.LabelField(rect, DrawerState.editorValues.state.name + " | " + statesBehaviour.states[index].name);
-
-
-
-//SerializedProperty tweensProperty = stateProperty.FindPropertyRelative("tweens");
-
-/*
-
-string tweenListKey = stateProperty.propertyPath;
-
-ReorderableList tweensReorderableList;
-
-if (tweensListDictionary.ContainsKey(tweenListKey))
-{
-    tweensReorderableList = tweensListDictionary[tweenListKey];
-}
-else
-{
-    tweensReorderableList = new ReorderableList(serializedObject, tweensProperty)
-    {
-        displayAdd = true,
-        displayRemove = true,
-        draggable = false,
-
-        drawHeaderCallback = innerRect =>
-        {
-            EditorGUI.LabelField(innerRect, "Tweens");
-        },
-
-        drawElementCallback = (innerRect, innerIndex, innerA, innerH) =>
-        {
-            // Get element of inner list
-            SerializedProperty tweenProperty = tweensProperty.GetArrayElementAtIndex(innerIndex);
-
-            //SerializedProperty tweenProperty = tweenProperty.FindPropertyRelative("name");
-
-            EditorGUI.PropertyField(innerRect, tweenProperty);
-        }
-    };
-    tweensListDictionary[tweenListKey] = tweensReorderableList;
-}
-
-var height = (tweensProperty.arraySize + 3) * EditorGUIUtility.singleLineHeight;
-tweensReorderableList.DoList(new Rect(rect.x, rect.y, rect.width, height));
-
-}
-
-private float GetStateHeight(int index)
-{
-int tweensCount = statesBehaviour.states[index].tweens.Count;
-
-StateEditorValues editorValues = StateEditorValues.Get(statesBehaviour.states[index]);
-
-return 26 + Mathf.Lerp(0, 70 + (tweensCount == 0 ? 0 : tweensCount - 1) * 21 + 40,
-           editorValues.foldout.faded);
-}
-
-
-#endregion
-}
-
-#region supporting classes
-
-public class StateEditorValues
-{
-static private Dictionary<int, StateEditorValues> statesDictionary = new Dictionary<int, StateEditorValues>();
-
-public State state;
-public AnimBool foldout;
-public ReorderableList tweensReorderableList;
-
-public static UnityAction updatingAction;
-
-public StateEditorValues(State state)
-{
-foldout = new AnimBool(false);
-this.state = state;
-
-statesDictionary.Add(state.id, this);
-
-if (updatingAction != null) foldout.valueChanged.AddListener(updatingAction);
-
-//tweensReorderableList
-}
-
-public static StateEditorValues Get(State state)
-{
-StateEditorValues editorValues;
-
-if (statesDictionary.ContainsKey(state.id))
-    editorValues = statesDictionary[state.id];
-else
-    editorValues = new StateEditorValues(state);
-
-return editorValues;
-}
-
-public static void Clear()
-{
-statesDictionary.Clear();
-}
-
-public static void Reorder(List<State> reorderedStates)
-{
-foreach (KeyValuePair<int, StateEditorValues> entry in statesDictionary)
-    for (int i = 0; i < reorderedStates.Count; i++)
-        if (entry.Key.Equals(reorderedStates[i].id))
-            statesDictionary[entry.Key].state = reorderedStates[i];
-}
-}
-
-#endregion
-}
-
-*/
-      

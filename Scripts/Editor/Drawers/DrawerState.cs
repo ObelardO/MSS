@@ -9,10 +9,10 @@ namespace Obel.MSS.Editor
     [CustomPropertyDrawer(typeof(State))]
     public class DrawerState : PropertyDrawer
     {
-        private static GUIContent contentLabel = new GUIContent("Name"),
-            delayLabel = new GUIContent("Delay"),
-            durationLabel = new GUIContent("Duration"),
-            testLabel = new GUIContent("Test");
+        private static readonly GUIContent contentLabel = new GUIContent("Name"),
+                                           delayLabel = new GUIContent("Delay"),
+                                           durationLabel = new GUIContent("Duration"),
+                                           testLabel = new GUIContent("Test");
 
         public static StateEditorValues editorValues;
 
@@ -26,8 +26,12 @@ namespace Obel.MSS.Editor
             this.label = label;
             this.property = property;
 
+            editorValues.serializedState.Update();
+
             DrawHeader();
             DrawProperties();
+
+            editorValues.serializedState.ApplyModifiedProperties();
         }
 
         private void DrawHeader()
@@ -40,13 +44,13 @@ namespace Obel.MSS.Editor
 
             Rect rectStateTabColor = new Rect(rect.x, rect.y, 2, 20);
             Color tabColor = Color.gray;
-            if (editorValues.state.isOpenedState) tabColor = EditorConfig.Colors.greenColor;
-            if (editorValues.state.isClosedState) tabColor = EditorConfig.Colors.redColor;
+            if (editorValues.state.IsOpenedState) tabColor = EditorConfig.Colors.greenColor;
+            if (editorValues.state.IsClosedState) tabColor = EditorConfig.Colors.redColor;
             EditorGUI.DrawRect(rectStateTabColor, tabColor);
 
             Rect rectToggle = new Rect(rect.x + 5, rect.y, 20, 20);
 
-            if (editorValues.state.isDefaultState)
+            if (editorValues.state.IsDefaultState)
             {
                 EditorGUI.BeginDisabledGroup(true);
                 EditorGUI.Toggle(rectToggle, GUIContent.none, true);
@@ -54,17 +58,30 @@ namespace Obel.MSS.Editor
             }
             else
             {
-                
-
-                /* TODO
-                EditorGUI.PropertyField(rectToggle, property.FindPropertyRelative("_enabled"), GUIContent.none);
-                */
+                EditorGUI.PropertyField(rectToggle, editorValues.serializedState.FindProperty("s_Enabled"), GUIContent.none);
             }
 
             Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, 20);
             editorValues.foldout.target = EditorGUI.Foldout(rectFoldout, editorValues.foldout.target,
-                new GUIContent(editorValues.state.stateName + " | " + editorValues.state.id), true,
+                new GUIContent(editorValues.state.Name + " | " + editorValues.state.ID), true,
                 EditorConfig.Styles.Foldout /*, GUI.skin.label*/);
+
+            if (!editorValues.state.IsDefaultState)
+            {
+                if (GUI.Button(new Rect(rect.width + 5, rect.y + 1, 30, 20), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
+                {
+                    State removingState = editorValues.state;
+                    StatesGroup removingStateGroup = (StatesGroup)removingState.Parent;
+
+                    EditorActions.Add(() =>
+                    {
+                        removingStateGroup.Remove(removingState, false);
+                        StateEditorValues.Reorder(removingStateGroup.items);
+                        EditorDataBase.RemoveAsset(removingState);
+                    },
+                    removingStateGroup, "[MSS] Remove state");
+                }
+            }
 
         }
 
@@ -109,7 +126,7 @@ namespace Obel.MSS.Editor
             GUI.color *= editorValues.foldout.faded;
 
             //EditorGUI.BeginProperty(rect, label, property);
-            EditorGUI.BeginDisabledGroup(editorValues.foldout.faded < 0.2f || !editorValues.state.enabled);
+            EditorGUI.BeginDisabledGroup(editorValues.foldout.faded < 0.2f || !editorValues.state.Enabled);
 
             LayOutRect = new Rect(rect.x + LayOutOffset, rect.y + 20, rect.width - LayOutOffset * 2, 300);
 
@@ -117,7 +134,8 @@ namespace Obel.MSS.Editor
             float nameFieldWidth = rect.width - timeFieldWidth * 2 - LayOutOffset * 4;
             GUIStyle FieldStyle = EditorConfig.Styles.greyMiniLabel;
 
-            /* TODO
+
+
 
             LayOutControl(nameFieldWidth,
                 () => { EditorGUI.LabelField(LayOutRect, "Name", FieldStyle); });
@@ -132,23 +150,20 @@ namespace Obel.MSS.Editor
 
             LayOutControl(nameFieldWidth, () =>
             {
-                EditorGUI.BeginDisabledGroup(editorValues.state.isDefaultState);
-                EditorGUI.PropertyField(LayOutRect, property.FindPropertyRelative("_name"), GUIContent.none);
+                EditorGUI.BeginDisabledGroup(editorValues.state.IsDefaultState);
+                EditorGUI.PropertyField(LayOutRect, editorValues.serializedState.FindProperty("s_Name"), GUIContent.none);
                 EditorGUI.EndDisabledGroup();
             });
 
             LayOutControl(timeFieldWidth, () =>
             {
-                EditorGUI.PropertyField(LayOutRect, property.FindPropertyRelative("delay"), GUIContent.none);
+                EditorGUI.PropertyField(LayOutRect, editorValues.serializedState.FindProperty("s_Delay"), GUIContent.none);
             });
 
             LayOutControl(timeFieldWidth, () =>
             {
-                EditorGUI.PropertyField(LayOutRect, property.FindPropertyRelative("duration"), GUIContent.none);
+                EditorGUI.PropertyField(LayOutRect, editorValues.serializedState.FindProperty("s_Duration"), GUIContent.none);
             });
-
-
-            */
 
             EditorGUI.EndDisabledGroup();
 

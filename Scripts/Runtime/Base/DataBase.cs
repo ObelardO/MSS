@@ -7,8 +7,7 @@ using UnityEngine;
 namespace Obel.MSS
 {
     [Serializable]
-    public class DBCollection<T> : DBCollectionItem
-        where T : DBCollectionItem
+    public class DBCollection<T> : DBCollectionItem where T : DBCollectionItem
     {
         [SerializeField]
         public List<T> items;
@@ -48,13 +47,11 @@ namespace Obel.MSS
             Last.Init(this);
         }
 
-        /*
-        public void Remove(int id, bool destroyItem = true)
+        public void Remove(int index, bool destroyItem = true)
         {
-            if (!IdIsValid(id)) return;
-            Remove(items[id], destroyItem);
+            if (IndexInvalid(index)) return;
+            Remove(items[index], destroyItem);
         }
-        */
 
         public void Remove(T item, bool destroyItem = true)
         {
@@ -75,9 +72,9 @@ namespace Obel.MSS
 
         public T Get(int index)
         {
-            if (!IdIsValid(id)) return null;
+            if (IndexInvalid(index)) return null;
 
-            return items[id];
+            return items[index];
         }
 
         public virtual T Find(object id)
@@ -85,7 +82,7 @@ namespace Obel.MSS
             return null;
         }
 
-        private bool IdIsValid(int index)
+        private bool IndexInvalid(int index)
         {
             return items == null || index < 0 || index > Count - 1;
         }
@@ -94,41 +91,44 @@ namespace Obel.MSS
 
     public interface IMSSCollectionItem
     {
+        DBCollectionItem Parent { get; }
+        int ID { get; }
 
+        void Init(DBCollectionItem parent);
     }
 
     public class DBCollectionItem : ScriptableObject, IMSSCollectionItem
     {
-
-        [SerializeField] private DBCollectionItem m_parent;
-        public DBCollectionItem parent
+        [SerializeField, HideInInspector]
+        private DBCollectionItem s_Parent;
+        public DBCollectionItem Parent
         {
-            private set { m_parent = value; }
-            get { return m_parent; }
+            private set { s_Parent = value; }
+            get { return s_Parent; }
         }
 
-
-        [SerializeField] private int m_id;
-        public int id
+        [SerializeField, HideInInspector]
+        private int s_ID;
+        public int ID
         {
-            private set { m_id = value; }
-            get { return m_id;  }
+            private set { s_ID = value; }
+            get { return s_ID;  }
         }
 
-        public void Init(DBCollectionItem parent/*, int id*/)
+        public void Init(DBCollectionItem parent)
         {
-            Debug.Log("INITED: " + name);
-
-            this.parent = parent == null ? this : parent;
-            this.id = base.GetHashCode();
+            Parent = parent ?? (this);
+            ID = base.GetHashCode();
         }
     }
+
 
     [Serializable]
     public class DataBase : DBCollection<StatesGroup>
     {
         public static DataBase instance;
 
+        /*
         public override StatesGroup Find(object id)
         {
             foreach (StatesGroup item in items)
@@ -136,5 +136,6 @@ namespace Obel.MSS
 
             return null;
         }
+        */
     }
 }

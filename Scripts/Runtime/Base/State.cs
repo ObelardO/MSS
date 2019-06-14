@@ -10,72 +10,45 @@ namespace Obel.MSS
     [Serializable]
     public class State : DBCollection<Tween>
     {
-        public string title;
-
-        /*
-        [SerializeField]
-        private StatesBehaviour behaviour;  // TODO STATE GROUP ???
-        */
-
         [SerializeField, HideInInspector]
-        private float m_delay;
+        private float s_Delay;
         public float delay
         {
-            set { m_delay = value; }
-            get { return m_delay; }
+            set { s_Delay = value; }
+            get { return s_Delay; }
         }
 
         [SerializeField, HideInInspector]
-        private float m_duration;
-        public float duration
+        private float s_Duration = 1;
+        public float Duration
         {
-            set { m_duration = value; }
-            get { return m_duration; }
+            set { s_Duration = value; }
+            get { return s_Duration; }
         }
 
-
-        //public List<Tween> tweens = new List<Tween>();
-
         [SerializeField, HideInInspector]
-        private string m_name;
-        public string stateName
+        private string s_Name = "new state";
+        public string Name
         {
-            private set { m_name = value;}
+            private set { s_Name = value; }
             get
             {
-                if (isClosedState) return "closed";
-                if (isOpenedState) return "opened";
-                return m_name;
+                if (IsClosedState) return "closed";
+                if (IsOpenedState) return "opened";
+                return s_Name;
             }
         }
 
         [SerializeField, HideInInspector]
-        private bool m_enabled = true;
-        public bool enabled
+        private bool s_Enabled = true;
+        public bool Enabled
         {
-            private set { m_enabled = value; }
-            get { return isDefaultState || m_enabled; }
+            private set { s_Enabled = value; }
+            get { return IsDefaultState || s_Enabled; }
         }
 
-        public bool isClosedState { get { return false /* this == ((StatesGroup)parent).closedState*/; } }
-        public bool isOpenedState { get { return false /* this == ((StatesGroup)parent).openedState*/; } }
-        public bool isDefaultState { get { return isClosedState || isOpenedState; } }
-
-        /*
-        public State(StatesBehaviour behaviour, string name, int id)
-        {
-            if (behaviour == null)
-            {
-                Debug.LogWarning("[MSS]\"behaviour\" parameter can't be a null!");
-                return;
-            }
-
-            idCounter++;
-
-            this.behaviour = behaviour;
-            this.stateName = name;
-            this.id = id;
-        }
-        */
+        public bool IsClosedState { get { return this == ((StatesGroup)Parent).ClosedState; } }
+        public bool IsOpenedState { get { return this == ((StatesGroup)Parent).OpenedState; } }
+        public bool IsDefaultState { get { return IsClosedState || IsOpenedState; } }
     }
 }
