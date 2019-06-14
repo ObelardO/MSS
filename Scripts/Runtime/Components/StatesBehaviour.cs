@@ -15,15 +15,20 @@ namespace Obel.MSS
     #endif
     public class StatesBehaviour : MonoBehaviour
     {
+        #region Properties
+
         public StatesGroup statesGroup;
 
-        private void Reset()
-        {
-            statesGroup = null;
-        }
+        #endregion
+
+        #region Unity methods
+
+        private void Reset() { statesGroup = null; }
 
         private void OnEnable() { }
 
         private void OnDisable() { }
+
+        #endregion
     }
 }

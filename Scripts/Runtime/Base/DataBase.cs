@@ -9,6 +9,8 @@ namespace Obel.MSS
     [Serializable]
     public class DBCollection<T> : DBCollectionItem where T : DBCollectionItem
     {
+        #region Properties
+
         [SerializeField]
         public List<T> items;
 
@@ -17,6 +19,19 @@ namespace Obel.MSS
         public T this[int i] => items[i];
         public T First => items[0];
 
+        #endregion
+
+        #region Unity methods
+
+        private void OnEnable()
+        {
+            InitItems();
+        }
+
+        #endregion
+
+        #region Collection methods
+
         private void InitItems()
         {
             if (items == null) items = new List<T>();
@@ -24,11 +39,6 @@ namespace Obel.MSS
         }
 
         public virtual void OnInit() { }
-
-        private void OnEnable()
-        {
-            InitItems();
-        }
 
         public void ForEach(Action<T> forEachCallback)
         {
@@ -87,18 +97,25 @@ namespace Obel.MSS
             return items == null || index < 0 || index > Count - 1;
         }
 
+        #endregion
     }
 
     public interface IMSSCollectionItem
     {
+        #region Properties
+
         DBCollectionItem Parent { get; }
         int ID { get; }
 
         void Init(DBCollectionItem parent);
+
+        #endregion
     }
 
     public class DBCollectionItem : ScriptableObject, IMSSCollectionItem
     {
+        #region Properties
+
         [SerializeField, HideInInspector]
         private DBCollectionItem s_Parent;
         public DBCollectionItem Parent
@@ -112,30 +129,15 @@ namespace Obel.MSS
         public int ID
         {
             private set { s_ID = value; }
-            get { return s_ID;  }
+            get { return s_ID; }
         }
+
+        #endregion
 
         public void Init(DBCollectionItem parent)
         {
             Parent = parent ?? (this);
             ID = base.GetHashCode();
         }
-    }
-
-
-    [Serializable]
-    public class DataBase : DBCollection<StatesGroup>
-    {
-        public static DataBase instance;
-
-        /*
-        public override StatesGroup Find(object id)
-        {
-            foreach (StatesGroup item in items)
-                if (item.objectID == (int)id) return item;
-
-            return null;
-        }
-        */
     }
 }

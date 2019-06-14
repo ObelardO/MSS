@@ -10,6 +10,8 @@ namespace Obel.MSS
     [Serializable]
     public class State : DBCollection<Tween>
     {
+        #region Properties
+
         [SerializeField, HideInInspector]
         private float s_Delay;
         public float delay
@@ -50,5 +52,7 @@ namespace Obel.MSS
         public bool IsClosedState { get { return this == ((StatesGroup)Parent).ClosedState; } }
         public bool IsOpenedState { get { return this == ((StatesGroup)Parent).OpenedState; } }
         public bool IsDefaultState { get { return IsClosedState || IsOpenedState; } }
+
+        #endregion
     }
 }

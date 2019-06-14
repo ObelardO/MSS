@@ -1,52 +1,44 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
 namespace Obel.MSS.Editor
 {
-    public static class EditorDataBase
+    using Object = UnityEngine.Object;
+
+    public static class EditorAssets
     {
-        public static string AssetPath
+        public static T Create<T>(string assetName) where T : DBCollectionItem
         {
-            get { return "Assets/MSS/DataBase-DONT-DELETE-THIS.asset"; }
-        }
+            T newAsset = ScriptableObject.CreateInstance<T>();
 
-        public static DataBase instance
-        {
-            get
-            {
-                if (DataBase.instance == null) DataBase.instance = LoadDataBaseAsset();
-                if (DataBase.instance == null) DataBase.instance = CreateDataBaseAsset();
+            Undo.RegisterCreatedObjectUndo(newAsset, "[MSS] creating asset");
 
-                return DataBase.instance;
-            }
-        }
+            string path = string.Empty;
+            if (Selection.activeObject != null) path = AssetDatabase.GetAssetPath(Selection.activeObject);
+            if (!Directory.Exists(path)) path = "Assets";
 
-        private static DataBase CreateDataBaseAsset()
-        {
-            DataBase dataBase = ScriptableObject.CreateInstance<DataBase>();
+            string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(path, assetName + ".asset"));
 
-            AssetDatabase.CreateAsset(dataBase, AssetPath);
+            AssetDatabase.CreateAsset(newAsset, assetPathAndName);
+
             AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            EditorUtility.FocusProjectWindow();
+            Selection.activeObject = newAsset;
 
-            EditorUtility.SetDirty(dataBase);
-
-            return dataBase;
+            return newAsset;
         }
 
-        private static DataBase LoadDataBaseAsset()
+        public static T Save<T>(Object rootAsset) where T : DBCollectionItem
         {
-            return AssetDatabase.LoadAssetAtPath(AssetPath, typeof(DataBase)) as DataBase;
+            return Save<T>(rootAsset, rootAsset.name);
         }
 
-        public static T SaveAsset<T>() where T : DBCollectionItem
-        {
-            return SaveAsset<T>(null, typeof(T).ToString());
-        }
-
-        public static T SaveAsset<T>(Action<T> instancedCallback = null, string assetName = null) where T : DBCollectionItem
+        public static T Save<T>(Object rootAsset, string assetName = null, Action <T> instancedCallback = null) where T : DBCollectionItem
         {
             T newAsset = ScriptableObject.CreateInstance<T>();
 
@@ -54,11 +46,8 @@ namespace Obel.MSS.Editor
 
             Undo.RegisterCreatedObjectUndo(newAsset, "[MSS] saving asset");
 
-            AssetDatabase.AddObjectToAsset(newAsset, instance);
-
-            //AssetDatabase.SaveAssets();
-
-            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(instance));
+            AssetDatabase.AddObjectToAsset(newAsset, rootAsset);
+            Refresh(rootAsset);
             AssetDatabase.Refresh();
 
             if (instancedCallback != null) instancedCallback(newAsset);
@@ -66,17 +55,22 @@ namespace Obel.MSS.Editor
             return newAsset;
         }
 
-        public static T RemoveAsset<T>(T removingAsset, bool useRecording = true) where T : DBCollectionItem
+        public static T Remove<T>(T removingAsset, bool useRecording = true) where T : DBCollectionItem
         {
             if (useRecording)
                 Undo.DestroyObjectImmediate(removingAsset);
             else
-                UnityEngine.Object.DestroyImmediate(removingAsset, true);
+                Object.DestroyImmediate(removingAsset, true);
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
             return removingAsset;
+        }
+
+        public static void Refresh(Object assetObject)
+        {
+            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(assetObject));
         }
     }
 

@@ -9,6 +9,8 @@ namespace Obel.MSS.Editor
     [CustomPropertyDrawer(typeof(State))]
     public class DrawerState : PropertyDrawer
     {
+        #region Properties
+
         private static readonly GUIContent contentLabel = new GUIContent("Name"),
                                            delayLabel = new GUIContent("Delay"),
                                            durationLabel = new GUIContent("Duration"),
@@ -19,6 +21,10 @@ namespace Obel.MSS.Editor
         private SerializedProperty property;
         private GUIContent label;
         private Rect rect;
+
+        #endregion
+
+        #region Inspector
 
         public override void OnGUI(Rect rect, SerializedProperty property, GUIContent label)
         {
@@ -63,8 +69,7 @@ namespace Obel.MSS.Editor
 
             Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, 20);
             editorValues.foldout.target = EditorGUI.Foldout(rectFoldout, editorValues.foldout.target,
-                new GUIContent(editorValues.state.Name + " | " + editorValues.state.ID), true,
-                EditorConfig.Styles.Foldout /*, GUI.skin.label*/);
+                new GUIContent(editorValues.state.Name + " | " + editorValues.state.ID), true, EditorConfig.Styles.Foldout);
 
             if (!editorValues.state.IsDefaultState)
             {
@@ -76,8 +81,11 @@ namespace Obel.MSS.Editor
                     EditorActions.Add(() =>
                     {
                         removingStateGroup.Remove(removingState, false);
+
+                        EditorAssets.Remove(removingState);
+                        AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(removingStateGroup));
+
                         StateEditorValues.Reorder(removingStateGroup.items);
-                        EditorDataBase.RemoveAsset(removingState);
                     },
                     removingStateGroup, "[MSS] Remove state");
                 }
@@ -85,8 +93,65 @@ namespace Obel.MSS.Editor
 
         }
 
+        private void DrawProperties()
+        {
+            if (editorValues.foldout.faded == 0) return;
+
+            EditorConfig.Colors.PushGUIColor();
+
+            GUI.color *= editorValues.foldout.faded;
+
+            //EditorGUI.BeginProperty(rect, label, property);
+            EditorGUI.BeginDisabledGroup(editorValues.foldout.faded < 0.2f || !editorValues.state.Enabled);
+
+            LayOutRect = new Rect(rect.x + LayOutOffset, rect.y + 20, rect.width - LayOutOffset * 2, 300);
+
+            float timeFieldWidth = 54;
+            float nameFieldWidth = rect.width - timeFieldWidth * 2 - LayOutOffset * 4;
+            GUIStyle FieldStyle = EditorConfig.Styles.greyMiniLabel;
+
+            LayOutControl(nameFieldWidth,
+                () => { EditorGUI.LabelField(LayOutRect, "Name", FieldStyle); });
+
+            LayOutControl(timeFieldWidth,
+                () => { EditorGUI.LabelField(LayOutRect, "Delay", FieldStyle); });
+
+            LayOutControl(timeFieldWidth,
+                () => { EditorGUI.LabelField(LayOutRect, "Duration", FieldStyle); });
+
+            LayOutSpace();
+
+            LayOutControl(nameFieldWidth, () =>
+            {
+                EditorGUI.BeginDisabledGroup(editorValues.state.IsDefaultState);
+                EditorGUI.PropertyField(LayOutRect, editorValues.serializedState.FindProperty("s_Name"), GUIContent.none);
+                editorValues.state.name = string.Format("[State] {0}", editorValues.state.Name);
+                EditorGUI.EndDisabledGroup();
+            });
+
+            LayOutControl(timeFieldWidth, () =>
+            {
+                EditorGUI.PropertyField(LayOutRect, editorValues.serializedState.FindProperty("s_Delay"), GUIContent.none);
+            });
+
+            LayOutControl(timeFieldWidth, () =>
+            {
+                EditorGUI.PropertyField(LayOutRect, editorValues.serializedState.FindProperty("s_Duration"), GUIContent.none);
+            });
+
+            EditorGUI.EndDisabledGroup();
+
+            //EditorGUI.EndProperty();
+
+            EditorConfig.Colors.PullGUIColor();
+        }
+
+        #endregion
+
+        #region LayOut helper
+
         private Rect LayOutRect;
-        private float LayOutOffset = 4;
+        private readonly float LayOutOffset = 4;
 
         private void LayOutControl(float width, Action control)
         {
@@ -117,96 +182,6 @@ namespace Obel.MSS.Editor
             LayOutRect.y += height + LayOutRect.height;
         }
 
-        private void DrawProperties()
-        {
-            if (editorValues.foldout.faded == 0) return;
-
-            EditorConfig.Colors.PushGUIColor();
-
-            GUI.color *= editorValues.foldout.faded;
-
-            //EditorGUI.BeginProperty(rect, label, property);
-            EditorGUI.BeginDisabledGroup(editorValues.foldout.faded < 0.2f || !editorValues.state.Enabled);
-
-            LayOutRect = new Rect(rect.x + LayOutOffset, rect.y + 20, rect.width - LayOutOffset * 2, 300);
-
-            float timeFieldWidth = 54;
-            float nameFieldWidth = rect.width - timeFieldWidth * 2 - LayOutOffset * 4;
-            GUIStyle FieldStyle = EditorConfig.Styles.greyMiniLabel;
-
-
-
-
-            LayOutControl(nameFieldWidth,
-                () => { EditorGUI.LabelField(LayOutRect, "Name", FieldStyle); });
-
-            LayOutControl(timeFieldWidth,
-                () => { EditorGUI.LabelField(LayOutRect, "Delay", FieldStyle); });
-
-            LayOutControl(timeFieldWidth,
-                () => { EditorGUI.LabelField(LayOutRect, "Duration", FieldStyle); });
-
-            LayOutSpace();
-
-            LayOutControl(nameFieldWidth, () =>
-            {
-                EditorGUI.BeginDisabledGroup(editorValues.state.IsDefaultState);
-                EditorGUI.PropertyField(LayOutRect, editorValues.serializedState.FindProperty("s_Name"), GUIContent.none);
-                EditorGUI.EndDisabledGroup();
-            });
-
-            LayOutControl(timeFieldWidth, () =>
-            {
-                EditorGUI.PropertyField(LayOutRect, editorValues.serializedState.FindProperty("s_Delay"), GUIContent.none);
-            });
-
-            LayOutControl(timeFieldWidth, () =>
-            {
-                EditorGUI.PropertyField(LayOutRect, editorValues.serializedState.FindProperty("s_Duration"), GUIContent.none);
-            });
-
-            EditorGUI.EndDisabledGroup();
-
-            //EditorGUI.EndProperty();
-
-
-
-            EditorConfig.Colors.PullGUIColor();
-        }
+        #endregion
     }
 }
-
-
-
-// EditorGUILayout.EndFadeGroup();
-            /*
-            EditorGUI.PropertyField(delayRect, property.FindPropertyRelative("delay"), delayLabel);
-            EditorGUI.PropertyField(durationRect, property.FindPropertyRelative("duration"), durationLabel);
-            */
-
-
-            /*
-            for (int i = 0; i < tweensProperty.arraySize; i++)
-            {
-                DrawerTween.drawingTween = drawingState.tweens[i];
-
-                EditorGUI.PropertyField(new Rect(rect.x + 4, rect.y + 58 + 80 * i, rect.width - 8, 80),
-                    tweensProperty.GetArrayElementAtIndex(i));
-            }
-
-            if (GUI.Button(addButtonRect, "Add Tween"))
-            {
-                StatesBehaviour behaviour = property.serializedObject.targetObject as StatesBehaviour;
-                Debug.Log(behaviour.name);
-
-                drawingState.tweens.Add(new Tween());
-            }
-            */
-
-
-        /*
-        }
-    }
-}
-
-    */

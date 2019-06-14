@@ -8,7 +8,7 @@ namespace Obel.MSS
     [Serializable]
     public class Tween : DBCollectionItem
     {
-        public string title;
+
     }
 }
 

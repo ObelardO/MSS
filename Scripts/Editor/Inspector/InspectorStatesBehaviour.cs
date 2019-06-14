@@ -12,7 +12,7 @@ namespace Obel.MSS.Editor
     using Editor = UnityEditor.Editor;
 
     [CustomEditor(typeof(StatesBehaviour))]
-    public class InspectorStatesBehaviour : Editor, IDataBaseEditor<StatesGroup>
+    public class InspectorStatesBehaviour : Editor
     {
         #region Properties
 
@@ -34,11 +34,10 @@ namespace Obel.MSS.Editor
             StateEditorValues.Clear();
             StateEditorValues.updatingAction = Repaint;
 
-            if (statesBehaviour.statesGroup == null) statesBehaviour.statesGroup = Add();
+            if (statesBehaviour.statesGroup == null)
+                statesBehaviour.statesGroup = CreateStatesProfile();
 
-            SerializedProperty statesGroupProperty = serializedObject.FindProperty("statesGroup");
-
-            serializedStatesGroup = new SerializedObject(statesGroupProperty.objectReferenceValue);
+            serializedStatesGroup = new SerializedObject(serializedObject.FindProperty("statesGroup").objectReferenceValue);
 
             statesProperty = serializedStatesGroup.FindProperty("items");
 
@@ -59,7 +58,6 @@ namespace Obel.MSS.Editor
                 onReorderCallback = OnReordered
             };
         }
-
 
         private void OnDisable()
         {
@@ -83,40 +81,14 @@ namespace Obel.MSS.Editor
             GUILayout.Space(3);
 
             if (GUILayout.Button("Add Stete"))
-            {
-                EditorActions.Add(() =>
-                {
-                    State state = EditorDataBase.SaveAsset<State>();
-
-
-                    statesBehaviour.statesGroup.Add(state);
-
-
-                    //StateEditorValues.Clear();
-                    StateEditorValues.Reorder(statesBehaviour.statesGroup.items);
-                    StateEditorValues.Get(state).foldout.target = true;
-
-
-
-                    AssetDatabase.ImportAsset(EditorDataBase.AssetPath);
-                    //AssetDatabase.Refresh();
-                },
-                statesBehaviour.statesGroup, "[MSS] Add State");
-            }
+                EditorActions.Add(() => OnAddButton(), statesBehaviour.statesGroup, "[MSS] Add State");
 
             EditorGUI.EndDisabledGroup();
 
-            Event guiEvent = Event.current;
-            if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed")
-            {
-                //StateEditorValues.Clear();
-                StateEditorValues.Reorder(statesBehaviour.statesGroup.items);
-
-
-                AssetDatabase.ImportAsset(EditorDataBase.AssetPath);
-            }
-
             EditorActions.Process();
+
+            Event guiEvent = Event.current;
+            if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") OnUndo();
 
             serializedStatesGroup.ApplyModifiedProperties();
         }
@@ -124,6 +96,21 @@ namespace Obel.MSS.Editor
         #endregion
 
         #region Inspector callbacks
+
+        private void OnUndo()
+        {
+            EditorAssets.Refresh(statesBehaviour.statesGroup);
+            StateEditorValues.Reorder(statesBehaviour.statesGroup.items);
+        }
+
+        private void OnAddButton()
+        {
+            State state = AddState(statesBehaviour.statesGroup);
+            EditorAssets.Refresh(statesBehaviour.statesGroup);
+
+            StateEditorValues.Reorder(statesBehaviour.statesGroup.items);
+            StateEditorValues.Get(state).foldout.target = true;
+        }
 
         private void OnReordered(ReorderableList list)
         {
@@ -158,34 +145,25 @@ namespace Obel.MSS.Editor
 
         #region DataBase methods
 
-        public StatesGroup Add()
+        [MenuItem("Assets/Create/MSS/States Profile")]
+        public static StatesGroup CreateStatesProfile()
         {
-            StatesGroup newStatesGroup = EditorDataBase.SaveAsset<StatesGroup>();
-            EditorDataBase.instance.Add(newStatesGroup);
-
+            StatesGroup newStatesGroup = EditorAssets.Create<StatesGroup>("NewStatesGroup");
             AddState(newStatesGroup);
             AddState(newStatesGroup);
 
             return newStatesGroup;
         }
 
-        public State AddState(StatesGroup statesGroup)
+        public static State AddState(StatesGroup statesGroup)
         {
-            State newState = EditorDataBase.SaveAsset<State>();
+            State newState = EditorAssets.Save<State>(statesGroup, "[State] NewState");
             statesGroup.Add(newState);
-
             return newState;
-        }
-
-        public void Remove(StatesGroup statesGroup)
-        {
-            EditorDataBase.instance.Remove(statesGroup, false);
-            EditorDataBase.RemoveAsset(statesGroup);
         }
 
         #endregion
     }
-
 
     #region supporting classes
 
