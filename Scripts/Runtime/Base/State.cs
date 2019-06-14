@@ -17,30 +17,44 @@ namespace Obel.MSS
         private StatesBehaviour behaviour;  // TODO STATE GROUP ???
         */
 
-        public float delay;
-        public float duration = 1;
+        [SerializeField, HideInInspector]
+        private float m_delay;
+        public float delay
+        {
+            set { m_delay = value; }
+            get { return m_delay; }
+        }
+
+        [SerializeField, HideInInspector]
+        private float m_duration;
+        public float duration
+        {
+            set { m_duration = value; }
+            get { return m_duration; }
+        }
+
 
         //public List<Tween> tweens = new List<Tween>();
 
         [SerializeField, HideInInspector]
-        private string _name;
+        private string m_name;
         public string stateName
         {
-            private set { _name = value;}
+            private set { m_name = value;}
             get
             {
                 if (isClosedState) return "closed";
                 if (isOpenedState) return "opened";
-                return _name;
+                return m_name;
             }
         }
 
         [SerializeField, HideInInspector]
-        private bool _enabled = true;
+        private bool m_enabled = true;
         public bool enabled
         {
-            private set { _enabled = value; }
-            get { return isDefaultState || _enabled; }
+            private set { m_enabled = value; }
+            get { return isDefaultState || m_enabled; }
         }
 
         public bool isClosedState { get { return false /* this == ((StatesGroup)parent).closedState*/; } }

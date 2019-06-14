@@ -100,19 +100,19 @@ namespace Obel.MSS
     public class DBCollectionItem : ScriptableObject, IMSSCollectionItem
     {
 
-        [SerializeField] private DBCollectionItem _parent;
+        [SerializeField] private DBCollectionItem m_parent;
         public DBCollectionItem parent
         {
-            private set { _parent = value; }
-            get { return _parent; }
+            private set { m_parent = value; }
+            get { return m_parent; }
         }
 
 
-        [SerializeField] private int _id;
+        [SerializeField] private int m_id;
         public int id
         {
-            private set { _id = value; }
-            get { return _id;  }
+            private set { m_id = value; }
+            get { return m_id;  }
         }
 
         public void Init(DBCollectionItem parent/*, int id*/)
