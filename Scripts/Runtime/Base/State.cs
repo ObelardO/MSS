@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 namespace Obel.MSS
 {
     [Serializable]
-    public class State : DBCollection<Tween>
+    public class State : Collection<Tween>
     {
         #region Properties
 

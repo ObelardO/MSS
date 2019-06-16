@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using NUnit.Framework.Constraints;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEditor;
@@ -9,10 +10,8 @@ using UnityEditorInternal;
 
 namespace Obel.MSS.Editor
 {
-    using Editor = UnityEditor.Editor;
-
     [CustomEditor(typeof(StatesBehaviour))]
-    public class InspectorStatesBehaviour : Editor
+    public class InspectorStatesBehaviour : UnityEditor.Editor
     {
         #region Properties
 
@@ -25,11 +24,21 @@ namespace Obel.MSS.Editor
 
         #region Unity methods
 
+        public bool boolAssigned = false;
+
         private void OnEnable()
         {
+            StateEditorValues.updatingAction = Repaint;
+
+            return;
+
             if (!(target is StatesBehaviour)) return;
 
             statesBehaviour = (StatesBehaviour)target;
+
+            if (statesBehaviour.statesGroup == null) return;
+
+            boolAssigned = true;
 
             StateEditorValues.Clear();
             StateEditorValues.updatingAction = Repaint;
@@ -66,11 +75,20 @@ namespace Obel.MSS.Editor
         }
 
         #endregion
-
         #region Inspector
 
+
+        /*
         public override void OnInspectorGUI()
         {
+            DrawDefaultInspector();
+
+            return;
+
+            if (statesBehaviour.statesGroup == null) return;
+
+            if (!boolAssigned) OnEnable();
+
             serializedStatesGroup.Update();
 
             EditorGUI.BeginDisabledGroup(!statesBehaviour.enabled);
@@ -92,6 +110,7 @@ namespace Obel.MSS.Editor
 
             serializedStatesGroup.ApplyModifiedProperties();
         }
+        */
 
         #endregion
 
@@ -117,11 +136,6 @@ namespace Obel.MSS.Editor
             StateEditorValues.Reorder(statesBehaviour.statesGroup.items);
         }
 
-        private void DrawStateBackground(Rect rect, int index, bool isActive, bool isFocused)
-        {
-            EditorGUI.DrawRect(rect, Color.clear);
-        }
-
         private void DrawState(Rect rect, int index, bool isActive, bool isFocused)
         {
             rect.width += 5;
@@ -131,13 +145,18 @@ namespace Obel.MSS.Editor
             EditorGUI.PropertyField(rect, statesProperty.GetArrayElementAtIndex(index), true);
         }
 
+        private void DrawStateBackground(Rect rect, int index, bool isActive, bool isFocused)
+        {
+            EditorGUI.DrawRect(rect, Color.clear);
+        }
+
         private float GetStateHeight(int index)
         {
             int tweensCount = statesBehaviour.statesGroup[index].items.Count;
 
             StateEditorValues editorValues = StateEditorValues.Get(statesBehaviour.statesGroup[index]);
 
-            return 26 + Mathf.Lerp(0, 70 + (tweensCount == 0 ? 0 : tweensCount - 1) * 21 + 40,
+            return DrawerState.headerHeight + 6 + Mathf.Lerp(0, 70 + (tweensCount == 0 ? 0 : tweensCount - 1) * 21 + 40,
                        editorValues.foldout.faded);
         }
 

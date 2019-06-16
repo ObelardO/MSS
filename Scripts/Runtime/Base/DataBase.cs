@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Obel.MSS
 {
     [Serializable]
-    public class DBCollection<T> : CollectionItem where T : CollectionItem
+    public class Collection<T> : CollectionItem where T : CollectionItem
     {
         #region Properties
 

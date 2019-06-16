@@ -11,6 +11,8 @@ namespace Obel.MSS.Editor
 
     public static class EditorAssets
     {
+        public static bool autoFocusOnCreatedAsset = false;
+
         public static T Create<T>(string assetName) where T : CollectionItem
         {
             T newAsset = ScriptableObject.CreateInstance<T>();
@@ -27,8 +29,12 @@ namespace Obel.MSS.Editor
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            EditorUtility.FocusProjectWindow();
-            Selection.activeObject = newAsset;
+
+            if (autoFocusOnCreatedAsset)
+            {
+                EditorUtility.FocusProjectWindow();
+                Selection.activeObject = newAsset;
+            }
 
             return newAsset;
         }

@@ -7,7 +7,7 @@ using UnityEditor;
 namespace Obel.MSS.Editor
 {
     [CustomPropertyDrawer(typeof(State))]
-    public class DrawerState : PropertyDrawer
+    internal class DrawerState : PropertyDrawer
     {
         #region Properties
 
@@ -21,6 +21,8 @@ namespace Obel.MSS.Editor
         private SerializedProperty property;
         private GUIContent label;
         private Rect rect;
+
+        public static readonly float headerHeight = 20;
 
         #endregion
 
@@ -45,16 +47,16 @@ namespace Obel.MSS.Editor
             Rect rectBackground = new Rect(rect.x, rect.y, rect.width, rect.height - 6);
             EditorGUI.DrawRect(rectBackground, Color.white * 0.4f);
 
-            Rect rectFoldOutBack = new Rect(rect.x, rect.y, rect.width, 20);
+            Rect rectFoldOutBack = new Rect(rect.x, rect.y, rect.width, headerHeight);
             GUI.Box(rectFoldOutBack, GUIContent.none, GUI.skin.box);
 
-            Rect rectStateTabColor = new Rect(rect.x, rect.y, 2, 20);
+            Rect rectStateTabColor = new Rect(rect.x, rect.y, 2, headerHeight);
             Color tabColor = Color.gray;
             if (editorValues.state.IsOpenedState) tabColor = EditorConfig.Colors.greenColor;
             if (editorValues.state.IsClosedState) tabColor = EditorConfig.Colors.redColor;
             EditorGUI.DrawRect(rectStateTabColor, tabColor);
 
-            Rect rectToggle = new Rect(rect.x + 5, rect.y, 20, 20);
+            Rect rectToggle = new Rect(rect.x + 5, rect.y, 20, headerHeight);
 
             if (editorValues.state.IsDefaultState)
             {
@@ -65,12 +67,12 @@ namespace Obel.MSS.Editor
             else
                 EditorGUI.PropertyField(rectToggle, editorValues.serializedState.FindProperty("s_Enabled"), GUIContent.none);
 
-            Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, 20);
+            Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, headerHeight);
             editorValues.foldout.target = EditorGUI.Foldout(rectFoldout, editorValues.foldout.target,
                 new GUIContent(editorValues.state.Name + " | " + editorValues.state.ID), true, EditorConfig.Styles.Foldout);
 
             if (!editorValues.state.IsDefaultState && 
-                GUI.Button(new Rect(rect.width + 5, rect.y + 1, 30, 20), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
+                GUI.Button(new Rect(rect.width + 5, rect.y + 1, 30, headerHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
                     OnRemoveButton();
         }
 
@@ -90,7 +92,7 @@ namespace Obel.MSS.Editor
 
             GUI.color *= editorValues.foldout.faded;
 
-            EditorLayout.SetPosition(rect.x, rect.y + 20);
+            EditorLayout.SetPosition(rect.x, rect.y + headerHeight);
 
             EditorLayout.Control(nameFieldWidth, (Rect r) => EditorGUI.LabelField(r, "Name", FieldStyle));
 

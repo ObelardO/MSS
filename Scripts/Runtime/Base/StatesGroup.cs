@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Obel.MSS
 {
     [Serializable]
-    public class StatesGroup : DBCollection<State>
+    public class StatesGroup : Collection<State>
     {
         #region Properties
 
