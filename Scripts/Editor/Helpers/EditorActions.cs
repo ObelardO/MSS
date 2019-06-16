@@ -8,7 +8,7 @@ namespace Obel.MSS.Editor
 {
     using Object = UnityEngine.Object;
 
-    public static class EditorActions
+    internal static class EditorActions
     {
         private static List<EditorAction> actions = new List<EditorAction>();
 

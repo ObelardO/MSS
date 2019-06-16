@@ -16,7 +16,7 @@ namespace Obel.MSS.Editor
                                            durationLabel = new GUIContent("Duration"),
                                            testLabel = new GUIContent("Test");
 
-        public static StateEditorValues editorValues;
+        public static EditorStateValues editorValues;
 
         private SerializedProperty property;
         private GUIContent label;
@@ -72,7 +72,7 @@ namespace Obel.MSS.Editor
                 new GUIContent(editorValues.state.Name + " | " + editorValues.state.ID), true, EditorConfig.Styles.Foldout);
 
             if (!editorValues.state.IsDefaultState && 
-                GUI.Button(new Rect(rect.width + 5, rect.y + 1, 30, headerHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
+                GUI.Button(new Rect(rect.width - 8, rect.y + 1, 30, headerHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
                     OnRemoveButton();
         }
 
@@ -137,7 +137,7 @@ namespace Obel.MSS.Editor
                 EditorAssets.Remove(removingState);
                 AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(removingStateGroup));
 
-                StateEditorValues.Reorder(removingStateGroup.items);
+                EditorStateValues.Reorder(removingStateGroup.items);
             },
             removingStateGroup, "[MSS] Remove state");
         }

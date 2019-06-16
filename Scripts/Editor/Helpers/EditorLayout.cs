@@ -13,9 +13,9 @@ namespace Obel.MSS.Editor
 
         private static Vector2 startPosition;
         private static Rect rect;
-        private static float fixedWidth = 30;
-        private static float fixedHeight = 16;
-        public static readonly float offset = 4;
+        public static float fixedWidth = 30;
+        public static float fixedHeight = 16;
+        public static float offset = 4;
 
         private static Color storedColor;
 
@@ -32,6 +32,12 @@ namespace Obel.MSS.Editor
         {
             rect = new Rect(position.x + offset, position.y, fixedWidth, fixedHeight);
             startPosition = position;
+        }
+
+        public static void SetSize(Vector2 size)
+        {
+            rect.width = size.x;
+            rect.height = size.y;
         }
 
         public static void SetWidth(float width)

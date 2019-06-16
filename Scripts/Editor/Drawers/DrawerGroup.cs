@@ -33,8 +33,10 @@ namespace Obel.MSS.Editor
         {
             serializedObject = serializedProperty.serializedObject;
 
-            statesGroup = serializedObject.FindProperty("statesGroup").objectReferenceValue as StatesGroup;
-                //fieldInfo.GetValue(serializedObject.targetObject) as StatesGroup;
+            statesGroup = fieldInfo.GetValue(serializedObject.targetObject) as StatesGroup;
+
+                //serializedObject.FindProperty("statesGroup").objectReferenceValue as StatesGroup;
+                //;
 
             if (statesGroup == null) return;
 
@@ -42,11 +44,8 @@ namespace Obel.MSS.Editor
 
             statesProperty = serializedStatesGroup.FindProperty("items");
 
-            StateEditorValues.Clear();
-            
-
-            statesReorderableList = new ReorderableList(serializedObject, statesProperty)
-            //statesReorderableList = new ReorderableList(statesGroup.items, typeof(State))
+            //statesReorderableList = new ReorderableList(serializedObject, statesProperty)
+            statesReorderableList = new ReorderableList(statesGroup.items, typeof(State))
             {
                 displayAdd = false,
                 displayRemove = false,
@@ -74,32 +73,75 @@ namespace Obel.MSS.Editor
 
             if (!enabled) OnEnable();
 
-            if (statesGroup == null)
+            if (!enabled) return;
+
+            DrawGroup(property, label);
+
+
+
+            /* TODO LAYOUT VARIAND
+            EditorLayout.PushColor();
+
+            EditorLayout.SetPosition(rect.x - 4, rect.y);
+            EditorLayout.SetWidth(rect.width);
+            EditorLayout.Control((r) => EditorGUI.PropertyField(r, property, label, false));
+
+
+
+
+            totalPropertyHeight = EditorLayout.fixedHeight * 2;
+
+            if (!enabled || statesGroup == null)
             {
-                GUI.color = Color.red;
+                return;
             }
-            //rect.width *= 0.5f;
 
-            EditorGUI.PropertyField(new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight), property, label, false);
+            serializedStatesGroup.Update();
 
-            totalPropertyHeight = (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing * 2);
+            EditorLayout.Space();
 
-            rect.y += totalPropertyHeight;
-            rect.height = 600;
-            if (enabled && statesReorderableList != null) statesReorderableList.DoList(rect);
+            EditorLayout.SetSize(new Vector2(rect.width, totalPropertyHeight));
 
-            GUI.color = Color.white;
+            EditorLayout.Control((r) => statesReorderableList.DoList(r));
+
+            EditorLayout.Space();
+
+            EditorLayout.SetPosition(rect.width / 2 - 572 / 2, totalPropertyHeight + rect.y);
+
+            EditorLayout.Control(572, (r) =>
+            {
+                if (GUI.Button(r, "Add State")) EditorActions.Add(() => OnAddButton(), statesGroup, "[MSS] Add State");
+            });
+            */
+
+
         }
 
+        /*
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return totalPropertyHeight;
+        }
+        */
 
-            /*
-            if (statesGroup == null) return + EditorGUIUtility.standardVerticalSpacing;
+        private void DrawGroup(SerializedProperty property, GUIContent label)
+        {
+            serializedStatesGroup.Update();
 
-            return statesGroup.Count * 100 + (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * 2;
-            */    
+            EditorGUILayout.PropertyField(property, label, false);
+
+            statesReorderableList.DoLayoutList();
+
+            if (GUILayout.Button("Add State")) EditorActions.Add(() => OnAddButton(), statesGroup, "[MSS] Add State");
+
+            EditorLayout.PullColor();
+
+            EditorActions.Process();
+
+            Event guiEvent = Event.current;
+            if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") OnUndo();
+
+            serializedStatesGroup.ApplyModifiedProperties();
         }
 
         #endregion
@@ -109,7 +151,7 @@ namespace Obel.MSS.Editor
         private void OnUndo()
         {
             EditorAssets.Refresh(statesGroup);
-            StateEditorValues.Reorder(statesGroup.items);
+            EditorStateValues.Reorder(statesGroup.items);
         }
 
         private void OnAddButton()
@@ -117,13 +159,13 @@ namespace Obel.MSS.Editor
             State state = AddState(statesGroup);
             EditorAssets.Refresh(statesGroup);
 
-            StateEditorValues.Reorder(statesGroup.items);
-            StateEditorValues.Get(state).foldout.target = true;
+            EditorStateValues.Reorder(statesGroup.items);
+            EditorStateValues.Get(state).foldout.target = true;
         }
 
         private void OnReordered(ReorderableList list)
         {
-            StateEditorValues.Reorder(statesGroup.items);
+            EditorStateValues.Reorder(statesGroup.items);
         }
 
         private void DrawStateBackground(Rect rect, int index, bool isActive, bool isFocused)
@@ -135,10 +177,17 @@ namespace Obel.MSS.Editor
         {
             rect.width += 5;
 
-            DrawerState.editorValues = StateEditorValues.Get(statesGroup[index]);
+            DrawerState.editorValues = EditorStateValues.Get(statesGroup[index]);
 
 
             EditorGUI.PropertyField(rect, statesProperty.GetArrayElementAtIndex(index), true);
+
+            //EditorStateValues editorValues = EditorStateValues.Get(statesGroup[index]);
+
+            totalPropertyHeight += DrawerState.headerHeight + 6 + Mathf.Lerp(0, 120,
+                                       DrawerState.editorValues.foldout.faded);
+
+            
 
             //EditorGUI.PropertyField(rect, serializedStatesGroup.FindProperty("items").GetArrayElementAtIndex(index), true);
         }
@@ -147,12 +196,11 @@ namespace Obel.MSS.Editor
         {
             int tweensCount = statesGroup[index].Count;
 
-            StateEditorValues editorValues = StateEditorValues.Get(statesGroup[index]);
+            EditorStateValues editorValues = EditorStateValues.Get(statesGroup[index]);
 
             float stateHeight = DrawerState.headerHeight + 6 + Mathf.Lerp(0, 70 + (tweensCount == 0 ? 0 : tweensCount - 1) * 21 + 40,
                                     editorValues.foldout.faded);
 
-            totalPropertyHeight += stateHeight;
 
             return stateHeight;
         }

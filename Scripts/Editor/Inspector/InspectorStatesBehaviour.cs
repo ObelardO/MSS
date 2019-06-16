@@ -15,11 +15,12 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
+        /*
         private StatesBehaviour statesBehaviour;
         private SerializedObject serializedStatesGroup;
         private SerializedProperty statesProperty;
         private ReorderableList statesReorderableList;
-
+        */
         #endregion
 
         #region Unity methods
@@ -28,8 +29,10 @@ namespace Obel.MSS.Editor
 
         private void OnEnable()
         {
-            StateEditorValues.updatingAction = Repaint;
+            EditorStateValues.Clear();
+            EditorStateValues.updatingAction = Repaint;
 
+            /*
             return;
 
             if (!(target is StatesBehaviour)) return;
@@ -66,25 +69,29 @@ namespace Obel.MSS.Editor
                 elementHeightCallback = GetStateHeight,
                 onReorderCallback = OnReordered
             };
+            */
         }
 
         private void OnDisable()
         {
-            StateEditorValues.Clear();
-            StateEditorValues.updatingAction = null;
+            EditorStateValues.Clear();
+            EditorStateValues.updatingAction = null;
         }
 
         #endregion
         #region Inspector
 
 
-        /*
+        
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
 
+            //EditorGUILayout.PropertyField(new SerializedObject(serializedObject.FindProperty("statesGroup").objectReferenceValue).FindProperty("statedGroup"));
+
             return;
 
+            /*
             if (statesBehaviour.statesGroup == null) return;
 
             if (!boolAssigned) OnEnable();
@@ -109,12 +116,16 @@ namespace Obel.MSS.Editor
             if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") OnUndo();
 
             serializedStatesGroup.ApplyModifiedProperties();
+            */
         }
-        */
+        
 
         #endregion
 
+            /*
+
         #region Inspector callbacks
+
 
         private void OnUndo()
         {
@@ -182,58 +193,7 @@ namespace Obel.MSS.Editor
         }
 
         #endregion
+
+    */
     }
-
-    #region supporting classes
-
-    public class StateEditorValues
-    {
-        static private Dictionary<int, StateEditorValues> statesDictionary = new Dictionary<int, StateEditorValues>();
-
-        public State state;
-        public AnimBool foldout;
-        public SerializedObject serializedState;
-        public ReorderableList tweensReorderableList;
-
-        public static UnityAction updatingAction;
-
-        public StateEditorValues(State state)
-        {
-            foldout = new AnimBool(false);
-            this.state = state;
-
-            statesDictionary.Add(state.ID, this);
-
-            if (updatingAction != null) foldout.valueChanged.AddListener(updatingAction);
-
-            serializedState = new SerializedObject(state);
-        }
-
-        public static StateEditorValues Get(State state)
-        {
-            StateEditorValues editorValues;
-
-            if (statesDictionary.ContainsKey(state.ID))
-                editorValues = statesDictionary[state.ID];
-            else
-                editorValues = new StateEditorValues(state);
-
-            return editorValues;
-        }
-
-        public static void Clear()
-        {
-            statesDictionary.Clear();
-        }
-
-        public static void Reorder(List<State> reorderedStates)
-        {
-            foreach (KeyValuePair<int, StateEditorValues> entry in statesDictionary)
-                for (int i = 0; i < reorderedStates.Count; i++)
-                    if (entry.Key.Equals(reorderedStates[i].ID))
-                        statesDictionary[entry.Key].state = reorderedStates[i];
-        }
-    }
-
-    #endregion
 }

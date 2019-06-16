@@ -9,7 +9,7 @@ namespace Obel.MSS.Editor
 {
     using Object = UnityEngine.Object;
 
-    public static class EditorAssets
+    internal static class EditorAssets
     {
         public static bool autoFocusOnCreatedAsset = false;
 
