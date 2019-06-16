@@ -29,7 +29,7 @@ namespace Obel.MSS
         }
 
         [SerializeField, HideInInspector]
-        private string s_Name = "new state";
+        private string s_Name = "NewState";
         public string Name
         {
             private set { s_Name = value; }

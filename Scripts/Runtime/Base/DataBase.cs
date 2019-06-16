@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Obel.MSS
 {
     [Serializable]
-    public class DBCollection<T> : DBCollectionItem where T : DBCollectionItem
+    public class DBCollection<T> : CollectionItem where T : CollectionItem
     {
         #region Properties
 
@@ -100,25 +100,13 @@ namespace Obel.MSS
         #endregion
     }
 
-    public interface IMSSCollectionItem
-    {
-        #region Properties
-
-        DBCollectionItem Parent { get; }
-        int ID { get; }
-
-        void Init(DBCollectionItem parent);
-
-        #endregion
-    }
-
-    public class DBCollectionItem : ScriptableObject, IMSSCollectionItem
+    public class CollectionItem : ScriptableObject, ICollectionItem
     {
         #region Properties
 
         [SerializeField, HideInInspector]
-        private DBCollectionItem s_Parent;
-        public DBCollectionItem Parent
+        private CollectionItem s_Parent;
+        public CollectionItem Parent
         {
             private set { s_Parent = value; }
             get { return s_Parent; }
@@ -134,7 +122,7 @@ namespace Obel.MSS
 
         #endregion
 
-        public void Init(DBCollectionItem parent)
+        public void Init(CollectionItem parent)
         {
             Parent = parent ?? (this);
             ID = base.GetHashCode();

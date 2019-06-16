@@ -11,7 +11,7 @@ namespace Obel.MSS.Editor
 
     public static class EditorAssets
     {
-        public static T Create<T>(string assetName) where T : DBCollectionItem
+        public static T Create<T>(string assetName) where T : CollectionItem
         {
             T newAsset = ScriptableObject.CreateInstance<T>();
 
@@ -33,16 +33,11 @@ namespace Obel.MSS.Editor
             return newAsset;
         }
 
-        public static T Save<T>(Object rootAsset) where T : DBCollectionItem
-        {
-            return Save<T>(rootAsset, rootAsset.name);
-        }
-
-        public static T Save<T>(Object rootAsset, string assetName = null, Action <T> instancedCallback = null) where T : DBCollectionItem
+        public static T Save<T>(Object rootAsset, string assetName = null, Action <T> instancedCallback = null) where T : CollectionItem
         {
             T newAsset = ScriptableObject.CreateInstance<T>();
 
-            if (assetName != null) newAsset.name = assetName;
+            newAsset.name = assetName ?? rootAsset.name;
 
             Undo.RegisterCreatedObjectUndo(newAsset, "[MSS] saving asset");
 
@@ -55,7 +50,7 @@ namespace Obel.MSS.Editor
             return newAsset;
         }
 
-        public static T Remove<T>(T removingAsset, bool useRecording = true) where T : DBCollectionItem
+        public static T Remove<T>(T removingAsset, bool useRecording = true) where T : CollectionItem
         {
             if (useRecording)
                 Undo.DestroyObjectImmediate(removingAsset);

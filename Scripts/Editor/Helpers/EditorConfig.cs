@@ -35,20 +35,9 @@ namespace Obel.MSS.Editor
         {
             //public static Color foldOut = 
 
-            private static Color storedGUIColor = Color.white;
-
             public static Color redColor = new Color(1, 0.65f, 0.65f, 1);
             public static Color greenColor = new Color(0.65f, 1, 0.65f, 1);
 
-            public static void PushGUIColor()
-            {
-                storedGUIColor = GUI.color;
-            }
-
-            public static void PullGUIColor()
-            {
-                GUI.color = storedGUIColor;
-            }
         }
 
         [InitializeOnLoadMethod]

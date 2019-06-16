@@ -63,123 +63,81 @@ namespace Obel.MSS.Editor
                 EditorGUI.EndDisabledGroup();
             }
             else
-            {
                 EditorGUI.PropertyField(rectToggle, editorValues.serializedState.FindProperty("s_Enabled"), GUIContent.none);
-            }
 
             Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, 20);
             editorValues.foldout.target = EditorGUI.Foldout(rectFoldout, editorValues.foldout.target,
                 new GUIContent(editorValues.state.Name + " | " + editorValues.state.ID), true, EditorConfig.Styles.Foldout);
 
-            if (!editorValues.state.IsDefaultState)
-            {
-                if (GUI.Button(new Rect(rect.width + 5, rect.y + 1, 30, 20), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
-                {
-                    State removingState = editorValues.state;
-                    StatesGroup removingStateGroup = (StatesGroup)removingState.Parent;
-
-                    EditorActions.Add(() =>
-                    {
-                        removingStateGroup.Remove(removingState, false);
-
-                        EditorAssets.Remove(removingState);
-                        AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(removingStateGroup));
-
-                        StateEditorValues.Reorder(removingStateGroup.items);
-                    },
-                    removingStateGroup, "[MSS] Remove state");
-                }
-            }
-
+            if (!editorValues.state.IsDefaultState && 
+                GUI.Button(new Rect(rect.width + 5, rect.y + 1, 30, 20), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
+                    OnRemoveButton();
         }
 
         private void DrawProperties()
         {
             if (editorValues.foldout.faded == 0) return;
 
-            EditorConfig.Colors.PushGUIColor();
-
-            GUI.color *= editorValues.foldout.faded;
-
             //EditorGUI.BeginProperty(rect, label, property);
             EditorGUI.BeginDisabledGroup(editorValues.foldout.faded < 0.2f || !editorValues.state.Enabled);
 
-            LayOutRect = new Rect(rect.x + LayOutOffset, rect.y + 20, rect.width - LayOutOffset * 2, 300);
-
             float timeFieldWidth = 54;
-            float nameFieldWidth = rect.width - timeFieldWidth * 2 - LayOutOffset * 4;
+            float nameFieldWidth = rect.width - timeFieldWidth * 2 - EditorLayout.offset * 4;
+
             GUIStyle FieldStyle = EditorConfig.Styles.greyMiniLabel;
 
-            LayOutControl(nameFieldWidth,
-                () => { EditorGUI.LabelField(LayOutRect, "Name", FieldStyle); });
+            EditorLayout.PushColor();
 
-            LayOutControl(timeFieldWidth,
-                () => { EditorGUI.LabelField(LayOutRect, "Delay", FieldStyle); });
+            GUI.color *= editorValues.foldout.faded;
 
-            LayOutControl(timeFieldWidth,
-                () => { EditorGUI.LabelField(LayOutRect, "Duration", FieldStyle); });
+            EditorLayout.SetPosition(rect.x, rect.y + 20);
 
-            LayOutSpace();
+            EditorLayout.Control(nameFieldWidth, (Rect r) => EditorGUI.LabelField(r, "Name", FieldStyle));
 
-            LayOutControl(nameFieldWidth, () =>
+            EditorLayout.SetWidth(timeFieldWidth);
+
+            EditorLayout.Control((Rect r) => EditorGUI.LabelField(r, "Delay", FieldStyle));
+            EditorLayout.Control((Rect r) => EditorGUI.LabelField(r, "Duration", FieldStyle));
+
+            EditorLayout.Space(2);
+
+            EditorLayout.Control(nameFieldWidth, (Rect r) =>
             {
                 EditorGUI.BeginDisabledGroup(editorValues.state.IsDefaultState);
-                EditorGUI.PropertyField(LayOutRect, editorValues.serializedState.FindProperty("s_Name"), GUIContent.none);
+                EditorGUI.PropertyField(r, editorValues.serializedState.FindProperty("s_Name"), GUIContent.none);
                 editorValues.state.name = string.Format("[State] {0}", editorValues.state.Name);
                 EditorGUI.EndDisabledGroup();
             });
 
-            LayOutControl(timeFieldWidth, () =>
-            {
-                EditorGUI.PropertyField(LayOutRect, editorValues.serializedState.FindProperty("s_Delay"), GUIContent.none);
-            });
+            EditorLayout.Control((Rect r) => EditorGUI.PropertyField(r, editorValues.serializedState.FindProperty("s_Delay"), GUIContent.none));
+            EditorLayout.Control((Rect r) => EditorGUI.PropertyField(r, editorValues.serializedState.FindProperty("s_Duration"), GUIContent.none));
 
-            LayOutControl(timeFieldWidth, () =>
-            {
-                EditorGUI.PropertyField(LayOutRect, editorValues.serializedState.FindProperty("s_Duration"), GUIContent.none);
-            });
+            EditorLayout.PullColor();
 
             EditorGUI.EndDisabledGroup();
 
             //EditorGUI.EndProperty();
-
-            EditorConfig.Colors.PullGUIColor();
         }
 
         #endregion
 
-        #region LayOut helper
+        #region Inspector callbacks
 
-        private Rect LayOutRect;
-        private readonly float LayOutOffset = 4;
-
-        private void LayOutControl(float width, Action control)
+        private void OnRemoveButton()
         {
-            LayOutControl(new Vector2(width, 16), control);
-        }
+            State removingState = editorValues.state;
+            StatesGroup removingStateGroup = (StatesGroup)removingState.Parent;
 
-        private void LayOutControl(float width, float height, Action control)
-        {
-            LayOutControl(new Vector2(width, height), control);
-        }
+            EditorActions.Add(() =>
+            {
+                removingStateGroup.Remove(removingState, false);
 
-        private void LayOutControl(Vector2 size, Action control)
-        {
-            LayOutRect.width = size.x;
-            LayOutRect.height = size.y;
-            control();
-            LayOutRect.x += LayOutOffset + LayOutRect.width;
-        }
+                EditorAssets.Remove(removingState);
+                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(removingStateGroup));
 
-        private void LayOutSpace()
-        {
-            LayOutSpace(LayOutOffset);
-        }
-
-        private void LayOutSpace(float height)
-        {
-            LayOutRect.x = rect.x + LayOutOffset;
-            LayOutRect.y += height + LayOutRect.height;
+                StateEditorValues.Reorder(removingStateGroup.items);
+            },
+            removingStateGroup, "[MSS] Remove state");
         }
 
         #endregion

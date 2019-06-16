@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Obel.MSS
 {
     [Serializable]
-    public class Tween : DBCollectionItem
+    public class Tween : CollectionItem
     {
 
     }
