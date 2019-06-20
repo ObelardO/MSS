@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 
 namespace Obel.MSS.Editor
@@ -72,7 +69,7 @@ namespace Obel.MSS.Editor
                 new GUIContent(editorValues.state.Name + " | " + editorValues.state.ID), true, EditorConfig.Styles.Foldout);
 
             if (!editorValues.state.IsDefaultState && 
-                GUI.Button(new Rect(rect.width - 8, rect.y + 1, 30, headerHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
+                GUI.Button(new Rect(rect.width + 4, rect.y + 1, 30, headerHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
                     OnRemoveButton();
         }
 

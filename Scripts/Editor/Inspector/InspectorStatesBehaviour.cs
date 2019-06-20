@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using NUnit.Framework.Constraints;
-using UnityEngine;
-using UnityEngine.Events;
-using UnityEditor;
-using UnityEditor.AnimatedValues;
-using UnityEditorInternal;
+﻿using UnityEditor;
 
 namespace Obel.MSS.Editor
 {
@@ -15,61 +7,18 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
-        /*
-        private StatesBehaviour statesBehaviour;
-        private SerializedObject serializedStatesGroup;
-        private SerializedProperty statesProperty;
-        private ReorderableList statesReorderableList;
-        */
+        private SerializedProperty statesGroupProperty;
+
         #endregion
 
         #region Unity methods
-
-        public bool boolAssigned = false;
 
         private void OnEnable()
         {
             EditorStateValues.Clear();
             EditorStateValues.updatingAction = Repaint;
 
-            /*
-            return;
-
-            if (!(target is StatesBehaviour)) return;
-
-            statesBehaviour = (StatesBehaviour)target;
-
-            if (statesBehaviour.statesGroup == null) return;
-
-            boolAssigned = true;
-
-            StateEditorValues.Clear();
-            StateEditorValues.updatingAction = Repaint;
-
-            if (statesBehaviour.statesGroup == null)
-                statesBehaviour.statesGroup = CreateStatesProfile();
-
-            serializedStatesGroup = new SerializedObject(serializedObject.FindProperty("statesGroup").objectReferenceValue);
-
-            statesProperty = serializedStatesGroup.FindProperty("items");
-
-            statesReorderableList = new ReorderableList(serializedObject, statesProperty)
-            {
-                displayAdd = false,
-                displayRemove = false,
-                draggable = true,
-
-                headerHeight = 0,
-                footerHeight = 0,
-
-                showDefaultBackground = false,
-
-                drawElementBackgroundCallback = DrawStateBackground,
-                drawElementCallback = DrawState,
-                elementHeightCallback = GetStateHeight,
-                onReorderCallback = OnReordered
-            };
-            */
+            statesGroupProperty = serializedObject.FindProperty("statesGroup");
         }
 
         private void OnDisable()
@@ -79,121 +28,22 @@ namespace Obel.MSS.Editor
         }
 
         #endregion
+
         #region Inspector
 
-
-        
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector();
+            serializedObject.Update();
 
-            //EditorGUILayout.PropertyField(new SerializedObject(serializedObject.FindProperty("statesGroup").objectReferenceValue).FindProperty("statedGroup"));
+            EditorActions.Clear();
 
-            return;
-
-            /*
-            if (statesBehaviour.statesGroup == null) return;
-
-            if (!boolAssigned) OnEnable();
-
-            serializedStatesGroup.Update();
-
-            EditorGUI.BeginDisabledGroup(!statesBehaviour.enabled);
-            GUILayout.Space(6);
-
-            statesReorderableList.DoLayoutList();
-
-            GUILayout.Space(3);
-
-            if (GUILayout.Button("Add Stete"))
-                EditorActions.Add(() => OnAddButton(), statesBehaviour.statesGroup, "[MSS] Add State");
-
-            EditorGUI.EndDisabledGroup();
+            EditorGUILayout.PropertyField(statesGroupProperty);
 
             EditorActions.Process();
 
-            Event guiEvent = Event.current;
-            if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") OnUndo();
-
-            serializedStatesGroup.ApplyModifiedProperties();
-            */
-        }
-        
-
-        #endregion
-
-            /*
-
-        #region Inspector callbacks
-
-
-        private void OnUndo()
-        {
-            EditorAssets.Refresh(statesBehaviour.statesGroup);
-            StateEditorValues.Reorder(statesBehaviour.statesGroup.items);
-        }
-
-        private void OnAddButton()
-        {
-            State state = AddState(statesBehaviour.statesGroup);
-            EditorAssets.Refresh(statesBehaviour.statesGroup);
-
-            StateEditorValues.Reorder(statesBehaviour.statesGroup.items);
-            StateEditorValues.Get(state).foldout.target = true;
-        }
-
-        private void OnReordered(ReorderableList list)
-        {
-            StateEditorValues.Reorder(statesBehaviour.statesGroup.items);
-        }
-
-        private void DrawState(Rect rect, int index, bool isActive, bool isFocused)
-        {
-            rect.width += 5;
-
-            DrawerState.editorValues = StateEditorValues.Get(statesBehaviour.statesGroup[index]);
-
-            EditorGUI.PropertyField(rect, statesProperty.GetArrayElementAtIndex(index), true);
-        }
-
-        private void DrawStateBackground(Rect rect, int index, bool isActive, bool isFocused)
-        {
-            EditorGUI.DrawRect(rect, Color.clear);
-        }
-
-        private float GetStateHeight(int index)
-        {
-            int tweensCount = statesBehaviour.statesGroup[index].items.Count;
-
-            StateEditorValues editorValues = StateEditorValues.Get(statesBehaviour.statesGroup[index]);
-
-            return DrawerState.headerHeight + 6 + Mathf.Lerp(0, 70 + (tweensCount == 0 ? 0 : tweensCount - 1) * 21 + 40,
-                       editorValues.foldout.faded);
+            serializedObject.ApplyModifiedProperties();
         }
 
         #endregion
-
-        #region DataBase methods
-
-        [MenuItem("Assets/Create/MSS/States Profile")]
-        public static StatesGroup CreateStatesProfile()
-        {
-            StatesGroup newStatesGroup = EditorAssets.Create<StatesGroup>("NewStatesGroup");
-            AddState(newStatesGroup);
-            AddState(newStatesGroup);
-
-            return newStatesGroup;
-        }
-
-        public static State AddState(StatesGroup statesGroup)
-        {
-            State newState = EditorAssets.Save<State>(statesGroup, "[State] NewState");
-            statesGroup.Add(newState);
-            return newState;
-        }
-
-        #endregion
-
-    */
     }
 }

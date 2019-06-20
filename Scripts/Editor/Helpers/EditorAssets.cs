@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Obel.MSS.Editor
 {
-    using Object = UnityEngine.Object;
-
     internal static class EditorAssets
     {
         public static bool autoFocusOnCreatedAsset = false;
@@ -17,7 +14,7 @@ namespace Obel.MSS.Editor
         {
             T newAsset = ScriptableObject.CreateInstance<T>();
 
-            Undo.RegisterCreatedObjectUndo(newAsset, "[MSS] creating asset");
+            //Undo.RegisterCreatedObjectUndo(newAsset, "[MSS] creating asset");
 
             string path = string.Empty;
             if (Selection.activeObject != null) path = AssetDatabase.GetAssetPath(Selection.activeObject);
