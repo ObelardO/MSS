@@ -1,13 +1,10 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
-using System;
+using Object = UnityEngine.Object;
 
 namespace Obel.MSS.Editor
 {
-    using Object = UnityEngine.Object;
-
     internal static class EditorActions
     {
         private static List<EditorAction> actions = new List<EditorAction>();

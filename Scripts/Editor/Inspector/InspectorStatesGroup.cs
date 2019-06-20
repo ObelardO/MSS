@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using NUnit.Framework.Constraints;
-using UnityEngine;
-using UnityEngine.Events;
-using UnityEditor;
-using UnityEditor.AnimatedValues;
-using UnityEditorInternal;
+﻿using UnityEditor;
 
 namespace Obel.MSS.Editor
 {
@@ -16,9 +8,7 @@ namespace Obel.MSS.Editor
         #region Properties
 
         private StatesGroup statesGroup;
-        //private SerializedObject serializedStatesGroup;
         private SerializedProperty statesGroupProperty;
-        //private ReorderableList statesReorderableList;
 
         #endregion
 
@@ -28,12 +18,7 @@ namespace Obel.MSS.Editor
         {
             if (!(target is StatesGroup)) return;
 
-            statesGroup = (StatesGroup)target;
-
-
-            //statesGroupProperty = new SerializedObject(serializedObject.FindProperty("statesGroup").objectReferenceValue);
-
-       
+            statesGroup = (StatesGroup)target;       
         }
 
         private void OnDisable()
@@ -48,10 +33,6 @@ namespace Obel.MSS.Editor
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-
-            //serializedStatesGroup.Update();
-
-            //serializedStatesGroup.ApplyModifiedProperties();
         }
 
         #endregion
