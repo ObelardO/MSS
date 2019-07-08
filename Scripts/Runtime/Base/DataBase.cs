@@ -86,9 +86,9 @@ namespace Obel.MSS
             return items[index];
         }
 
-        public virtual T Find(object id)
+        public virtual T Find(int id)
         {
-            return null;
+            return items.Where(i => i.ID == id).FirstOrDefault();
         }
 
         private bool IndexInvalid(int index)
