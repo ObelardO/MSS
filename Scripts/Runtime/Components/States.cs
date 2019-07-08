@@ -10,7 +10,7 @@ namespace Obel.MSS
     #else
         [ExecuteInEditMode]
     #endif
-    public class StatesBehaviour : MonoBehaviour
+    public class States : MonoBehaviour
     {
         #region Properties
 

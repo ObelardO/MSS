@@ -2,8 +2,8 @@
 
 namespace Obel.MSS.Editor
 {
-    [CustomEditor(typeof(StatesBehaviour))]
-    public class InspectorStatesBehaviour : UnityEditor.Editor
+    [CustomEditor(typeof(States))]
+    public class InspectorStates : UnityEditor.Editor
     {
         #region Properties
 
@@ -15,6 +15,7 @@ namespace Obel.MSS.Editor
 
         private void OnEnable()
         {
+            EditorActions.Clear();
             EditorStateValues.Clear();
             EditorStateValues.updatingAction = Repaint;
 
@@ -23,6 +24,7 @@ namespace Obel.MSS.Editor
 
         private void OnDisable()
         {
+            EditorActions.Clear();
             EditorStateValues.Clear();
             EditorStateValues.updatingAction = null;
         }
@@ -34,8 +36,6 @@ namespace Obel.MSS.Editor
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-
-            EditorActions.Clear();
 
             EditorGUILayout.PropertyField(statesGroupProperty);
 

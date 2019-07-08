@@ -8,6 +8,7 @@ namespace Obel.MSS.Editor
         public static class Content
         {
             public static GUIContent iconToolbarMinus = EditorGUIUtility.TrIconContent("Toolbar Minus", "Remove from list");
+            public static GUIContent iconToolbarPlus = EditorGUIUtility.TrIconContent("Toolbar Plus", "Add to list");
         }
 
         public static class Styles

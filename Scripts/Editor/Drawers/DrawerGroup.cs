@@ -9,12 +9,14 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
-        private static readonly GUIContent profileLabel = new GUIContent("Profile"),
+        private static readonly GUIContent profileLabel = new GUIContent("States"),
                                            newButton = new GUIContent("New"),
                                            addStateButton = new GUIContent("Add State");
 
+        private Rect rect;
+
         private StatesGroup statesGroup;
-        private SerializedObject serializedObject;
+        //private SerializedObject serializedObject;
         private SerializedObject serializedStatesGroup;
         private SerializedProperty statesProperty;
         private ReorderableList statesReorderableList;
@@ -31,18 +33,26 @@ namespace Obel.MSS.Editor
         {
             if (serializedProperty == null) serializedProperty = property;
 
+            this.rect = rect;
+
+            GUILayout.BeginVertical(GUI.skin.box);
+
             DrawGroupSelector();
 
             if (!enabled) OnEnable();
 
-            if (!enabled || statesGroup == null) return;
+            if (!enabled || statesGroup == null)
+            {
+                GUILayout.EndVertical();
+                return;
+            }
 
             DrawGroup();
         }
 
         private void DrawGroupSelector()
         {
-            GUILayout.BeginHorizontal(GUI.skin.box);
+            GUILayout.BeginHorizontal(/*GUI.skin.box*/);
 
             StatesGroup assignedStatesGroup = serializedProperty.objectReferenceValue as StatesGroup;
 
@@ -57,16 +67,32 @@ namespace Obel.MSS.Editor
 
         private void DrawGroup()
         {
+            GUILayout.Space(3);
+
             serializedStatesGroup.Update();
 
             statesReorderableList.DoLayoutList();
 
-            if (GUILayout.Button(addStateButton, GUILayout.Width(200))) EditorActions.Add(OnAddStateButton, statesGroup, "[MSS] Add State");
+            DrawAddButton();
+
+            GUILayout.EndVertical();
 
             Event guiEvent = Event.current;
             if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") OnUndo();
 
             serializedStatesGroup.ApplyModifiedProperties();
+        }
+
+        private void DrawAddButton()
+        {
+            Rect rectAddButton = EditorGUILayout.GetControlRect();
+
+            rectAddButton.y -= 4;
+            rectAddButton.x = rectAddButton.width - 11;
+            rectAddButton.width = 30;
+
+            if (GUI.Button(rectAddButton, EditorConfig.Content.iconToolbarPlus, EditorConfig.Styles.preButton))
+                EditorActions.Add(OnAddStateButton, statesGroup, "[MSS] Add State");
         }
 
         private void DrawStateBackground(Rect rect, int index, bool isActive, bool isFocused)
@@ -89,7 +115,7 @@ namespace Obel.MSS.Editor
 
         void OnEnable()
         {
-            serializedObject = serializedProperty.serializedObject;
+            SerializedObject serializedObject = serializedProperty.serializedObject;
 
             statesGroup = fieldInfo.GetValue(serializedObject.targetObject) as StatesGroup;
             //serializedObject.FindProperty("statesGroup").objectReferenceValue as StatesGroup;

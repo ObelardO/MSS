@@ -27,6 +27,8 @@ namespace Obel.MSS.Editor
 
         public override void OnGUI(Rect rect, SerializedProperty property, GUIContent label)
         {
+            if (editorValues == null) return;
+
             this.rect = rect;
             this.label = label;
             this.property = property;
@@ -69,7 +71,7 @@ namespace Obel.MSS.Editor
                 new GUIContent(editorValues.state.Name + " | " + editorValues.state.ID), true, EditorConfig.Styles.Foldout);
 
             if (!editorValues.state.IsDefaultState && 
-                GUI.Button(new Rect(rect.width + 4, rect.y + 1, 30, headerHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
+                GUI.Button(new Rect(rect.width + 8, rect.y + 1, 30, headerHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
                     OnRemoveButton();
         }
 
@@ -104,7 +106,7 @@ namespace Obel.MSS.Editor
             {
                 EditorGUI.BeginDisabledGroup(editorValues.state.IsDefaultState);
                 EditorGUI.PropertyField(r, editorValues.serializedState.FindProperty("s_Name"), GUIContent.none);
-                editorValues.state.name = string.Format("[State] {0}", editorValues.state.Name);
+                if (editorValues.state != null) editorValues.state.name = string.Format("[State] {0}", editorValues.state.Name);
                 EditorGUI.EndDisabledGroup();
             });
 
