@@ -8,6 +8,8 @@ namespace Obel.MSS.Editor
 {
     internal class EditorStateValues
     {
+        #region Properties
+
         static private Dictionary<int, EditorStateValues> statesDictionary = new Dictionary<int, EditorStateValues>();
 
         public State state;
@@ -16,6 +18,10 @@ namespace Obel.MSS.Editor
         public ReorderableList tweensReorderableList;
 
         public static UnityAction updatingAction;
+
+        #endregion
+
+        #region Public methods
 
         public EditorStateValues(State state)
         {
@@ -27,6 +33,19 @@ namespace Obel.MSS.Editor
             if (updatingAction != null) foldout.valueChanged.AddListener(updatingAction);
 
             serializedState = new SerializedObject(state);
+
+            tweensReorderableList = new ReorderableList(state.items, typeof(Tween)/*, false, true, true, true*/)
+            {
+                displayAdd = true,
+                displayRemove = true,
+                draggable = false,
+                showDefaultBackground = true,
+
+                onAddCallback = DrawerTween.OnAddButton,
+                onRemoveCallback = DrawerTween.OnRemoveButton,
+                drawHeaderCallback = DrawerTween.DrawHeader,
+                drawElementCallback = DrawerTween.Draw
+            };
         }
 
         public static EditorStateValues Get(State state)
@@ -53,6 +72,7 @@ namespace Obel.MSS.Editor
                     if (entry.Key.Equals(reorderedStates[i].ID))
                         statesDictionary[entry.Key].state = reorderedStates[i];
         }
-    }
 
+        #endregion
+    }
 }

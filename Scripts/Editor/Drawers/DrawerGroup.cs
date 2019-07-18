@@ -52,7 +52,7 @@ namespace Obel.MSS.Editor
 
         private void DrawGroupSelector()
         {
-            GUILayout.BeginHorizontal(/*GUI.skin.box*/);
+            GUILayout.BeginHorizontal();
 
             StatesGroup assignedStatesGroup = serializedProperty.objectReferenceValue as StatesGroup;
 
@@ -113,7 +113,7 @@ namespace Obel.MSS.Editor
 
         #region Inspector callbacks
 
-        void OnEnable()
+        private void OnEnable()
         {
             SerializedObject serializedObject = serializedProperty.serializedObject;
 
@@ -157,7 +157,7 @@ namespace Obel.MSS.Editor
 
         private void OnAddStateButton()
         {
-            State state = AddState(statesGroup);
+            State state = EditorAssets.AddItem(statesGroup);
             EditorAssets.Refresh(statesGroup);
 
             EditorStateValues.Reorder(statesGroup.items);
@@ -191,17 +191,11 @@ namespace Obel.MSS.Editor
         public static StatesGroup CreateStatesProfile()
         {
             StatesGroup newStatesGroup = EditorAssets.Create<StatesGroup>("NewStatesGroup");
-            AddState(newStatesGroup);
-            AddState(newStatesGroup);
+
+            EditorAssets.AddItem(newStatesGroup, "[State] newState");
+            EditorAssets.AddItem(newStatesGroup, "[State] newState");
 
             return newStatesGroup;
-        }
-
-        public static State AddState(StatesGroup statesGroup)
-        {
-            State newState = EditorAssets.Save<State>(statesGroup, "[State] NewState");
-            statesGroup.Add(newState);
-            return newState;
         }
     }
 }

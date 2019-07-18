@@ -68,7 +68,7 @@ namespace Obel.MSS.Editor
 
             Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, headerHeight);
             editorValues.foldout.target = EditorGUI.Foldout(rectFoldout, editorValues.foldout.target,
-                new GUIContent(editorValues.state.Name + " | " + editorValues.state.ID), true, EditorConfig.Styles.Foldout);
+                new GUIContent(editorValues.state.Name/* + " | " + editorValues.state.ID*/), true, EditorConfig.Styles.Foldout);
 
             if (!editorValues.state.IsDefaultState && 
                 GUI.Button(new Rect(rect.width + 8, rect.y + 1, 30, headerHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
@@ -89,7 +89,7 @@ namespace Obel.MSS.Editor
 
             EditorLayout.PushColor();
 
-            GUI.color *= editorValues.foldout.faded;
+            GUI.color *= Mathf.Clamp01(editorValues.foldout.faded - 0.5f) / 0.5f ;
 
             EditorLayout.SetPosition(rect.x, rect.y + headerHeight);
 
@@ -113,6 +113,12 @@ namespace Obel.MSS.Editor
             EditorLayout.Control((Rect r) => EditorGUI.PropertyField(r, editorValues.serializedState.FindProperty("s_Delay"), GUIContent.none));
             EditorLayout.Control((Rect r) => EditorGUI.PropertyField(r, editorValues.serializedState.FindProperty("s_Duration"), GUIContent.none));
 
+            EditorLayout.Space(6);
+
+            EditorLayout.SetWidth(rect.width - EditorLayout.offset * 2);
+
+            EditorLayout.Control((Rect r) => editorValues.tweensReorderableList.DoList(r));
+
             EditorLayout.PullColor();
 
             EditorGUI.EndDisabledGroup();
@@ -128,6 +134,8 @@ namespace Obel.MSS.Editor
         {
             State removingState = editorValues.state;
             StatesGroup removingStateGroup = (StatesGroup)removingState.Parent;
+
+            // TODO! Remove tweens
 
             EditorActions.Add(() =>
             {

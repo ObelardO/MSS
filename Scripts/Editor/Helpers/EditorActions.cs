@@ -7,7 +7,13 @@ namespace Obel.MSS.Editor
 {
     internal static class EditorActions
     {
+        #region Properties
+
         private static List<EditorAction> actions = new List<EditorAction>();
+
+        #endregion
+
+        #region Subclasses
 
         private class EditorAction
         {
@@ -15,6 +21,10 @@ namespace Obel.MSS.Editor
             public Object recordeble;
             public string reason;
         }
+
+        #endregion
+
+        #region Public methods
 
         public static void Add(Action action, Object recordable = null, string reason = null)
         {
@@ -33,7 +43,7 @@ namespace Obel.MSS.Editor
             for (int i = actions.Count - 1; i >= 0; i--)
             {
                 if (actions[i].recordeble != null)
-                    Undo.RecordObject(actions[i].recordeble, actions[i].reason);
+                    Undo.RecordObject(actions[i].recordeble, actions[i].reason ?? "[MSS] Action");
 
                 actions[i].action.Invoke();
                 actions.RemoveAt(i);
@@ -44,7 +54,7 @@ namespace Obel.MSS.Editor
         {
             actions.Clear();
         }
+
+        #endregion
     }
 }
-
-

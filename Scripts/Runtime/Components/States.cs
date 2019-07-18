@@ -4,12 +4,6 @@ namespace Obel.MSS
 {
     public enum DefaultState { Closed, Opened }
 
-    [DisallowMultipleComponent, AddComponentMenu("MSS/States")]
-    #if UNITY_2018_3_OR_NEWER
-        [ExecuteAlways]
-    #else
-        [ExecuteInEditMode]
-    #endif
     public class States : MonoBehaviour
     {
         #region Properties

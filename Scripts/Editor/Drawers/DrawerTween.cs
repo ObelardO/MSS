@@ -7,113 +7,83 @@ using UnityEditorInternal;
 
 namespace Obel.MSS.Editor
 {
-    /*
     [CustomPropertyDrawer(typeof(Tween))]
     public class DrawerTween : PropertyDrawer
     {
+        #region Properties
 
-        private static GUIContent contentLabel = new GUIContent("Name");
+        private static readonly List<ITweenEditor> tweens = new List<ITweenEditor>();
 
-        public static Tween drawingTween;
+        private static GenericMenu tweensMenu = new GenericMenu();
+        private static State selectedState;
+        private static ITweenEditor selectedTweenEditor;
 
-        //private static 
+        #endregion
 
-        //private ReorderableList tweensReorderableList;
-
-        // Draw the property inside the given rect
-        public override void OnGUI(Rect rect, SerializedProperty property, GUIContent label)
+        public static void AddTweenEditor(ITweenEditor tweenEditor)
         {
-            // Using BeginProperty / EndProperty on the parent property means that
-            // prefab override logic works on the entire property.
-            //EditorGUI.BeginProperty(rect, label, property);
+            if (!tweens.Contains(tweenEditor)) tweens.Add(tweenEditor);
 
-            // Draw label
-            //position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
-
-            // Don't make child fields be indented
-            //var indent = EditorGUI.indentLevel;
-            //EditorGUI.indentLevel = 0;
-
-            EditorGUI.DrawRect(new Rect(rect.x + 2, rect.y + 2, rect.width - 2, rect.height - 6), Color.white * 0.4f);
-
-            // Calculate rects
-            Rect nameRect = new Rect(rect.x + 4, rect.y + 4, rect.width - 8 - 30, 16);
-            Rect removeButtonRect = new Rect(rect.width + 8, rect.y + 4, 28, 16);
-
-            //Rect delayRect = new Rect(rect.x + 4, rect.y + 22, rect.width - 8, 16);
-            //Rect durationRect = new Rect(rect.x + 4, rect.y + 40, rect.width - 8, 16);
-
-            // Draw fields - passs GUIContent.none to each so they are drawn without labels
-            EditorGUI.PropertyField(nameRect, property.FindPropertyRelative("name"), contentLabel);
-
-            if (GUI.Button(removeButtonRect, "-"))
+            tweensMenu.AddItem(new GUIContent(tweenEditor.Name), false, () =>
             {
-                DrawerState.drawingState.tweens.Remove(drawingTween);
-            }
+                EditorActions.Add(() =>
+                {
+                    selectedTweenEditor = tweenEditor;
+                    tweenEditor.OnAddButton();
+                },
+                selectedState);
 
-            //EditorGUI.PropertyField(delayRect, property.FindPropertyRelative("delay"), delayLabel);
-            //EditorGUI.PropertyField(durationRect, property.FindPropertyRelative("duration"), durationLabel);
+            });
+        }
 
-            //SerializedProperty tweensProperty = property.FindPropertyRelative("tweens");
+        #region Inspector
 
-            //for (int i = 0; i < tweensProperty.arraySize; i++)
-            //    EditorGUI.PropertyField(new Rect(rect.x + 4, rect.y + 58 + 80 * i, rect.width - 8, 80), tweensProperty.GetArrayElementAtIndex(i));
+        public static void DrawBackground(Rect rect, int index, bool isActive, bool isFocused)
+        {
+            EditorGUI.DrawRect(rect, Color.clear);
+        }
 
-            //Rect tweensRect = new Rect(rect.x + 4, rect.y + 58, rect.width - 8, tweensProperty.arraySize * 18 + 18);
+        public static void Draw(Rect rect, int index, bool isActive, bool isFocused)
+        {
+            EditorGUI.LabelField(rect, DrawerState.editorValues.state.items[index].name.Replace("[Tween] ", string.Empty));
+        }
 
-            /*
-
-            EditorGUI.PropertyField(tweensRect, tweensProperty);
-
-
-
-            ReorderableList tweensReorderableList = new ReorderableList(property.serializedObject, property.FindPropertyRelative("tweens"), true, true, true, true);
-
-
-            tweensReorderableList.drawHeaderCallback = (Rect headerRect) =>
-            {
-                EditorGUI.LabelField(headerRect, "Tweens");
-            };
-
-            tweensReorderableList.elementHeightCallback = (int index) =>
-            {
-                return 80f;
-            };
-
-            tweensReorderableList.drawElementCallback = (Rect tweenRect, int index, bool isActive, bool isFocused) =>
-            {
-                SerializedProperty tweenProperty = tweensReorderableList.serializedProperty.GetArrayElementAtIndex(index);
-
-                EditorGUI.PropertyField(new Rect(tweenRect.x + 16, tweenRect.y, tweenRect.width - 16, tweenRect.height), tweenProperty, true);
-            };
-
-            tweensReorderableList.DoList(tweensRect);
-            */
-
-            // Set indent back to what it was
-            //EditorGUI.indentLevel = indent;
-
-            //EditorGUI.EndProperty();
-        //}
-
-        /*
-        private void DrawHeader(Rect rect)
+        public static void DrawHeader(Rect rect)
         {
             EditorGUI.LabelField(rect, "Tweens");
         }
-        */
 
-        /*
-        private void DrawState(Rect rect, int index, bool isActive, bool isFocused)
+        #endregion
+
+        #region Inspector callbacks
+
+        public static void OnAddButton(ReorderableList list)
         {
-
+            selectedState = DrawerState.editorValues.state;
+            tweensMenu.ShowAsContext();
         }
 
-        private float GetElementHeight(int index)
+        public static void OnAddTween<T>() where T : Tween
         {
-            return 200;
+            T tween = EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", selectedTweenEditor.Name));
+            selectedState.Add(tween);
         }
-        */
 
-    //}
+        public static void OnRemoveButton(ReorderableList list)
+        {
+            State drawingState = DrawerState.editorValues.state;
+
+            EditorActions.Add(() =>
+            {
+                Tween removingTween = drawingState.items[list.index];
+
+                drawingState.Remove(removingTween, false);
+                EditorAssets.Remove(removingTween);
+                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(drawingState));
+            },
+            drawingState);
+        }
+
+        #endregion
+    }
 }

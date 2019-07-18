@@ -8,7 +8,13 @@ namespace Obel.MSS.Editor
 {
     internal static class EditorAssets
     {
+        #region Properties
+
         public static bool autoFocusOnCreatedAsset = false;
+
+        #endregion
+
+        #region Public methods
 
         public static T Create<T>(string assetName) where T : CollectionItem
         {
@@ -70,6 +76,14 @@ namespace Obel.MSS.Editor
         {
             AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(assetObject));
         }
-    }
 
+        public static T AddItem<T>(Collection<T> root, string name = "[MSS]") where T : CollectionItem
+        {
+            T newItem = Save<T>(root, name);
+            root.Add(newItem);
+            return newItem;
+        }
+
+        #endregion
+    }
 }

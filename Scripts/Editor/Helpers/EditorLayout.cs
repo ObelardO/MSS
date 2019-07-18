@@ -17,7 +17,7 @@ namespace Obel.MSS.Editor
 
         #endregion
 
-        #region Layout methods
+        #region Public methods
 
         public static void SetPosition(float x, float y)
         {

@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Obel.MSS
 {
     [Serializable]
-    public class TweenPosition : Tween, ITween
+    public class TweenBase : Tween, ITween
     {
         [SerializeField, HideInInspector] private Vector3 s_Value;
         public Vector3 Value => s_Value;

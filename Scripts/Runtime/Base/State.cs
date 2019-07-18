@@ -10,7 +10,7 @@ namespace Obel.MSS
 
         [SerializeField, HideInInspector]
         private float s_Delay;
-        public float delay
+        public float Delay
         {
             set { s_Delay = value; }
             get { return s_Delay; }

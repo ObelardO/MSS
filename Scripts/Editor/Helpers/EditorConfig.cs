@@ -5,6 +5,8 @@ namespace Obel.MSS.Editor
 {
     internal static class EditorConfig
     {
+        #region Subclasses
+
         public static class Content
         {
             public static GUIContent iconToolbarMinus = EditorGUIUtility.TrIconContent("Toolbar Minus", "Remove from list");
@@ -34,7 +36,7 @@ namespace Obel.MSS.Editor
             public static Color redColor = new Color(1, 0.65f, 0.65f, 1);
             public static Color greenColor = new Color(0.65f, 1, 0.65f, 1);
         }
+
+        #endregion
     }
 }
-
-
