@@ -41,10 +41,15 @@ namespace Obel.MSS.Editor
                 draggable = true,
                 showDefaultBackground = true,
 
+                headerHeight = 3,
+                footerHeight = 50,
+
+                
                 onAddCallback = DrawerTween.OnAddButton,
                 onRemoveCallback = DrawerTween.OnRemoveButton,
                 drawHeaderCallback = DrawerTween.DrawHeader,
-                drawElementCallback = DrawerTween.Draw
+                //drawElementCallback = DrawerTween.Draw,
+                drawNoneElementCallback = DrawerTween.DrawEmptyList
             };
         }
 

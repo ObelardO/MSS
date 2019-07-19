@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -15,9 +16,10 @@ namespace Obel.MSS.Editor
             DrawerTween.Add<TweenPosition>(new DrawerTweenPosition());
         }
 
-        public void OnGUI()
+        public void OnGUI(Rect rect, Tween tween)
         {
 
         }
+        
     }
 }

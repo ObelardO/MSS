@@ -17,7 +17,6 @@ namespace Obel.MSS.Editor
 
         private static GenericMenu tweensMenu = new GenericMenu();
         private static State selectedState;
-        private static ITweenEditor selectedTweenEditor;
 
         #endregion
 
@@ -39,13 +38,18 @@ namespace Obel.MSS.Editor
         }
 
         public static void Draw(Rect rect, int index, bool isActive, bool isFocused)
-        {
-            EditorGUI.LabelField(rect, DrawerState.editorValues.state.items[index].name.Replace("[Tween] ", string.Empty));
+        {           
+            EditorGUI.LabelField(rect, DrawerState.editorValues.state[index].name.Replace("[Tween] ", string.Empty));
         }
 
         public static void DrawHeader(Rect rect)
         {
             EditorGUI.LabelField(rect, "Tweens");
+        }
+
+        public static void DrawEmptyList(Rect rect)
+        {
+            EditorGUI.LabelField(rect, "Click + to add tween");
         }
 
         #endregion

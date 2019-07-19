@@ -180,7 +180,7 @@ namespace Obel.MSS.Editor
 
             EditorStateValues editorValues = EditorStateValues.Get(statesGroup[index]);
 
-            float stateHeight = DrawerState.headerHeight + 6 + Mathf.Lerp(0, 70 + (tweensCount == 0 ? 0 : tweensCount - 1) * 21 + 40,
+            float stateHeight = DrawerState.headerHeight + 6 + Mathf.Lerp(0, 91 + (tweensCount == 0 ? 0 : tweensCount - 1) * 21,
                                     editorValues.foldout.faded);
             return stateHeight;
         }
