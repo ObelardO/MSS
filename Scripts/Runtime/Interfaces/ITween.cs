@@ -1,8 +1,9 @@
-﻿namespace Obel.MSS
+﻿/*
+namespace Obel.MSS
 {
-    public interface ITween
+    public interface ITween<T>
     {
-
+        T Value { set; get; }
     }
 }
- 
+*/

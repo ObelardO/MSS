@@ -2,8 +2,7 @@
 
 namespace Obel.MSS
 {
-    public enum DefaultState { Closed, Opened }
-
+    [AddComponentMenu("MSS/States")]
     public class States : MonoBehaviour
     {
         #region Properties

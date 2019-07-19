@@ -1,4 +1,5 @@
-﻿namespace Obel.MSS
+﻿/*
+namespace Obel.MSS
 {
     public interface ICollectionItem
     {
@@ -12,3 +13,4 @@
         #endregion
     }
 }
+*/

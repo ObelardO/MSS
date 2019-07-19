@@ -12,22 +12,12 @@ namespace Obel.MSS.Editor
         [InitializeOnLoadMethod]
         public static void ApplicationStart()
         {
-            DrawerTween.AddTweenEditor(new DrawerTweenBase());
-        }
-
-        public DrawerTweenBase()
-        {
-
+            DrawerTween.Add<TweenBase>(new DrawerTweenBase());
         }
 
         public void OnGUI()
         {
 
-        }
-
-        public void OnAddButton()
-        {
-            DrawerTween.OnAddTween<TweenBase>();
         }
     }
 }

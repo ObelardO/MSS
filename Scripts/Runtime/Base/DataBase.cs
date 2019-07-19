@@ -99,7 +99,7 @@ namespace Obel.MSS
         #endregion
     }
 
-    public class CollectionItem : ScriptableObject, ICollectionItem
+    public class CollectionItem : ScriptableObject
     {
         #region Properties
 

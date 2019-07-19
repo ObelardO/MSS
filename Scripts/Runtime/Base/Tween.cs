@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Obel.MSS
 {
@@ -6,6 +7,16 @@ namespace Obel.MSS
     public class Tween : CollectionItem
     {
 
+    }
+
+    public class GenericTween<T> : Tween
+    {
+        [SerializeField, HideInInspector] private T s_Value;
+        public T Value
+        {
+            set { s_Value = value; }
+            get { return s_Value; }
+        }
     }
 }
 

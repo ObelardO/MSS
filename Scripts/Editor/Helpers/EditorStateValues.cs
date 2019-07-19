@@ -34,11 +34,11 @@ namespace Obel.MSS.Editor
 
             serializedState = new SerializedObject(state);
 
-            tweensReorderableList = new ReorderableList(state.items, typeof(Tween)/*, false, true, true, true*/)
+            tweensReorderableList = new ReorderableList(state.items, typeof(Tween))
             {
                 displayAdd = true,
                 displayRemove = true,
-                draggable = false,
+                draggable = true,
                 showDefaultBackground = true,
 
                 onAddCallback = DrawerTween.OnAddButton,

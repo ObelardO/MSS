@@ -60,7 +60,7 @@ namespace Obel.MSS.Editor
 
             if ((StatesGroup) serializedProperty.objectReferenceValue != assignedStatesGroup) EditorStateValues.Clear();
 
-            if (!statesGroup && GUILayout.Button(newButton, GUILayout.Width(50))) OnCreateGroupButton();
+            if (!statesGroup && GUILayout.Button(newButton, GUILayout.Width(50), GUILayout.Height(14))) OnCreateGroupButton();
 
             GUILayout.EndHorizontal();
         }

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.UI;
 using UnityEditorInternal;
+using System;
 
 namespace Obel.MSS.Editor
 {
@@ -20,19 +21,13 @@ namespace Obel.MSS.Editor
 
         #endregion
 
-        public static void AddTweenEditor(ITweenEditor tweenEditor)
+        public static void Add<T>(ITweenEditor tweenEditor) where T : Tween
         {
             if (!tweens.Contains(tweenEditor)) tweens.Add(tweenEditor);
 
             tweensMenu.AddItem(new GUIContent(tweenEditor.Name), false, () =>
             {
-                EditorActions.Add(() =>
-                {
-                    selectedTweenEditor = tweenEditor;
-                    tweenEditor.OnAddButton();
-                },
-                selectedState);
-
+                EditorActions.Add(() => EditorAssets.AddItem(selectedState, string.Concat("[Tween] ", tweenEditor.Name)), selectedState);
             });
         }
 
@@ -61,12 +56,6 @@ namespace Obel.MSS.Editor
         {
             selectedState = DrawerState.editorValues.state;
             tweensMenu.ShowAsContext();
-        }
-
-        public static void OnAddTween<T>() where T : Tween
-        {
-            T tween = EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", selectedTweenEditor.Name));
-            selectedState.Add(tween);
         }
 
         public static void OnRemoveButton(ReorderableList list)

@@ -44,7 +44,19 @@ namespace Obel.MSS.Editor
 
         public static T Save<T>(Object rootAsset, string assetName = null, Action <T> instancedCallback = null) where T : CollectionItem
         {
+            if (rootAsset == null)
+            {
+                Debug.Log("NULL ROOT");
+                return null;
+            }
+
             T newAsset = ScriptableObject.CreateInstance<T>();
+
+            if (newAsset == null)
+            {
+                Debug.Log("NULL ASSET");
+                return null;
+            }
 
             newAsset.name = assetName ?? rootAsset.name;
 
