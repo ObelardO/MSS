@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Obel.MSS.Editor
 {
-    public class DrawerTweenBase : ITweenEditor
+    internal class DrawerBasePosition : EditorTween<TweenBase>
     {
-        public string Name => "Base";
+        public override string Name => "Base";
 
         [InitializeOnLoadMethod]
         public static void ApplicationStart()
         {
-            DrawerTween.Add<TweenBase>(new DrawerTweenBase());
+            DrawerTween.Add(new DrawerBasePosition()); 
+            
         }
 
-        public void OnGUI(Rect rect, Tween tween)
+        public override void OnGUI(Rect rect, TweenBase tween)
         {
-
+            EditorGUI.LabelField(rect, "THIS IS BASE TWEEN");
         }
     }
 }

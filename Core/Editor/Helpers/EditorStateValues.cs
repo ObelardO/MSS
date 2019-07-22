@@ -48,7 +48,7 @@ namespace Obel.MSS.Editor
                 onAddCallback = DrawerTween.OnAddButton,
                 onRemoveCallback = DrawerTween.OnRemoveButton,
                 drawHeaderCallback = DrawerTween.DrawHeader,
-                //drawElementCallback = DrawerTween.Draw,
+                drawElementCallback = DrawerTween.Draw,
                 drawNoneElementCallback = DrawerTween.DrawEmptyList
             };
         }

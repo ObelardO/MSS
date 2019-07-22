@@ -1,34 +1,43 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.UI;
 using UnityEditorInternal;
-using System;
 
 namespace Obel.MSS.Editor
 {
     [CustomPropertyDrawer(typeof(Tween))]
-    public class DrawerTween : PropertyDrawer
+    internal class DrawerTween : PropertyDrawer
     {
         #region Properties
 
-        private static readonly List<ITweenEditor> tweens = new List<ITweenEditor>();
-
+        private static readonly List<ITweenEditor> tweensEditors = new List<ITweenEditor>();
         private static GenericMenu tweensMenu = new GenericMenu();
         private static State selectedState;
 
         #endregion
 
-        public static void Add<T>(ITweenEditor tweenEditor) where T : Tween
+        #region Public methods
+
+        public static void Add<T>(EditorTween<T> tweenEditor) where T : Tween
         {
-            if (!tweens.Contains(tweenEditor)) tweens.Add(tweenEditor);
+            if (!tweensEditors.Contains(tweenEditor))
+            {
+                tweensEditors.Add(tweenEditor);
+                tweenEditor.TweenType = typeof(T);
+            }
 
             tweensMenu.AddItem(new GUIContent(tweenEditor.Name), false, () =>
             {
-                EditorActions.Add(() => EditorAssets.AddItem(selectedState, string.Concat("[Tween] ", tweenEditor.Name)), selectedState);
+                EditorActions.Add(() =>
+                {
+                    T tween = EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", tweenEditor.Name));
+                    selectedState.Add(tween);
+
+                }, selectedState);
             });
         }
+
+        #endregion
 
         #region Inspector
 
@@ -38,8 +47,17 @@ namespace Obel.MSS.Editor
         }
 
         public static void Draw(Rect rect, int index, bool isActive, bool isFocused)
-        {           
-            EditorGUI.LabelField(rect, DrawerState.editorValues.state[index].name.Replace("[Tween] ", string.Empty));
+        {            
+            foreach (ITweenEditor tweenEditor in tweensEditors)
+            {
+                if (tweenEditor.TweenType.Equals(DrawerState.editorValues.state[index].GetType()))
+                {
+                    tweenEditor.OnGUI(rect, DrawerState.editorValues.state[index]);
+                    return;
+                }
+            }
+
+            EditorGUI.HelpBox(rect, "unknown tween module: \"" + DrawerState.editorValues.state[index].name + "\"", MessageType.Warning);
         }
 
         public static void DrawHeader(Rect rect)

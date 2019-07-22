@@ -187,6 +187,8 @@ namespace Obel.MSS.Editor
 
         #endregion
 
+        #region Public methods
+
         [MenuItem("Assets/Create/MSS/States Profile")]
         public static StatesGroup CreateStatesProfile()
         {
@@ -197,6 +199,8 @@ namespace Obel.MSS.Editor
 
             return newStatesGroup;
         }
+
+        #endregion
     }
 }
 

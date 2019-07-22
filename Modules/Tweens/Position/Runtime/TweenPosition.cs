@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Obel.MSS
@@ -8,7 +6,7 @@ namespace Obel.MSS
     [Serializable]
     public class TweenPosition : GenericTween<Vector3>
     {
-
+        public float position;
     }
 }
 

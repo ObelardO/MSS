@@ -121,10 +121,14 @@ namespace Obel.MSS
 
         #endregion
 
+        #region Public methods
+
         public void Init(CollectionItem parent)
         {
             Parent = parent ?? (this);
             ID = base.GetHashCode();
         }
+
+        #endregion
     }
 }
