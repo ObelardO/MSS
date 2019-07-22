@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
@@ -11,7 +12,7 @@ namespace Obel.MSS.Editor
         #region Properties
 
         private static readonly List<ITweenEditor> tweensEditors = new List<ITweenEditor>();
-        private static GenericMenu tweensMenu = new GenericMenu();
+        //private static GenericMenu tweensMenu = new GenericMenu();
         private static State selectedState;
 
         #endregion
@@ -24,17 +25,17 @@ namespace Obel.MSS.Editor
             {
                 tweensEditors.Add(tweenEditor);
                 tweenEditor.TweenType = typeof(T);
-            }
-
-            tweensMenu.AddItem(new GUIContent(tweenEditor.Name), false, () =>
-            {
-                EditorActions.Add(() =>
+                tweenEditor.AddAction = () =>
                 {
-                    T tween = EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", tweenEditor.Name));
-                    selectedState.Add(tween);
+                    EditorActions.Add(() =>
+                    {
+                        T tween = EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", tweenEditor.Name));
+                        selectedState.Add(tween);
 
-                }, selectedState);
-            });
+                    }, selectedState);
+                };
+
+            }
         }
 
         #endregion
@@ -77,6 +78,15 @@ namespace Obel.MSS.Editor
         public static void OnAddButton(ReorderableList list)
         {
             selectedState = DrawerState.editorValues.state;
+
+            GenericMenu tweensMenu = new GenericMenu();
+
+            foreach (ITweenEditor tweenEditor in tweensEditors)
+            {
+                if (selectedState.items.Where(t => t.GetType() == tweenEditor.TweenType).Count() == 0)
+                    tweensMenu.AddItem(new GUIContent(tweenEditor.Name), false, () => tweenEditor.AddAction());
+            }
+
             tweensMenu.ShowAsContext();
         }
 

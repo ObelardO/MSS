@@ -5,7 +5,7 @@ namespace Obel.MSS.Editor
 {
     internal class DrawerTweenPosition : EditorTween<TweenPosition>
     {
-        public override string Name => "Position";
+        public override string Name => "T/Position";
 
         [InitializeOnLoadMethod]
         public static void ApplicationStart()

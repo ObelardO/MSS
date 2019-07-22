@@ -11,6 +11,8 @@ namespace Obel.MSS.Editor
 
         Type TweenType { set; get; }
 
+        Action AddAction { set; get; }
+
         #endregion
 
         #region Inspector

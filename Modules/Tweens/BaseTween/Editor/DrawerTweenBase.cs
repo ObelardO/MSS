@@ -5,7 +5,7 @@ namespace Obel.MSS.Editor
 {
     internal class DrawerBasePosition : EditorTween<TweenBase>
     {
-        public override string Name => "Base";
+        public override string Name => "T/Base";
 
         [InitializeOnLoadMethod]
         public static void ApplicationStart()

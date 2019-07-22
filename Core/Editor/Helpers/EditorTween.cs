@@ -14,6 +14,8 @@ namespace Obel.MSS.Editor
 
         public virtual Type TweenType { get; set; }
 
+        public Action AddAction { get; set; }
+
         #endregion
 
         #region Inspector
