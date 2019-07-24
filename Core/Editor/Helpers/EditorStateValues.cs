@@ -16,6 +16,7 @@ namespace Obel.MSS.Editor
         public AnimBool foldout;
         public SerializedObject serializedState;
         public ReorderableList tweensReorderableList;
+        public float tweensListHeight;
 
         public static UnityAction updatingAction;
 
@@ -44,12 +45,15 @@ namespace Obel.MSS.Editor
                 headerHeight = 3,
                 footerHeight = 50,
 
-                
                 onAddCallback = DrawerTween.OnAddButton,
                 onRemoveCallback = DrawerTween.OnRemoveButton,
                 drawHeaderCallback = DrawerTween.DrawHeader,
                 drawElementCallback = DrawerTween.Draw,
-                drawNoneElementCallback = DrawerTween.DrawEmptyList
+                drawNoneElementCallback = DrawerTween.DrawEmptyList,
+
+                elementHeightCallback = DrawerTween.GetHeight
+
+                
             };
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -16,6 +17,12 @@ namespace Obel.MSS.Editor
 
         public Action AddAction { get; set; }
 
+        private float s_Height = EditorGUIUtility.singleLineHeight;
+        public virtual float Height {
+            get => s_Height;
+            set => s_Height = value;
+        }
+
         #endregion
 
         #region Inspector
@@ -28,5 +35,10 @@ namespace Obel.MSS.Editor
         }
 
         #endregion
+
+        public static ITweenEditor Get(List<ITweenEditor> editors)
+        {
+            return editors.Where(t => t.TweenType.Equals(typeof(T))).FirstOrDefault();
+        }
     }
 }

@@ -140,7 +140,7 @@ namespace Obel.MSS.Editor
                 showDefaultBackground = false,
 
                 drawElementBackgroundCallback = DrawStateBackground,
-                elementHeightCallback = OnGetStateHeight,
+                elementHeightCallback = GetStateHeight,
                 drawElementCallback = DrawState,
                 onReorderCallback = OnReordered
             };
@@ -174,13 +174,13 @@ namespace Obel.MSS.Editor
             EditorStateValues.Reorder(statesGroup.items);
         }
 
-        private float OnGetStateHeight(int index)
+        private float GetStateHeight(int index)
         {
             int tweensCount = statesGroup[index].Count;
 
             EditorStateValues editorValues = EditorStateValues.Get(statesGroup[index]);
 
-            float stateHeight = DrawerState.headerHeight + 6 + Mathf.Lerp(0, 91 + (tweensCount == 0 ? 0 : tweensCount - 1) * 21,
+            float stateHeight = DrawerState.headerHeight + 6 + Mathf.Lerp(0, 91 + 120/* editorValues.tweensListHeight*/,
                                     editorValues.foldout.faded);
             return stateHeight;
         }

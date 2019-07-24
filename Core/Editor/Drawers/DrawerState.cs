@@ -117,6 +117,7 @@ namespace Obel.MSS.Editor
 
             EditorLayout.SetWidth(rect.width - EditorLayout.offset * 2);
 
+            editorValues.tweensListHeight = 0;
             EditorLayout.Control((Rect r) => editorValues.tweensReorderableList.DoList(r));
 
             EditorLayout.PullColor();

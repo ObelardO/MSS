@@ -7,8 +7,8 @@ namespace Obel.MSS
     {
         #region Properties
 
-        public State ClosedState { get { return Get((int)DefaultState.Closed); } }
-        public State OpenedState { get { return Get((int)DefaultState.Opened); } }
+        public State ClosedState { get => Get((int)DefaultState.Closed); }
+        public State OpenedState { get => Get((int)DefaultState.Opened); }
 
         #endregion
     }

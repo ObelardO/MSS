@@ -14,8 +14,8 @@ namespace Obel.MSS
         [SerializeField, HideInInspector] private T s_Value;
         public T Value
         {
-            set { s_Value = value; }
-            get { return s_Value; }
+            set => s_Value = value;
+            get => s_Value;
         }
     }
 }

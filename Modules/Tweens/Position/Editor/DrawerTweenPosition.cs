@@ -7,6 +7,8 @@ namespace Obel.MSS.Editor
     {
         public override string Name => "T/Position";
 
+        public override float Height => 50f;
+
         [InitializeOnLoadMethod]
         public static void ApplicationStart()
         {

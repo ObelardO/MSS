@@ -13,6 +13,8 @@ namespace Obel.MSS.Editor
 
         Action AddAction { set; get; }
 
+        float Height { set; get; }
+
         #endregion
 
         #region Inspector

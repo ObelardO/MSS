@@ -115,8 +115,8 @@ namespace Obel.MSS
         private int s_ID;
         public int ID
         {
-            private set { s_ID = value; }
-            get { return s_ID; }
+            private set => s_ID = value;
+            get => s_ID;
         }
 
         #endregion
