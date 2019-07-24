@@ -12,35 +12,13 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
-        private static readonly List<ITweenEditor> tweensEditors = new List<ITweenEditor>();
-        //private static GenericMenu tweensMenu = new GenericMenu();
-        private static State selectedState;
-        private static ITweenEditor drawingEditor;
-
-        //public static float ListHeight { private set; get; }
+        private static EditorState StateEditor => EditorState.Selected;
 
         #endregion
 
         #region Public methods
 
-        public static void Add<T>(EditorTween<T> tweenEditor) where T : Tween
-        {
-            if (!tweensEditors.Contains(tweenEditor))
-            {
-                tweensEditors.Add(tweenEditor);
-                tweenEditor.TweenType = typeof(T);
-                tweenEditor.AddAction = () =>
-                {
-                    EditorActions.Add(() =>
-                    {
-                        T tween = EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", tweenEditor.Name));
-                        selectedState.Add(tween);
 
-                    }, selectedState);
-                };
-
-            }
-        }
 
         #endregion
 
@@ -53,31 +31,15 @@ namespace Obel.MSS.Editor
 
         public static void Draw(Rect rect, int index, bool isActive, bool isFocused)
         {
+            IGenericTweenEditor editor = EditorTween.Get(StateEditor.state[index].GetType());
 
-            /*
-            foreach (ITweenEditor tweenEditor in tweensEditors)
+            if (editor == null)
             {
-                if (tweenEditor.TweenType.Equals(DrawerState.editorValues.state[index].GetType()))
-                {
-                    drawingEditor = 
-                    tweenEditor.OnGUI(rect, DrawerState.editorValues.state[index]);
-                    return;
-                }
-            }
-            */
-
-            ITweenEditor drawingEditor = tweensEditors
-                .Where(t => t.TweenType.Equals(DrawerState.editorValues.state[index].GetType())).FirstOrDefault();
- 
-
-
-            if (drawingEditor == null)
-            {
-                EditorGUI.HelpBox(rect, "unknown tween module: \"" + DrawerState.editorValues.state[index].name + "\"", MessageType.Warning);
+                EditorGUI.HelpBox(rect, "unknown tween module: \"" + StateEditor.state[index].name + "\"", MessageType.Warning);
                 return;
             }
 
-            drawingEditor.OnGUI(rect, DrawerState.editorValues.state[index]);
+            editor.OnGUI(rect, StateEditor.state[index]);
         }
 
         public static void DrawHeader(Rect rect)
@@ -92,48 +54,13 @@ namespace Obel.MSS.Editor
 
         public static float GetHeight(int index)
         {
-            ITweenEditor drawingEditor = tweensEditors
-                .Where(t => t.TweenType.Equals(DrawerState.editorValues.state[index].GetType())).FirstOrDefault();
+            IGenericTweenEditor editor = EditorTween.Get(StateEditor.state[index].GetType());
 
-            float height = drawingEditor == null ? EditorGUIUtility.singleLineHeight : drawingEditor.Height;
+            float height = editor == null ? EditorGUIUtility.singleLineHeight : editor.Height;
 
-            DrawerState.editorValues.tweensListHeight += height;
+            StateEditor.tweensListHeight += height;
 
             return height;
-        }
-
-        #endregion
-
-        #region Inspector callbacks
-
-        public static void OnAddButton(ReorderableList list)
-        {
-            selectedState = DrawerState.editorValues.state;
-
-            GenericMenu tweensMenu = new GenericMenu();
-
-            foreach (ITweenEditor tweenEditor in tweensEditors)
-            {
-                if (selectedState.items.Where(t => t.GetType() == tweenEditor.TweenType).Count() == 0)
-                    tweensMenu.AddItem(new GUIContent(tweenEditor.Name), false, () => tweenEditor.AddAction());
-            }
-
-            tweensMenu.ShowAsContext();
-        }
-
-        public static void OnRemoveButton(ReorderableList list)
-        {
-            State drawingState = DrawerState.editorValues.state;
-
-            EditorActions.Add(() =>
-            {
-                Tween removingTween = drawingState.items[list.index];
-
-                drawingState.Remove(removingTween, false);
-                EditorAssets.Remove(removingTween);
-                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(drawingState));
-            },
-            drawingState);
         }
 
         #endregion

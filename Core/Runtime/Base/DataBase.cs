@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace Obel.MSS
 {
-    [Serializable]
     public class Collection<T> : CollectionItem where T : CollectionItem
     {
         #region Properties
@@ -107,8 +106,8 @@ namespace Obel.MSS
         private CollectionItem s_Parent;
         public CollectionItem Parent
         {
-            private set { s_Parent = value; }
-            get { return s_Parent; }
+            private set => s_Parent = value;
+            get => s_Parent;
         }
 
         [SerializeField, HideInInspector]

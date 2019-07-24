@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Obel.MSS.Editor
 {
-    internal class DrawerTweenPosition : EditorTween<TweenPosition>
+    internal class DrawerTweenPosition : EditorGenericTween<TweenPosition>
     {
         public override string Name => "T/Position";
 
@@ -12,7 +12,7 @@ namespace Obel.MSS.Editor
         [InitializeOnLoadMethod]
         public static void ApplicationStart()
         {
-            DrawerTween.Add(new DrawerTweenPosition());
+            EditorTween.Add(new DrawerTweenPosition());
         }
 
         public override void OnGUI(Rect rect, TweenPosition tween)

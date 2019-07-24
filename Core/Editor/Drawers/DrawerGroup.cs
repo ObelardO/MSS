@@ -14,9 +14,8 @@ namespace Obel.MSS.Editor
                                            addStateButton = new GUIContent("Add State");
 
         private Rect rect;
-
+        
         private StatesGroup statesGroup;
-        //private SerializedObject serializedObject;
         private SerializedObject serializedStatesGroup;
         private SerializedProperty statesProperty;
         private ReorderableList statesReorderableList;
@@ -58,7 +57,7 @@ namespace Obel.MSS.Editor
 
             EditorGUILayout.PropertyField(serializedProperty, profileLabel, false);
 
-            if ((StatesGroup) serializedProperty.objectReferenceValue != assignedStatesGroup) EditorStateValues.Clear();
+            if ((StatesGroup) serializedProperty.objectReferenceValue != assignedStatesGroup) EditorState.Clear();
 
             if (!statesGroup && GUILayout.Button(newButton, GUILayout.Width(50), GUILayout.Height(14))) OnCreateGroupButton();
 
@@ -104,7 +103,10 @@ namespace Obel.MSS.Editor
         {
             rect.width += 5;
 
-            DrawerState.editorValues = EditorStateValues.Get(statesGroup[index]);
+            EditorState.Select(statesGroup[index]);
+
+            //DrawerState.editorValues = EditorStateValues.Get(statesGroup[index]);
+
 
             EditorGUI.PropertyField(rect, statesProperty.GetArrayElementAtIndex(index), true);
         }
@@ -151,7 +153,7 @@ namespace Obel.MSS.Editor
         private void OnUndo()
         {
             EditorAssets.Refresh(statesGroup);
-            EditorStateValues.Reorder(statesGroup.items);
+            EditorState.Reorder(statesGroup.items);
             EditorActions.Clear();
         }
 
@@ -160,8 +162,8 @@ namespace Obel.MSS.Editor
             State state = EditorAssets.AddItem(statesGroup);
             EditorAssets.Refresh(statesGroup);
 
-            EditorStateValues.Reorder(statesGroup.items);
-            EditorStateValues.Get(state).foldout.target = true;
+            EditorState.Reorder(statesGroup.items);
+            EditorState.Get(state).foldout.target = true;
         }
 
         private void OnCreateGroupButton()
@@ -171,17 +173,17 @@ namespace Obel.MSS.Editor
 
         private void OnReordered(ReorderableList list)
         {
-            EditorStateValues.Reorder(statesGroup.items);
+            EditorState.Reorder(statesGroup.items);
         }
 
         private float GetStateHeight(int index)
         {
             int tweensCount = statesGroup[index].Count;
 
-            EditorStateValues editorValues = EditorStateValues.Get(statesGroup[index]);
+            EditorState editor = EditorState.Get(statesGroup[index]);
 
             float stateHeight = DrawerState.headerHeight + 6 + Mathf.Lerp(0, 91 + 120/* editorValues.tweensListHeight*/,
-                                    editorValues.foldout.faded);
+                                    editor.foldout.faded);
             return stateHeight;
         }
 

@@ -16,8 +16,8 @@ namespace Obel.MSS.Editor
         private void OnEnable()
         {
             EditorActions.Clear();
-            EditorStateValues.Clear();
-            EditorStateValues.updatingAction = Repaint;
+            EditorState.Clear();
+            EditorState.updatingAction = Repaint;
 
             statesGroupProperty = serializedObject.FindProperty("statesGroup");
         }
@@ -25,8 +25,8 @@ namespace Obel.MSS.Editor
         private void OnDisable()
         {
             EditorActions.Clear();
-            EditorStateValues.Clear();
-            EditorStateValues.updatingAction = null;
+            EditorState.Clear();
+            EditorState.updatingAction = null;
         }
 
         #endregion

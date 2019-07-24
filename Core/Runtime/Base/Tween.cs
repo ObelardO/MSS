@@ -1,15 +1,13 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Obel.MSS
 {
-    [Serializable]
     public class Tween : CollectionItem
     {
 
     }
 
-    public class GenericTween<T> : Tween
+    public class GenericTween<T> : Tween where T : struct
     {
         [SerializeField, HideInInspector] private T s_Value;
         public T Value

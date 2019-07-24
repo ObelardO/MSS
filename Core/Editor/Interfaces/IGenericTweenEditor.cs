@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace Obel.MSS.Editor
 {
-    public interface ITweenEditor
+    public interface IGenericTweenEditor
     {
         #region Properties
 
         string Name { get; }
 
-        Type TweenType { set; get; }
+        Type Type { set; get; }
 
         Action AddAction { set; get; }
 

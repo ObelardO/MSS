@@ -1,9 +1,7 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Obel.MSS
 {
-    [Serializable]
     public class State : Collection<Tween>
     {
         #region Properties

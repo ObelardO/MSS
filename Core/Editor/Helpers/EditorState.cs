@@ -6,11 +6,11 @@ using UnityEditorInternal;
 
 namespace Obel.MSS.Editor
 {
-    internal class EditorStateValues
+    internal class EditorState
     {
         #region Properties
 
-        static private Dictionary<int, EditorStateValues> statesDictionary = new Dictionary<int, EditorStateValues>();
+        static private Dictionary<int, EditorState> statesDictionary = new Dictionary<int, EditorState>();
 
         public State state;
         public AnimBool foldout;
@@ -20,11 +20,18 @@ namespace Obel.MSS.Editor
 
         public static UnityAction updatingAction;
 
+        public static EditorState Selected { private set; get; }
+
         #endregion
 
         #region Public methods
 
-        public EditorStateValues(State state)
+        public static void Select(State state)
+        {
+            Selected = Get(state);
+        }
+
+        public EditorState(State state)
         {
             foldout = new AnimBool(false);
             this.state = state;
@@ -45,8 +52,8 @@ namespace Obel.MSS.Editor
                 headerHeight = 3,
                 footerHeight = 50,
 
-                onAddCallback = DrawerTween.OnAddButton,
-                onRemoveCallback = DrawerTween.OnRemoveButton,
+                onAddCallback = EditorTween.OnAddButton,
+                onRemoveCallback = EditorTween.OnRemoveButton,
                 drawHeaderCallback = DrawerTween.DrawHeader,
                 drawElementCallback = DrawerTween.Draw,
                 drawNoneElementCallback = DrawerTween.DrawEmptyList,
@@ -57,16 +64,16 @@ namespace Obel.MSS.Editor
             };
         }
 
-        public static EditorStateValues Get(State state)
+        public static EditorState Get(State state)
         {
-            EditorStateValues editorValues;
+            EditorState editor = null;
 
             if (statesDictionary.ContainsKey(state.ID))
-                editorValues = statesDictionary[state.ID];
+                editor = statesDictionary[state.ID];
             else
-                editorValues = new EditorStateValues(state);
+                editor = new EditorState(state);
 
-            return editorValues;
+            return editor;
         }
 
         public static void Clear()
@@ -76,7 +83,7 @@ namespace Obel.MSS.Editor
 
         public static void Reorder(List<State> reorderedStates)
         {
-            foreach (KeyValuePair<int, EditorStateValues> entry in statesDictionary)
+            foreach (KeyValuePair<int, EditorState> entry in statesDictionary)
                 for (int i = 0; i < reorderedStates.Count; i++)
                     if (entry.Key.Equals(reorderedStates[i].ID))
                         statesDictionary[entry.Key].state = reorderedStates[i];

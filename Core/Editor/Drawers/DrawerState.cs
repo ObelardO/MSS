@@ -13,7 +13,7 @@ namespace Obel.MSS.Editor
                                            durationLabel = new GUIContent("Duration"),
                                            testLabel = new GUIContent("Test");
 
-        public static EditorStateValues editorValues;
+        private static EditorState StateEditor => EditorState.Selected;
 
         private SerializedProperty property;
         private GUIContent label;
@@ -21,24 +21,26 @@ namespace Obel.MSS.Editor
 
         public static readonly float headerHeight = 20;
 
+       //private static selectedState;
+
         #endregion
 
         #region Inspector
 
         public override void OnGUI(Rect rect, SerializedProperty property, GUIContent label)
         {
-            if (editorValues == null) return;
+            if (StateEditor == null) return;
 
             this.rect = rect;
             this.label = label;
             this.property = property;
 
-            editorValues.serializedState.Update();
+            StateEditor.serializedState.Update();
 
             DrawHeader();
             DrawProperties();
 
-            editorValues.serializedState.ApplyModifiedProperties();
+            StateEditor.serializedState.ApplyModifiedProperties();
         }
 
         private void DrawHeader()
@@ -51,36 +53,36 @@ namespace Obel.MSS.Editor
 
             Rect rectStateTabColor = new Rect(rect.x, rect.y, 2, headerHeight);
             Color tabColor = Color.gray;
-            if (editorValues.state.IsOpenedState) tabColor = EditorConfig.Colors.greenColor;
-            if (editorValues.state.IsClosedState) tabColor = EditorConfig.Colors.redColor;
+            if (StateEditor.state.IsOpenedState) tabColor = EditorConfig.Colors.greenColor;
+            if (StateEditor.state.IsClosedState) tabColor = EditorConfig.Colors.redColor;
             EditorGUI.DrawRect(rectStateTabColor, tabColor);
 
             Rect rectToggle = new Rect(rect.x + 5, rect.y, 20, headerHeight);
 
-            if (editorValues.state.IsDefaultState)
+            if (StateEditor.state.IsDefaultState)
             {
                 EditorGUI.BeginDisabledGroup(true);
                 EditorGUI.Toggle(rectToggle, GUIContent.none, true);
                 EditorGUI.EndDisabledGroup();
             }
             else
-                EditorGUI.PropertyField(rectToggle, editorValues.serializedState.FindProperty("s_Enabled"), GUIContent.none);
+                EditorGUI.PropertyField(rectToggle, StateEditor.serializedState.FindProperty("s_Enabled"), GUIContent.none);
 
             Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, headerHeight);
-            editorValues.foldout.target = EditorGUI.Foldout(rectFoldout, editorValues.foldout.target,
-                new GUIContent(editorValues.state.Name/* + " | " + editorValues.state.ID*/), true, EditorConfig.Styles.Foldout);
+            StateEditor.foldout.target = EditorGUI.Foldout(rectFoldout, StateEditor.foldout.target,
+                new GUIContent(StateEditor.state.Name/* + " | " + StateEditor.state.ID*/), true, EditorConfig.Styles.Foldout);
 
-            if (!editorValues.state.IsDefaultState && 
+            if (!StateEditor.state.IsDefaultState && 
                 GUI.Button(new Rect(rect.width + 8, rect.y + 1, 30, headerHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
                     OnRemoveButton();
         }
 
         private void DrawProperties()
         {
-            if (editorValues.foldout.faded == 0) return;
+            if (StateEditor.foldout.faded == 0) return;
 
             //EditorGUI.BeginProperty(rect, label, property);
-            EditorGUI.BeginDisabledGroup(editorValues.foldout.faded < 0.2f || !editorValues.state.Enabled);
+            EditorGUI.BeginDisabledGroup(StateEditor.foldout.faded < 0.2f || !StateEditor.state.Enabled);
 
             float timeFieldWidth = 54;
             float nameFieldWidth = rect.width - timeFieldWidth * 2 - EditorLayout.offset * 4;
@@ -89,7 +91,7 @@ namespace Obel.MSS.Editor
 
             EditorLayout.PushColor();
 
-            GUI.color *= Mathf.Clamp01(editorValues.foldout.faded - 0.5f) / 0.5f ;
+            GUI.color *= Mathf.Clamp01(StateEditor.foldout.faded - 0.5f) / 0.5f ;
 
             EditorLayout.SetPosition(rect.x, rect.y + headerHeight);
 
@@ -104,21 +106,21 @@ namespace Obel.MSS.Editor
 
             EditorLayout.Control(nameFieldWidth, (Rect r) =>
             {
-                EditorGUI.BeginDisabledGroup(editorValues.state.IsDefaultState);
-                EditorGUI.PropertyField(r, editorValues.serializedState.FindProperty("s_Name"), GUIContent.none);
-                if (editorValues.state != null) editorValues.state.name = string.Format("[State] {0}", editorValues.state.Name);
+                EditorGUI.BeginDisabledGroup(StateEditor.state.IsDefaultState);
+                EditorGUI.PropertyField(r, StateEditor.serializedState.FindProperty("s_Name"), GUIContent.none);
+                if (StateEditor.state != null) StateEditor.state.name = string.Format("[State] {0}", StateEditor.state.Name);
                 EditorGUI.EndDisabledGroup();
             });
 
-            EditorLayout.Control((Rect r) => EditorGUI.PropertyField(r, editorValues.serializedState.FindProperty("s_Delay"), GUIContent.none));
-            EditorLayout.Control((Rect r) => EditorGUI.PropertyField(r, editorValues.serializedState.FindProperty("s_Duration"), GUIContent.none));
+            EditorLayout.Control((Rect r) => EditorGUI.PropertyField(r, StateEditor.serializedState.FindProperty("s_Delay"), GUIContent.none));
+            EditorLayout.Control((Rect r) => EditorGUI.PropertyField(r, StateEditor.serializedState.FindProperty("s_Duration"), GUIContent.none));
 
             EditorLayout.Space(6);
 
             EditorLayout.SetWidth(rect.width - EditorLayout.offset * 2);
 
-            editorValues.tweensListHeight = 0;
-            EditorLayout.Control((Rect r) => editorValues.tweensReorderableList.DoList(r));
+            StateEditor.tweensListHeight = 0;
+            EditorLayout.Control((Rect r) => StateEditor.tweensReorderableList.DoList(r));
 
             EditorLayout.PullColor();
 
@@ -133,7 +135,7 @@ namespace Obel.MSS.Editor
 
         private void OnRemoveButton()
         {
-            State removingState = editorValues.state;
+            State removingState = StateEditor.state;
             StatesGroup removingStateGroup = (StatesGroup)removingState.Parent;
 
             // TODO! Remove tweens
@@ -145,7 +147,7 @@ namespace Obel.MSS.Editor
                 EditorAssets.Remove(removingState);
                 AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(removingStateGroup));
 
-                EditorStateValues.Reorder(removingStateGroup.items);
+                EditorState.Reorder(removingStateGroup.items);
             },
             removingStateGroup, "[MSS] Remove state");
         }
