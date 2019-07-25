@@ -19,7 +19,7 @@ namespace Obel.MSS.Editor
 
         #region Inspector
 
-        void OnGUI(Rect rect, Tween tween);
+        void Draw(Rect rect, Tween tween);
 
         #endregion
     }

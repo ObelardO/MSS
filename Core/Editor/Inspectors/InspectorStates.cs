@@ -26,7 +26,7 @@ namespace Obel.MSS.Editor
 
             states = (States)target;
 
-            DrawerGroup.OnEnable(states.statesGroup);
+            EditorGroup.OnEnable(states.statesGroup);
         }
 
         private void OnDisable()
@@ -57,16 +57,16 @@ namespace Obel.MSS.Editor
 
                         states.statesGroup = EditorGUILayout.ObjectField(profileLabel, states.statesGroup, typeof(StatesGroup), false) as StatesGroup;
 
-                        if (states.statesGroup == null && GUILayout.Button(newButton, GUILayout.Width(50), GUILayout.Height(14))) states.statesGroup = DrawerGroup.CreateStatesProfile();
+                        if (states.statesGroup == null && GUILayout.Button(newButton, GUILayout.Width(50), GUILayout.Height(14))) states.statesGroup = EditorGroup.CreateStatesProfile();
 
                         if (EditorGUI.EndChangeCheck())
                         {
                             EditorState.Clear();
-                            DrawerGroup.OnEnable(states.statesGroup);
+                            EditorGroup.OnEnable(states.statesGroup);
                         }   
                     GUILayout.EndHorizontal();
 
-                    DrawerGroup.Draw(states.statesGroup);
+                    EditorGroup.Draw(states.statesGroup);
 
                 GUILayout.EndVertical();
             GUILayout.EndHorizontal();

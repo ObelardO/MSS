@@ -1,18 +1,108 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEditor;
+using UnityEditor.AnimatedValues;
+using UnityEngine.Events;
+using UnityEditorInternal;
 
 namespace Obel.MSS.Editor
 {
-    internal static class DrawerState
+    internal class EditorState
     {
         #region Properties
 
         private static readonly GUIContent contentLabel = new GUIContent("Name"),
                                            delayLabel = new GUIContent("Delay"),
-                                           durationLabel = new GUIContent("Duration"),
-                                           testLabel = new GUIContent("Test");
+                                           durationLabel = new GUIContent("Duration");
+
+        static private Dictionary<int, EditorState> statesDictionary = new Dictionary<int, EditorState>();
+
+        public State state;
+        public AnimBool foldout;
+        public SerializedObject serializedState;
+        public ReorderableList tweensReorderableList;
+
+        public static UnityAction Repaint;
+
+        public float TweensListHeight { private set; get; }
 
         public static readonly float headerHeight = 20;
+
+        #endregion
+
+        #region Public methods
+
+        public EditorState(State state)
+        {
+            foldout = new AnimBool(false);
+            this.state = state;
+
+            statesDictionary.Add(state.ID, this);
+
+            if (Repaint != null) foldout.valueChanged.AddListener(Repaint);
+
+            serializedState = new SerializedObject(state);
+
+            tweensReorderableList = new ReorderableList(state.items, typeof(Tween))
+            {
+                displayAdd = true,
+                displayRemove = true,
+                draggable = true,
+                showDefaultBackground = true,
+
+                headerHeight = 3,
+                footerHeight = 50,
+
+                onAddCallback = list => EditorTween.OnAddButton(state),
+                onRemoveCallback = list => EditorTween.OnRemoveButton(state, list.index),
+                drawHeaderCallback = EditorTween.DrawHeader,
+                drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => EditorTween.Draw(rect, state[index]),
+                elementHeightCallback = index => EditorTween.GetHeight(state[index].GetType()),
+                drawNoneElementCallback = EditorTween.DrawEmptyList
+            };
+
+            CalculateTweensListHeight();
+        }
+
+        public static EditorState Get(State state)
+        {
+            EditorState editor = null;
+
+            if (statesDictionary.ContainsKey(state.ID))
+                editor = statesDictionary[state.ID];
+            else
+                editor = new EditorState(state);
+
+            return editor;
+        }
+
+        public static void Clear()
+        {
+            statesDictionary.Clear();
+        }
+
+        public static void CalculateAllTweensListsHeight()
+        {
+            foreach (KeyValuePair<int, EditorState> state in statesDictionary) statesDictionary[state.Key].CalculateTweensListHeight();
+        }
+
+        public static void Reorder(StatesGroup group)
+        {
+            foreach (KeyValuePair<int, EditorState> state in statesDictionary)
+                for (int i = 0; i < group.Count; i++)
+                    if (state.Key.Equals(group[i].ID))
+                        statesDictionary[state.Key].state = group[i];
+        }
+
+        #endregion
+
+        #region Private methods
+
+        private void CalculateTweensListHeight()
+        {
+            TweensListHeight = 0;
+            for (int i = 0; i < state.Count; i++) TweensListHeight += EditorTween.GetHeight(state[i]);
+        }
 
         #endregion
 
@@ -115,12 +205,10 @@ namespace Obel.MSS.Editor
             EditorGUI.EndDisabledGroup();
         }
 
+        public static float GetHeight(State state) => GetHeight(Get(state));
+
         public static float GetHeight(EditorState editor)
         {
-            float tweensHeight = 0;
-
-            for (int i = 0; i < editor.state.Count; i++) tweensHeight += DrawerTween.GetHeight(editor.state[i]);
-
             return headerHeight + 6 + Mathf.Lerp(0, 77 + (editor.state.Count == 0 ? 14 : editor.TweensListHeight - 7), editor.foldout.faded);
         }
 
@@ -139,11 +227,24 @@ namespace Obel.MSS.Editor
                 EditorAssets.Remove(state);
                 AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(group));
 
-                EditorState.Reorder(group);
+                Reorder(group);
             },
-            group, "[MSS] Remove state");
+                group, "[MSS] Remove state");
+        }
+
+        public void OnTweenAdded<T>(T tween) where T : Tween
+        {
+            TweensListHeight += EditorTween.Get(tween).Height;
+            Repaint();
+        }
+
+        public void OnTweenRemoving<T>(T tween) where T : Tween
+        {
+            TweensListHeight -= EditorTween.Get(tween).Height;
+            Repaint();
         }
 
         #endregion
+
     }
 }

@@ -4,7 +4,7 @@ using UnityEditorInternal;
 
 namespace Obel.MSS.Editor
 {
-    internal static class DrawerGroup
+    internal static class EditorGroup
     {
         #region Properties
 
@@ -72,9 +72,9 @@ namespace Obel.MSS.Editor
 
                 showDefaultBackground = false,
 
-                drawElementBackgroundCallback = DrawerState.DrawBackground,
-                elementHeightCallback = index => DrawerState.GetHeight(EditorState.Get(group[index])),
-                drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => DrawerState.Draw(rect, group[index]),
+                drawElementBackgroundCallback = EditorState.DrawBackground,
+                elementHeightCallback = index => EditorState.GetHeight(EditorState.Get(group[index])),
+                drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => EditorState.Draw(rect, group[index]),
                 onReorderCallback = list => EditorState.Reorder(group)
             };
         }
@@ -114,4 +114,3 @@ namespace Obel.MSS.Editor
         #endregion
     }
 }
-

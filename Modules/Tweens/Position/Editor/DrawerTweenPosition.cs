@@ -15,7 +15,7 @@ namespace Obel.MSS.Editor
             EditorTween.Add(new DrawerTweenPosition());
         }
 
-        public override void OnGUI(Rect rect, TweenPosition tween)
+        public override void Draw(Rect rect, TweenPosition tween)
         {
             EditorGUI.LabelField(rect, "THIS IS POSITION TWEEN");
         }

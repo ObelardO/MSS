@@ -27,9 +27,9 @@ namespace Obel.MSS.Editor
 
         #region Inspector
 
-        public virtual void OnGUI(Rect rect, Tween tween) => OnGUI(rect, tween as T);
+        public virtual void Draw(Rect rect, Tween tween) => Draw(rect, tween as T);
 
-        public virtual void OnGUI(Rect rect, T tween)
+        public virtual void Draw(Rect rect, T tween)
         {
             EditorGUI.HelpBox(rect, "no drawer for tween: \"" + Name + "\"", MessageType.Warning);
         }
@@ -44,6 +44,38 @@ namespace Obel.MSS.Editor
         private static readonly List<IGenericTweenEditor> editors = new List<IGenericTweenEditor>();
 
         private static State selectedState;
+
+        #endregion
+
+        #region Inspector
+
+        public static void DrawBackground(Rect rect, int index, bool isActive, bool isFocused) => EditorGUI.DrawRect(rect, Color.clear);
+
+        public static void Draw(Rect rect, Tween tween)
+        {
+            IGenericTweenEditor editor = Get(tween.GetType());
+
+            if (editor == null)
+            {
+                EditorGUI.HelpBox(rect, "unknown tween module: \"" + tween.name + "\"", MessageType.Warning);
+                return;
+            }
+
+            editor.Draw(rect, tween);
+        }
+
+        public static void DrawHeader(Rect rect) => EditorGUI.LabelField(rect, "Tweens");
+
+        public static void DrawEmptyList(Rect rect) => EditorGUI.LabelField(rect, "Click + to add tween");
+
+        public static float GetHeight<T>(T tween) where T : Tween => GetHeight(tween.GetType());
+
+        public static float GetHeight(Type @Type)
+        {
+            IGenericTweenEditor editor = EditorTween.Get(@Type);
+
+            return editor == null ? EditorGUIUtility.singleLineHeight : editor.Height;
+        }
 
         #endregion
 
@@ -95,17 +127,17 @@ namespace Obel.MSS.Editor
         public static void OnRemoveButton(State state, int index)
         {
             EditorActions.Add(() =>
-            {
-                Tween tween = state[index];
+                {
+                    Tween tween = state[index];
 
-                EditorState.Get(state).OnTweenRemoving(tween);
+                    EditorState.Get(state).OnTweenRemoving(tween);
 
-                state.Remove(tween, false);
-                EditorAssets.Remove(tween);
-                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(state));
+                    state.Remove(tween, false);
+                    EditorAssets.Remove(tween);
+                    AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(state));
 
-            },
-            state);
+                },
+                state);
         }
 
         #endregion

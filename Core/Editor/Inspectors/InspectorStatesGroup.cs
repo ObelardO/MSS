@@ -21,7 +21,7 @@ namespace Obel.MSS.Editor
 
             group = (StatesGroup)target;
 
-            DrawerGroup.OnEnable(group);
+            EditorGroup.OnEnable(group);
         }
 
         private void OnDisable()
@@ -37,7 +37,7 @@ namespace Obel.MSS.Editor
 
         public override void OnInspectorGUI()
         {
-            DrawerGroup.Draw(group);
+            EditorGroup.Draw(group);
 
             EditorActions.Process();
         }

@@ -14,7 +14,7 @@ namespace Obel.MSS.Editor
             
         }
 
-        public override void OnGUI(Rect rect, TweenBase tween)
+        public override void Draw(Rect rect, TweenBase tween)
         {
             EditorGUI.LabelField(rect, "THIS IS BASE TWEEN");
         }
