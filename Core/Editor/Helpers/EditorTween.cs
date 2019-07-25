@@ -62,20 +62,24 @@ namespace Obel.MSS.Editor
                         T tween = EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", editor.Name));
                         selectedState.Add(tween);
 
+                        EditorState.Get(selectedState).OnTweenAdded(tween);
+
                     }, selectedState);
                 };
 
             }
         }
 
-        public static IGenericTweenEditor Get(Type @Type)
+        public static IGenericTweenEditor Get<T>(T tween) => Get(tween.GetType());
+
+        public static IGenericTweenEditor Get(Type type)
         {
-            return editors.Where(t => t.Type.Equals(Type)).FirstOrDefault();
+            return editors.Where(t => t.Type.Equals(type)).FirstOrDefault();
         }
 
-        public static void OnAddButton(ReorderableList list)
+        public static void OnAddButton(State state)
         {
-            selectedState = EditorState.Selected.state;
+            selectedState = /*EditorState.Selected.*/state;
 
             GenericMenu tweensMenu = new GenericMenu();
 
@@ -88,17 +92,20 @@ namespace Obel.MSS.Editor
             tweensMenu.ShowAsContext();
         }
 
-        public static void OnRemoveButton(ReorderableList list)
+        public static void OnRemoveButton(State state, int index)
         {
-            State state = EditorState.Selected.state;
+            //State state = EditorState.Selected.state;
 
             EditorActions.Add(() =>
             {
-                Tween removingTween = state.items[list.index];
+                Tween tween = state/*.items[list.*/[index];
 
-                state.Remove(removingTween, false);
-                EditorAssets.Remove(removingTween);
+                EditorState.Get(state).OnTweenRemoving(tween);
+
+                state.Remove(tween, false);
+                EditorAssets.Remove(tween);
                 AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(state));
+
             },
             state);
         }

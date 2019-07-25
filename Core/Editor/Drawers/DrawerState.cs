@@ -68,11 +68,11 @@ namespace Obel.MSS.Editor
 
             Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, headerHeight);
             StateEditor.foldout.target = EditorGUI.Foldout(rectFoldout, StateEditor.foldout.target,
-                new GUIContent(StateEditor.state.Name /*+ " | " + StateEditor.tweensListHeight + " | " + StateEditor.state.ID*/), true, EditorConfig.Styles.Foldout);
+                new GUIContent(StateEditor.state.Name + " | " + StateEditor.TweensListHeight /*+ " | " + StateEditor.state.ID*/), true, EditorConfig.Styles.Foldout);
 
-            if (!StateEditor.state.IsDefaultState && 
+            if (!StateEditor.state.IsDefaultState &&
                 GUI.Button(new Rect(rect.width + 8, rect.y + 1, 30, headerHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
-                    OnRemoveButton();
+                OnRemoveButton();
         }
 
         private void DrawProperties()
@@ -89,7 +89,7 @@ namespace Obel.MSS.Editor
 
             EditorLayout.PushColor();
 
-            GUI.color *= Mathf.Clamp01(StateEditor.foldout.faded - 0.5f) / 0.5f ;
+            GUI.color *= Mathf.Clamp01(StateEditor.foldout.faded - 0.5f) / 0.5f;
 
             EditorLayout.SetPosition(rect.x, rect.y + headerHeight);
 

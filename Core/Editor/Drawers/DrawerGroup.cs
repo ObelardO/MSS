@@ -139,10 +139,12 @@ namespace Obel.MSS.Editor
                 showDefaultBackground = false,
 
                 drawElementBackgroundCallback = DrawStateBackground,
-                elementHeightCallback = GetStateHeight,
+                elementHeightCallback = (int index) => GetStateHeight(statesGroup[index]),
                 drawElementCallback = DrawState,
                 onReorderCallback = OnReordered
             };
+
+            //EditorState.CalculateAllTweensListsHeight();
 
             enabled = true;
         }
@@ -152,6 +154,7 @@ namespace Obel.MSS.Editor
             EditorAssets.Refresh(statesGroup);
             EditorState.Reorder(statesGroup.items);
             EditorActions.Clear();
+            EditorState.CalculateAllTweensListsHeight();
         }
 
         private void OnAddStateButton()
@@ -173,19 +176,17 @@ namespace Obel.MSS.Editor
             EditorState.Reorder(statesGroup.items);
         }
 
-        private float GetStateHeight(int index)
+        private float GetStateHeight(State state)
         {
-            // TODO cache height !!!
-
-            EditorState.Select(statesGroup[index]);
+            EditorState.Select(state);
 
             float tweensHeight = 0;
 
-            for (int i = 0; i < statesGroup[index].Count; i++) tweensHeight += DrawerTween.GetHeight(i);
+            for (int i = 0; i < state.Count; i++) tweensHeight += DrawerTween.GetHeight(state[i]);
 
             return DrawerState.headerHeight + 6 +
-                Mathf.Lerp(0, 77 + (statesGroup[index].Count == 0 ? 14 : tweensHeight - 7),
-                EditorState.Get(statesGroup[index]).foldout.faded);
+                Mathf.Lerp(0, 77 + (state.Count == 0 ? 14 : EditorState.Selected.TweensListHeight /* tweensHeight */ - 7),
+                    EditorState.Selected.foldout.faded);
         }
 
         #endregion

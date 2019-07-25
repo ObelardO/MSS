@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine.Assertions.Comparers;
+using System;
 
 namespace Obel.MSS.Editor
 {
@@ -12,7 +13,7 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
-        private static EditorState StateEditor => EditorState.Selected;
+
 
         #endregion
 
@@ -26,26 +27,28 @@ namespace Obel.MSS.Editor
 
         public static void DrawBackground(Rect rect, int index, bool isActive, bool isFocused) => EditorGUI.DrawRect(rect, Color.clear);
 
-        public static void Draw(Rect rect, int index, bool isActive, bool isFocused)
+        public static void Draw(Rect rect, Tween tween)
         {
-            IGenericTweenEditor editor = EditorTween.Get(StateEditor.state[index].GetType());
+            IGenericTweenEditor editor = EditorTween.Get(tween.GetType());
 
             if (editor == null)
             {
-                EditorGUI.HelpBox(rect, "unknown tween module: \"" + StateEditor.state[index].name + "\"", MessageType.Warning);
+                EditorGUI.HelpBox(rect, "unknown tween module: \"" + tween.name + "\"", MessageType.Warning);
                 return;
             }
 
-            editor.OnGUI(rect, StateEditor.state[index]);
+            editor.OnGUI(rect, tween);
         }
 
         public static void DrawHeader(Rect rect) => EditorGUI.LabelField(rect, "Tweens");
 
         public static void DrawEmptyList(Rect rect) => EditorGUI.LabelField(rect, "Click + to add tween");
 
-        public static float GetHeight(int index)
+        public static float GetHeight<T>(T tween) where T : Tween => GetHeight(tween.GetType());
+
+        public static float GetHeight(Type @Type)
         {
-            IGenericTweenEditor editor = EditorTween.Get(StateEditor.state[index].GetType());
+            IGenericTweenEditor editor = EditorTween.Get(@Type);
 
             return editor == null ? EditorGUIUtility.singleLineHeight : editor.Height;
         }
