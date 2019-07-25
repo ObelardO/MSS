@@ -3,8 +3,7 @@ using UnityEditor;
 
 namespace Obel.MSS.Editor
 {
-    [CustomPropertyDrawer(typeof(State))]
-    internal class DrawerState : PropertyDrawer
+    internal static class DrawerState
     {
         #region Properties
 
@@ -13,35 +12,29 @@ namespace Obel.MSS.Editor
                                            durationLabel = new GUIContent("Duration"),
                                            testLabel = new GUIContent("Test");
 
-        private static EditorState StateEditor => EditorState.Selected;
-
-        private SerializedProperty property;
-        private GUIContent label;
-        private Rect rect;
-
         public static readonly float headerHeight = 20;
 
         #endregion
 
         #region Inspector
 
-        public override void OnGUI(Rect rect, SerializedProperty property, GUIContent label)
+        public static void Draw(Rect rect, State state) => Draw(rect, EditorState.Get(state));
+
+        public static void Draw(Rect rect, EditorState editor)
         {
-            if (StateEditor == null) return;
+            rect.width += 5;
 
-            this.rect = rect;
-            this.label = label;
-            this.property = property;
+            editor.serializedState.Update();
 
-            StateEditor.serializedState.Update();
+            DrawHeader(rect, editor);
+            DrawProperties(rect, editor);
 
-            DrawHeader();
-            DrawProperties();
-
-            StateEditor.serializedState.ApplyModifiedProperties();
+            editor.serializedState.ApplyModifiedProperties();
         }
 
-        private void DrawHeader()
+        public static void DrawBackground(Rect rect, int index, bool isActive, bool isFocused) => EditorGUI.DrawRect(rect, Color.clear);
+
+        private static void DrawHeader(Rect rect, EditorState editor)
         {
             Rect rectBackground = new Rect(rect.x, rect.y, rect.width, rect.height - 6);
             EditorGUI.DrawRect(rectBackground, Color.white * 0.4f);
@@ -51,36 +44,34 @@ namespace Obel.MSS.Editor
 
             Rect rectStateTabColor = new Rect(rect.x, rect.y, 2, headerHeight);
             Color tabColor = Color.gray;
-            if (StateEditor.state.IsOpenedState) tabColor = EditorConfig.Colors.greenColor;
-            if (StateEditor.state.IsClosedState) tabColor = EditorConfig.Colors.redColor;
+            if (editor.state.IsOpenedState) tabColor = EditorConfig.Colors.greenColor;
+            if (editor.state.IsClosedState) tabColor = EditorConfig.Colors.redColor;
             EditorGUI.DrawRect(rectStateTabColor, tabColor);
 
             Rect rectToggle = new Rect(rect.x + 5, rect.y, 20, headerHeight);
 
-            if (StateEditor.state.IsDefaultState)
+            if (editor.state.IsDefaultState)
             {
                 EditorGUI.BeginDisabledGroup(true);
                 EditorGUI.Toggle(rectToggle, GUIContent.none, true);
                 EditorGUI.EndDisabledGroup();
             }
             else
-                EditorGUI.PropertyField(rectToggle, StateEditor.serializedState.FindProperty("s_Enabled"), GUIContent.none);
+                EditorGUI.PropertyField(rectToggle, editor.serializedState.FindProperty("s_Enabled"), GUIContent.none);
 
             Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, headerHeight);
-            StateEditor.foldout.target = EditorGUI.Foldout(rectFoldout, StateEditor.foldout.target,
-                new GUIContent(StateEditor.state.Name + " | " + StateEditor.TweensListHeight /*+ " | " + StateEditor.state.ID*/), true, EditorConfig.Styles.Foldout);
+            editor.foldout.target = EditorGUI.Foldout(rectFoldout, editor.foldout.target, new GUIContent(editor.state.Name), true, EditorConfig.Styles.Foldout);
 
-            if (!StateEditor.state.IsDefaultState &&
-                GUI.Button(new Rect(rect.width + 8, rect.y + 1, 30, headerHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
-                OnRemoveButton();
+            if (!editor.state.IsDefaultState &&
+                GUI.Button(new Rect(rect.width - 5, rect.y + 1, 30, headerHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
+                OnRemoveButton(editor.state);
         }
 
-        private void DrawProperties()
+        private static void DrawProperties(Rect rect, EditorState editor)
         {
-            if (StateEditor.foldout.faded == 0) return;
+            if (editor.foldout.faded == 0) return;
 
-            //EditorGUI.BeginProperty(rect, label, property);
-            EditorGUI.BeginDisabledGroup(StateEditor.foldout.faded < 0.2f || !StateEditor.state.Enabled);
+            EditorGUI.BeginDisabledGroup(editor.foldout.faded < 0.2f || !editor.state.Enabled);
 
             float timeFieldWidth = 54;
             float nameFieldWidth = rect.width - timeFieldWidth * 2 - EditorLayout.offset * 4;
@@ -89,7 +80,7 @@ namespace Obel.MSS.Editor
 
             EditorLayout.PushColor();
 
-            GUI.color *= Mathf.Clamp01(StateEditor.foldout.faded - 0.5f) / 0.5f;
+            GUI.color *= Mathf.Clamp01(editor.foldout.faded - 0.5f) / 0.5f;
 
             EditorLayout.SetPosition(rect.x, rect.y + headerHeight);
 
@@ -104,38 +95,42 @@ namespace Obel.MSS.Editor
 
             EditorLayout.Control(nameFieldWidth, (Rect r) =>
             {
-                EditorGUI.BeginDisabledGroup(StateEditor.state.IsDefaultState);
-                EditorGUI.PropertyField(r, StateEditor.serializedState.FindProperty("s_Name"), GUIContent.none);
-                if (StateEditor.state != null) StateEditor.state.name = string.Format("[State] {0}", StateEditor.state.Name);
+                EditorGUI.BeginDisabledGroup(editor.state.IsDefaultState);
+                EditorGUI.PropertyField(r, editor.serializedState.FindProperty("s_Name"), GUIContent.none);
+                editor.state.name = string.Format("[State] {0}", editor.state.Name); // TODO WTF?
                 EditorGUI.EndDisabledGroup();
             });
 
-            EditorLayout.Control((Rect r) => EditorGUI.PropertyField(r, StateEditor.serializedState.FindProperty("s_Delay"), GUIContent.none));
-            EditorLayout.Control((Rect r) => EditorGUI.PropertyField(r, StateEditor.serializedState.FindProperty("s_Duration"), GUIContent.none));
+            EditorLayout.Control((Rect r) => EditorGUI.PropertyField(r, editor.serializedState.FindProperty("s_Delay"), GUIContent.none));
+            EditorLayout.Control((Rect r) => EditorGUI.PropertyField(r, editor.serializedState.FindProperty("s_Duration"), GUIContent.none));
 
             EditorLayout.Space(6);
 
             EditorLayout.SetWidth(rect.width - EditorLayout.offset * 2);
 
-            EditorLayout.Control((Rect r) => StateEditor.tweensReorderableList.DoList(r));
+            EditorLayout.Control((Rect r) => editor.tweensReorderableList.DoList(r));
 
             EditorLayout.PullColor();
 
             EditorGUI.EndDisabledGroup();
+        }
 
-            //EditorGUI.EndProperty();
+        public static float GetHeight(EditorState editor)
+        {
+            float tweensHeight = 0;
+
+            for (int i = 0; i < editor.state.Count; i++) tweensHeight += DrawerTween.GetHeight(editor.state[i]);
+
+            return headerHeight + 6 + Mathf.Lerp(0, 77 + (editor.state.Count == 0 ? 14 : editor.TweensListHeight - 7), editor.foldout.faded);
         }
 
         #endregion
 
         #region Inspector callbacks
 
-        private void OnRemoveButton()
+        private static void OnRemoveButton(State state)
         {
-            State state = StateEditor.state;
             StatesGroup group = (StatesGroup)state.Parent;
-
-            // TODO! Remove tweens
 
             EditorActions.Add(() =>
             {
@@ -144,7 +139,7 @@ namespace Obel.MSS.Editor
                 EditorAssets.Remove(state);
                 AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(group));
 
-                EditorState.Reorder(group.items);
+                EditorState.Reorder(group);
             },
             group, "[MSS] Remove state");
         }

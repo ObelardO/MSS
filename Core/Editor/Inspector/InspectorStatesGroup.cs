@@ -2,13 +2,12 @@
 
 namespace Obel.MSS.Editor
 {
-    //[CustomEditor(typeof(StatesGroup))]
+    [CustomEditor(typeof(StatesGroup))]
     public class InspectorStatesGroup : UnityEditor.Editor
     {
         #region Properties
 
-        private StatesGroup statesGroup;
-        private SerializedProperty statesGroupProperty;
+        private static StatesGroup group;
 
         #endregion
 
@@ -16,14 +15,20 @@ namespace Obel.MSS.Editor
 
         private void OnEnable()
         {
-            if (!(target is StatesGroup)) return;
+            EditorActions.Clear();
+            EditorState.Clear();
+            EditorState.Repaint = Repaint;
 
-            statesGroup = (StatesGroup)target;       
+            group = (StatesGroup)target;
+
+            DrawerGroup.OnEnable(group);
         }
 
         private void OnDisable()
         {
-
+            EditorActions.Clear();
+            EditorState.Clear();
+            EditorState.Repaint = null;
         }
 
         #endregion
@@ -32,7 +37,9 @@ namespace Obel.MSS.Editor
 
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector();
+            DrawerGroup.Draw(group);
+
+            EditorActions.Process();
         }
 
         #endregion

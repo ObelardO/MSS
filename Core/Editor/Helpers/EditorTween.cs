@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
 
 namespace Obel.MSS.Editor
@@ -18,7 +17,8 @@ namespace Obel.MSS.Editor
         public Action AddAction { get; set; }
 
         private float s_Height = 28;
-        public virtual float Height {
+        public virtual float Height
+        {
             get => s_Height;
             set => s_Height = value;
         }
@@ -58,7 +58,7 @@ namespace Obel.MSS.Editor
                 editor.AddAction = () =>
                 {
                     EditorActions.Add(() =>
-                    { 
+                    {
                         T tween = EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", editor.Name));
                         selectedState.Add(tween);
 
@@ -79,7 +79,7 @@ namespace Obel.MSS.Editor
 
         public static void OnAddButton(State state)
         {
-            selectedState = /*EditorState.Selected.*/state;
+            selectedState = state;
 
             GenericMenu tweensMenu = new GenericMenu();
 
@@ -94,11 +94,9 @@ namespace Obel.MSS.Editor
 
         public static void OnRemoveButton(State state, int index)
         {
-            //State state = EditorState.Selected.state;
-
             EditorActions.Add(() =>
             {
-                Tween tween = state/*.items[list.*/[index];
+                Tween tween = state[index];
 
                 EditorState.Get(state).OnTweenRemoving(tween);
 

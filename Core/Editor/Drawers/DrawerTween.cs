@@ -1,15 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using UnityEngine;
 using UnityEditor;
-using UnityEditorInternal;
-using UnityEngine.Assertions.Comparers;
-using System;
 
 namespace Obel.MSS.Editor
 {
-    [CustomPropertyDrawer(typeof(Tween))]
-    internal class DrawerTween : PropertyDrawer
+    internal static class DrawerTween
     {
         #region Properties
 

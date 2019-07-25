@@ -20,8 +20,6 @@ namespace Obel.MSS.Editor
 
         public static UnityAction Repaint;
 
-        public static EditorState Selected { private set; get; }
-
         public float TweensListHeight { private set; get; }
 
         #endregion
@@ -49,15 +47,13 @@ namespace Obel.MSS.Editor
                 headerHeight = 3,
                 footerHeight = 50,
 
-                onAddCallback = (ReorderableList list) => EditorTween.OnAddButton(Selected.state),
-                onRemoveCallback = (ReorderableList list) => EditorTween.OnRemoveButton(Selected.state, list.index),
+                onAddCallback = list => EditorTween.OnAddButton(state),
+                onRemoveCallback = list => EditorTween.OnRemoveButton(state, list.index),
                 drawHeaderCallback = DrawerTween.DrawHeader,
                 drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => DrawerTween.Draw(rect, state[index]),
-                elementHeightCallback = (int index) => DrawerTween.GetHeight(state[index].GetType()),
-                drawNoneElementCallback = DrawerTween.DrawEmptyList 
+                elementHeightCallback = index => DrawerTween.GetHeight(state[index].GetType()),
+                drawNoneElementCallback = DrawerTween.DrawEmptyList
             };
-
-            Select(state);
 
             CalculateTweensListHeight();
         }
@@ -84,17 +80,12 @@ namespace Obel.MSS.Editor
             foreach (KeyValuePair<int, EditorState> state in statesDictionary) statesDictionary[state.Key].CalculateTweensListHeight();
         }
 
-        public static void Select(State state)
-        {
-            Selected = Get(state);
-        }
-
-        public static void Reorder(List<State> reorderedStates)
+        public static void Reorder(StatesGroup group)
         {
             foreach (KeyValuePair<int, EditorState> state in statesDictionary)
-                for (int i = 0; i < reorderedStates.Count; i++)
-                    if (state.Key.Equals(reorderedStates[i].ID))
-                        statesDictionary[state.Key].state = reorderedStates[i];
+                for (int i = 0; i < group.Count; i++)
+                    if (state.Key.Equals(group[i].ID))
+                        statesDictionary[state.Key].state = group[i];
         }
 
         #endregion

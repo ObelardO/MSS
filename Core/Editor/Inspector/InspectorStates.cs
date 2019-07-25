@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+using UnityEngine;
 
 namespace Obel.MSS.Editor
 {
@@ -7,7 +8,11 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
-        private SerializedProperty statesGroupProperty;
+
+        private static readonly GUIContent profileLabel = new GUIContent("States"),
+                                           newButton = new GUIContent("New");
+
+        private static States states;
 
         #endregion
 
@@ -19,7 +24,9 @@ namespace Obel.MSS.Editor
             EditorState.Clear();
             EditorState.Repaint = Repaint;
 
-            statesGroupProperty = serializedObject.FindProperty("statesGroup");
+            states = (States)target;
+
+            DrawerGroup.OnEnable(states.statesGroup);
         }
 
         private void OnDisable()
@@ -37,7 +44,32 @@ namespace Obel.MSS.Editor
         {
             serializedObject.Update();
 
-            EditorGUILayout.PropertyField(statesGroupProperty);
+            GUILayout.BeginHorizontal();
+                GUILayout.Space(-8);
+
+                GUILayout.BeginVertical(GUI.skin.box);
+                    GUILayout.Space(2);
+
+                    GUILayout.BeginHorizontal();
+                        GUILayout.Space(12);
+
+                        EditorGUI.BeginChangeCheck();
+
+                        states.statesGroup = EditorGUILayout.ObjectField(profileLabel, states.statesGroup, typeof(StatesGroup), false) as StatesGroup;
+
+                        if (states.statesGroup == null && GUILayout.Button(newButton, GUILayout.Width(50), GUILayout.Height(14))) states.statesGroup = DrawerGroup.CreateStatesProfile();
+
+                        if (EditorGUI.EndChangeCheck())
+                        {
+                            EditorState.Clear();
+                            DrawerGroup.OnEnable(states.statesGroup);
+                        }   
+                    GUILayout.EndHorizontal();
+
+                    DrawerGroup.Draw(states.statesGroup);
+
+                GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
 
             EditorActions.Process();
 
@@ -47,3 +79,4 @@ namespace Obel.MSS.Editor
         #endregion
     }
 }
+ 
