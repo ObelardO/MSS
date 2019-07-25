@@ -68,7 +68,7 @@ namespace Obel.MSS.Editor
 
             Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, headerHeight);
             StateEditor.foldout.target = EditorGUI.Foldout(rectFoldout, StateEditor.foldout.target,
-                new GUIContent(StateEditor.state.Name + " | " + StateEditor.tweensListHeight/* + " | " + StateEditor.state.ID*/), true, EditorConfig.Styles.Foldout);
+                new GUIContent(StateEditor.state.Name /*+ " | " + StateEditor.tweensListHeight + " | " + StateEditor.state.ID*/), true, EditorConfig.Styles.Foldout);
 
             if (!StateEditor.state.IsDefaultState && 
                 GUI.Button(new Rect(rect.width + 8, rect.y + 1, 30, headerHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
@@ -117,7 +117,6 @@ namespace Obel.MSS.Editor
 
             EditorLayout.SetWidth(rect.width - EditorLayout.offset * 2);
 
-            StateEditor.tweensListHeight = 0;
             EditorLayout.Control((Rect r) => StateEditor.tweensReorderableList.DoList(r));
 
             EditorLayout.PullColor();

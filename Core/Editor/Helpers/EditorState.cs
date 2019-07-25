@@ -17,7 +17,6 @@ namespace Obel.MSS.Editor
         public AnimBool foldout;
         public SerializedObject serializedState;
         public ReorderableList tweensReorderableList;
-        public float tweensListHeight;
 
         public static UnityAction updatingAction;
 

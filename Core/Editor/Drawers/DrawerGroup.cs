@@ -184,7 +184,7 @@ namespace Obel.MSS.Editor
             for (int i = 0; i < statesGroup[index].Count; i++) tweensHeight += DrawerTween.GetHeight(i);
 
             return DrawerState.headerHeight + 6 +
-                Mathf.Lerp(0, 77 + (statesGroup[index].Count == 0 ? 14 : tweensHeight - 8),
+                Mathf.Lerp(0, 77 + (statesGroup[index].Count == 0 ? 14 : tweensHeight - 7),
                 EditorState.Get(statesGroup[index]).foldout.faded);
         }
 
