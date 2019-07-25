@@ -105,9 +105,6 @@ namespace Obel.MSS.Editor
 
             EditorState.Select(statesGroup[index]);
 
-            //DrawerState.editorValues = EditorStateValues.Get(statesGroup[index]);
-
-
             EditorGUI.PropertyField(rect, statesProperty.GetArrayElementAtIndex(index), true);
         }
 
@@ -178,13 +175,17 @@ namespace Obel.MSS.Editor
 
         private float GetStateHeight(int index)
         {
-            int tweensCount = statesGroup[index].Count;
+            // TODO cache height !!!
 
-            EditorState editor = EditorState.Get(statesGroup[index]);
+            EditorState.Select(statesGroup[index]);
 
-            float stateHeight = DrawerState.headerHeight + 6 + Mathf.Lerp(0, 91 + 120/* editorValues.tweensListHeight*/,
-                                    editor.foldout.faded);
-            return stateHeight;
+            float tweensHeight = 0;
+
+            for (int i = 0; i < statesGroup[index].Count; i++) tweensHeight += DrawerTween.GetHeight(i);
+
+            return DrawerState.headerHeight + 6 +
+                Mathf.Lerp(0, 77 + (statesGroup[index].Count == 0 ? 14 : tweensHeight - 8),
+                EditorState.Get(statesGroup[index]).foldout.faded);
         }
 
         #endregion

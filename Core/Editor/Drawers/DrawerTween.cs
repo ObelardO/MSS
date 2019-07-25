@@ -24,10 +24,7 @@ namespace Obel.MSS.Editor
 
         #region Inspector
 
-        public static void DrawBackground(Rect rect, int index, bool isActive, bool isFocused)
-        {
-            EditorGUI.DrawRect(rect, Color.clear);
-        }
+        public static void DrawBackground(Rect rect, int index, bool isActive, bool isFocused) => EditorGUI.DrawRect(rect, Color.clear);
 
         public static void Draw(Rect rect, int index, bool isActive, bool isFocused)
         {
@@ -42,25 +39,15 @@ namespace Obel.MSS.Editor
             editor.OnGUI(rect, StateEditor.state[index]);
         }
 
-        public static void DrawHeader(Rect rect)
-        {
-            EditorGUI.LabelField(rect, "Tweens");
-        }
+        public static void DrawHeader(Rect rect) => EditorGUI.LabelField(rect, "Tweens");
 
-        public static void DrawEmptyList(Rect rect)
-        {
-            EditorGUI.LabelField(rect, "Click + to add tween");
-        }
+        public static void DrawEmptyList(Rect rect) => EditorGUI.LabelField(rect, "Click + to add tween");
 
         public static float GetHeight(int index)
         {
             IGenericTweenEditor editor = EditorTween.Get(StateEditor.state[index].GetType());
 
-            float height = editor == null ? EditorGUIUtility.singleLineHeight : editor.Height;
-
-            StateEditor.tweensListHeight += height;
-
-            return height;
+            return editor == null ? EditorGUIUtility.singleLineHeight : editor.Height;
         }
 
         #endregion

@@ -21,8 +21,6 @@ namespace Obel.MSS.Editor
 
         public static readonly float headerHeight = 20;
 
-       //private static selectedState;
-
         #endregion
 
         #region Inspector
@@ -70,7 +68,7 @@ namespace Obel.MSS.Editor
 
             Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, headerHeight);
             StateEditor.foldout.target = EditorGUI.Foldout(rectFoldout, StateEditor.foldout.target,
-                new GUIContent(StateEditor.state.Name/* + " | " + StateEditor.state.ID*/), true, EditorConfig.Styles.Foldout);
+                new GUIContent(StateEditor.state.Name + " | " + StateEditor.tweensListHeight/* + " | " + StateEditor.state.ID*/), true, EditorConfig.Styles.Foldout);
 
             if (!StateEditor.state.IsDefaultState && 
                 GUI.Button(new Rect(rect.width + 8, rect.y + 1, 30, headerHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
@@ -135,21 +133,21 @@ namespace Obel.MSS.Editor
 
         private void OnRemoveButton()
         {
-            State removingState = StateEditor.state;
-            StatesGroup removingStateGroup = (StatesGroup)removingState.Parent;
+            State state = StateEditor.state;
+            StatesGroup group = (StatesGroup)state.Parent;
 
             // TODO! Remove tweens
 
             EditorActions.Add(() =>
             {
-                removingStateGroup.Remove(removingState, false);
+                group.Remove(state, false);
 
-                EditorAssets.Remove(removingState);
-                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(removingStateGroup));
+                EditorAssets.Remove(state);
+                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(group));
 
-                EditorState.Reorder(removingStateGroup.items);
+                EditorState.Reorder(group.items);
             },
-            removingStateGroup, "[MSS] Remove state");
+            group, "[MSS] Remove state");
         }
 
         #endregion

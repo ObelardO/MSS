@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 using UnityEngine.Events;
@@ -56,11 +57,8 @@ namespace Obel.MSS.Editor
                 onRemoveCallback = EditorTween.OnRemoveButton,
                 drawHeaderCallback = DrawerTween.DrawHeader,
                 drawElementCallback = DrawerTween.Draw,
-                drawNoneElementCallback = DrawerTween.DrawEmptyList,
-
-                elementHeightCallback = DrawerTween.GetHeight
-
-                
+                elementHeightCallback = DrawerTween.GetHeight,
+                drawNoneElementCallback = DrawerTween.DrawEmptyList 
             };
         }
 

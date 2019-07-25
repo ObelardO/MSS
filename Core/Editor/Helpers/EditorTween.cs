@@ -17,7 +17,7 @@ namespace Obel.MSS.Editor
 
         public Action AddAction { get; set; }
 
-        private float s_Height = EditorGUIUtility.singleLineHeight;
+        private float s_Height = 28;
         public virtual float Height {
             get => s_Height;
             set => s_Height = value;
@@ -27,7 +27,7 @@ namespace Obel.MSS.Editor
 
         #region Inspector
 
-        public virtual void OnGUI(Rect rect, Tween tween) { OnGUI(rect, tween as T); }
+        public virtual void OnGUI(Rect rect, Tween tween) => OnGUI(rect, tween as T);
 
         public virtual void OnGUI(Rect rect, T tween)
         {
@@ -58,7 +58,7 @@ namespace Obel.MSS.Editor
                 editor.AddAction = () =>
                 {
                     EditorActions.Add(() =>
-                    {
+                    { 
                         T tween = EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", editor.Name));
                         selectedState.Add(tween);
 
