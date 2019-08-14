@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.Events;
 
 namespace Obel.MSS
 {
     public class Tween : CollectionItem
     {
-
+        //public Func<float, float, float, float, float> easer = Ease.
     }
 
     public class GenericTween<T> : Tween where T : struct

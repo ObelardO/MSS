@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace Obel.MSS.Editor
 {
-    internal class DrawerBasePosition : EditorGenericTween<TweenBase>
+    internal class EditorBasePosition : EditorGenericTween<TweenBase>
     {
         public override string Name => "T/Base";
 
         [InitializeOnLoadMethod]
         public static void ApplicationStart()
         {
-            EditorTween.Add(new DrawerBasePosition()); 
+            EditorTween.Add(new EditorBasePosition()); 
             
         }
 
