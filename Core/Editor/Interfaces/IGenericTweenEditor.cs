@@ -21,6 +21,8 @@ namespace Obel.MSS.Editor
 
         void Draw(Rect rect, Tween tween);
 
+        void DrawHeader(Rect rect, Tween tween);
+
         #endregion
     }
 }

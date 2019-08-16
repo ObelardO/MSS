@@ -11,6 +11,7 @@ namespace Obel.MSS.Editor
         #region Properties
 
         public virtual string Name { get; }
+        public virtual string DisplayName { get; private set; }
 
         public virtual Type @Type { get; set; }
 
@@ -25,6 +26,21 @@ namespace Obel.MSS.Editor
 
         #endregion
 
+        #region Public methods
+
+        public void SetDisplayName()
+        {
+            if (!Name.Contains("/"))
+            {
+                DisplayName = Name;
+                return;
+            }
+
+            DisplayName = Name.Split('/').Last();
+        }
+
+        #endregion
+
         #region Inspector
 
         public virtual void Draw(Rect rect, Tween tween) => Draw(rect, tween as T);
@@ -32,6 +48,28 @@ namespace Obel.MSS.Editor
         public virtual void Draw(Rect rect, T tween)
         {
             EditorGUI.HelpBox(rect, "no drawer for tween: \"" + Name + "\"", MessageType.Warning);
+        }
+
+        public void DrawHeader(Rect rect, Tween tween)
+        {
+            EditorLayout.SetPosition(rect.x, rect.y);
+
+            //EditorLayout.SetSize(new Vector2(20, 20));
+
+            EditorLayout.Control(18, (Rect r) =>
+                {
+                    bool tweenEnabled = EditorGUI.ToggleLeft(r, GUIContent.none, tween.Enabled);
+                    if (tweenEnabled != tween.Enabled) EditorActions.Add(() => tween.Enabled = tweenEnabled, tween);
+                }
+            );
+
+            EditorGUI.BeginDisabledGroup(!tween.Enabled);
+
+            EditorLayout.Control(180, (Rect r) => EditorGUI.LabelField(r, DisplayName));
+
+            if (tween.Ease != null) EditorLayout.Control(80, (Rect r) => EditorEase.Draw(r, tween.Ease.Method.Name));
+
+            EditorGUI.EndDisabledGroup();
         }
 
         #endregion
@@ -61,8 +99,17 @@ namespace Obel.MSS.Editor
                 return;
             }
 
+
+            editor.DrawHeader(rect, tween);
+
+            EditorGUI.BeginDisabledGroup(!tween.Enabled);
             editor.Draw(rect, tween);
+            EditorGUI.EndDisabledGroup();
         }
+
+
+
+
 
         public static void DrawHeader(Rect rect) => EditorGUI.LabelField(rect, "Tweens");
 
@@ -87,12 +134,15 @@ namespace Obel.MSS.Editor
             {
                 editors.Add(editor);
                 editor.Type = typeof(T);
+                editor.SetDisplayName();
                 editor.AddAction = () =>
                 {
                     EditorActions.Add(() =>
                     {
                         T tween = EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", editor.Name));
                         selectedState.Add(tween);
+
+                        tween.Ease = Ease.GetFirst();
 
                         EditorState.Get(selectedState).OnTweenAdded(tween);
 

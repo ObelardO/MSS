@@ -1,15 +1,71 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using System.Security.AccessControl;
 
 namespace Obel.MSS
 {
-    internal static class Ease
+    public static class Ease
     {
+
+
+     
+        public delegate void EaseDelegate(float t, float b, float c, float d);
+
+        //private EaseDelegate linEaseDelegate = Linear;
+
+        
+
+        /*public static EaseDelegate Get(string easePath)
+        {
+            //return Linear;
+
+        }
+    */
+
+        private class EaseInfo
+        {
+            public Func<float, float, float, float, float> ease;
+            public string path;
+
+            public EaseInfo(Func<float, float, float, float, float> ease, string path)
+            {
+                this.ease = ease;
+                this.path = path;
+            }
+        }
+
+
+
+        //private static Dictionary<string, EaseInfo> eases = new Dictionary<string, EaseInfo>();
+
+        private static List<EaseInfo> eases;
+
+        public static void Add(Func<float, float, float, float, float> ease, string path)
+        {
+            eases.Add(new EaseInfo(ease, path));
+
+            Debug.Log("Added ease " + path);
+        }
+
+        public static Func<float, float, float, float, float> Get(string path)
+        {
+            return eases.Where(e => e.path.Equals(path)).FirstOrDefault()?.ease;
+        }
+
+        public static Func<float, float, float, float, float> GetFirst()
+        {
+            return eases.FirstOrDefault()?.ease;
+        }
+
         public static float Linear(float t, float b, float c, float d)
         {
             return c * t / d + b;
         }
+
+        /*
 
         public static float NoneZero(float t, float b, float c, float d)
         {
@@ -25,7 +81,7 @@ namespace Obel.MSS
         {
             return 0;
         }
-
+ 
         public static float QuadIn(float t, float b, float c, float d)
         {
             return c * (t /= d) * t + b;
@@ -48,6 +104,7 @@ namespace Obel.MSS
             if (t < d / 2) return QuadOut(t * 2, b, c / 2, d);
             return QuadIn((t * 2) - d, b + c / 2, c / 2, d);
         }
+        
 
         public static float CubicIn(float t, float b, float c, float d)
         {
@@ -307,5 +364,7 @@ namespace Obel.MSS
             if (t < d / 2) return BounceOut(t * 2, b, c / 2, d);
             return BounceIn((t * 2) - d, b + c / 2, c / 2, d);
         }
+        */
     }
+
 }

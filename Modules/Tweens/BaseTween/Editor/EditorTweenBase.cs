@@ -6,6 +6,7 @@ namespace Obel.MSS.Editor
     internal class EditorBasePosition : EditorGenericTween<TweenBase>
     {
         public override string Name => "T/Base";
+        public override string DisplayName => "f";
 
         [InitializeOnLoadMethod]
         public static void ApplicationStart()
@@ -16,7 +17,7 @@ namespace Obel.MSS.Editor
 
         public override void Draw(Rect rect, TweenBase tween)
         {
-            EditorGUI.LabelField(rect, "THIS IS BASE TWEEN");
+            //EditorGUI.LabelField(rect, "       THIS IS BASE TWEEN");
         }
     }
 }
