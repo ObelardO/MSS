@@ -73,7 +73,15 @@ namespace Obel.MSS.Editor
 
             EditorLayout.Control(100, (Rect r) => EditorGUI.LabelField(r, DisplayName, EditorStyles.popup));
 
-            if (tween.Ease != null) EditorLayout.Control(80, (Rect r) => EditorEase.Draw(r, tween.Ease.Method.Name));
+            EditorLayout.Control(80, (Rect r) =>
+            {
+                if (tween.Ease != null) EditorEase.Draw(r, tween.Ease.Method.Name);
+                else
+                {
+                    EditorGUI.HelpBox(r, tween.EaseName, MessageType.Warning);
+                }
+            }
+            );
 
             EditorGUI.EndDisabledGroup();
         }

@@ -23,7 +23,7 @@ namespace Obel.MSS
                 if (ease != null) s_Ease = ease.Method.Name;
             }
         }
-
+        public string EaseName => s_Ease;
 
         [SerializeField, HideInInspector]
         private bool s_Enabled = true;

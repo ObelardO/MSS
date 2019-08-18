@@ -10,9 +10,7 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
-
         public static bool HasEases => eases.Count > 0;
-
         public static string FirstEaseName => HasEases ? eases.Keys.First() : null;
 
         private static Dictionary<string, string> eases = new Dictionary<string, string>();
@@ -42,26 +40,18 @@ namespace Obel.MSS.Editor
             Ease.onEaseAdded = OnEaseAdded;
         }
 
+        #region Inspector callbacks
+
         private static void OnEaseAdded(string name, string path)
         {
             eases.Add(name, path);
 
-            easesMenu.AddItem(new GUIContent(path), false, () => SelectEase(name));
+            easesMenu.AddItem(new GUIContent(path), false, () => selectedTween.Ease = Ease.Get(name));
 
             Debug.LogFormat("Ease \"{0}\" added. path: {1}", name, path);
         }
 
-
-
-        private static void SelectEase(string name)
-        {
-            // TODO UNDO
-
-            selectedTween.Ease = Ease.Get(name);
-        }
-
-
-
+        #endregion
     }
 }
 

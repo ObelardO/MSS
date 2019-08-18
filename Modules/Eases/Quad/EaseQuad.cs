@@ -13,6 +13,8 @@ namespace Obel.MSS
 #endif
         private static void ApplicationStart()
         {
+            //typeof(EaseQuad).GetMethods
+
             Ease.Add(QuadIn, "Quad/In");
             Ease.Add(QuadOut, "Quad/Out");
             Ease.Add(QuadInOut, "Quad/InOut");
@@ -31,7 +33,6 @@ namespace Obel.MSS
         public static float QuadInOut(float t, float d)
         {
             if ((t /= d / 2) < 1) return 0.5f * t * t;
-
             return -0.5f * ((--t) * (t - 2) - 1);
         }
 
