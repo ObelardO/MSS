@@ -1,63 +1,28 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using System.Security.AccessControl;
 
 namespace Obel.MSS
 {
     public static class Ease
     {
+        public delegate void OnEaseAddedDelegate(string name, string path);
+        public static OnEaseAddedDelegate onEaseAdded;
 
+        private static List<Func<float, float, float>> eases = new List<Func<float, float, float>>();
 
-     
-        public delegate void EaseDelegate(float t, float b, float c, float d);
+        public static void Add(Func<float, float, float> ease, string path = null)
+        {
+            if (eases.Contains(ease)) return;
 
-        //private EaseDelegate linEaseDelegate = Linear;
-
+            eases.Add(ease);
+            onEaseAdded.Invoke(ease.Method.Name, path);
+        }
         
-
-        /*public static EaseDelegate Get(string easePath)
+        public static Func<float, float, float> Get(string name)
         {
-            //return Linear;
-
-        }
-    */
-
-        private class EaseInfo
-        {
-            public Func<float, float, float, float, float> ease;
-            public string path;
-
-            public EaseInfo(Func<float, float, float, float, float> ease, string path)
-            {
-                this.ease = ease;
-                this.path = path;
-            }
-        }
-
-
-
-        //private static Dictionary<string, EaseInfo> eases = new Dictionary<string, EaseInfo>();
-
-        private static List<EaseInfo> eases;
-
-        public static void Add(Func<float, float, float, float, float> ease, string path)
-        {
-            eases.Add(new EaseInfo(ease, path));
-
-            Debug.Log("Added ease " + path);
-        }
-
-        public static Func<float, float, float, float, float> Get(string path)
-        {
-            return eases.Where(e => e.path.Equals(path)).FirstOrDefault()?.ease;
-        }
-
-        public static Func<float, float, float, float, float> GetFirst()
-        {
-            return eases.FirstOrDefault()?.ease;
+            return eases.Where(e => e.Method.Name.Equals(name)).FirstOrDefault();
         }
 
         public static float Linear(float t, float b, float c, float d)

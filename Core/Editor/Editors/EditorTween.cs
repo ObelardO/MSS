@@ -57,10 +57,10 @@ namespace Obel.MSS.Editor
             //EditorLayout.SetSize(new Vector2(20, 20));
 
             EditorLayout.Control(18, (Rect r) =>
-                {
-                    bool tweenEnabled = EditorGUI.ToggleLeft(r, GUIContent.none, tween.Enabled);
-                    if (tweenEnabled != tween.Enabled) EditorActions.Add(() => tween.Enabled = tweenEnabled, tween);
-                }
+            {
+                bool tweenEnabled = EditorGUI.ToggleLeft(r, GUIContent.none, tween.Enabled);
+                if (tweenEnabled != tween.Enabled) EditorActions.Add(() => tween.Enabled = tweenEnabled, tween);
+            }
             );
 
             EditorGUI.BeginDisabledGroup(!tween.Enabled);
@@ -99,17 +99,12 @@ namespace Obel.MSS.Editor
                 return;
             }
 
-
             editor.DrawHeader(rect, tween);
 
             EditorGUI.BeginDisabledGroup(!tween.Enabled);
             editor.Draw(rect, tween);
             EditorGUI.EndDisabledGroup();
         }
-
-
-
-
 
         public static void DrawHeader(Rect rect) => EditorGUI.LabelField(rect, "Tweens");
 
@@ -142,7 +137,17 @@ namespace Obel.MSS.Editor
                         T tween = EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", editor.Name));
                         selectedState.Add(tween);
 
-                        tween.Ease = Ease.GetFirst();
+                        // TODO 
+
+                        if (!EditorEase.HasEases) Debug.Log("NO EASES!");
+
+                        if (EditorEase.HasEases)
+                        {
+                            tween.Ease = Ease.Get(EditorEase.FirstEaseName);
+                            Debug.Log(EditorEase.FirstEaseName);
+                            //Debug.Log("Ease added! " + tween.Ease.Method.Name);
+                        }
+
 
                         EditorState.Get(selectedState).OnTweenAdded(tween);
 
@@ -177,16 +182,16 @@ namespace Obel.MSS.Editor
         public static void OnRemoveButton(State state, int index)
         {
             EditorActions.Add(() =>
-                {
-                    Tween tween = state[index];
+            {
+                Tween tween = state[index];
 
-                    EditorState.Get(state).OnTweenRemoving(tween);
+                EditorState.Get(state).OnTweenRemoving(tween);
 
-                    state.Remove(tween, false);
-                    EditorAssets.Remove(tween);
-                    AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(state));
+                state.Remove(tween, false);
+                EditorAssets.Remove(tween);
+                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(state));
 
-                },
+            },
                 state);
         }
 

@@ -13,8 +13,8 @@ namespace Obel.MSS
 
         //
 
-        private Func<float, float, float, float, float> ease;
-        public Func<float, float, float, float, float> Ease
+        private Func<float, float, float> ease;
+        public Func<float, float, float> Ease
         {
 
             get
