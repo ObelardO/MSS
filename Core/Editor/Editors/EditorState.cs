@@ -26,7 +26,7 @@ namespace Obel.MSS.Editor
 
         public float TweensListHeight { private set; get; }
 
-        public static readonly float headerHeight = 20;
+        public static readonly float HeaderHeight = 20;
 
         #endregion
 
@@ -129,16 +129,16 @@ namespace Obel.MSS.Editor
             Rect rectBackground = new Rect(rect.x, rect.y, rect.width, rect.height - 6);
             EditorGUI.DrawRect(rectBackground, Color.white * 0.4f);
 
-            Rect rectFoldOutBack = new Rect(rect.x, rect.y, rect.width, headerHeight);
+            Rect rectFoldOutBack = new Rect(rect.x, rect.y, rect.width, HeaderHeight);
             GUI.Box(rectFoldOutBack, GUIContent.none, GUI.skin.box);
 
-            Rect rectStateTabColor = new Rect(rect.x, rect.y, 2, headerHeight);
+            Rect rectStateTabColor = new Rect(rect.x, rect.y, 2, HeaderHeight);
             Color tabColor = Color.gray;
-            if (editor.state.IsOpenedState) tabColor = EditorConfig.Colors.greenColor;
-            if (editor.state.IsClosedState) tabColor = EditorConfig.Colors.redColor;
+            if (editor.state.IsOpenedState) tabColor = EditorConfig.Colors.green;
+            if (editor.state.IsClosedState) tabColor = EditorConfig.Colors.red;
             EditorGUI.DrawRect(rectStateTabColor, tabColor);
 
-            Rect rectToggle = new Rect(rect.x + 5, rect.y, 20, headerHeight);
+            Rect rectToggle = new Rect(rect.x + 5, rect.y, 20, HeaderHeight);
 
             if (editor.state.IsDefaultState)
             {
@@ -149,11 +149,11 @@ namespace Obel.MSS.Editor
             else
                 EditorGUI.PropertyField(rectToggle, editor.serializedState.FindProperty("s_Enabled"), GUIContent.none);
 
-            Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, headerHeight);
+            Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, HeaderHeight);
             editor.foldout.target = EditorGUI.Foldout(rectFoldout, editor.foldout.target, new GUIContent(editor.state.Name), true, EditorConfig.Styles.Foldout);
 
             if (!editor.state.IsDefaultState &&
-                GUI.Button(new Rect(rect.width - 5, rect.y + 1, 30, headerHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
+                GUI.Button(new Rect(rect.width - 5, rect.y + 1, 30, HeaderHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
                 OnRemoveButton(editor.state);
         }
 
@@ -172,7 +172,7 @@ namespace Obel.MSS.Editor
 
             GUI.color *= Mathf.Clamp01(editor.foldout.faded - 0.5f) / 0.5f;
 
-            EditorLayout.SetPosition(rect.x, rect.y + headerHeight);
+            EditorLayout.SetPosition(rect.x, rect.y + HeaderHeight);
 
             EditorLayout.Control(nameFieldWidth, (Rect r) => EditorGUI.LabelField(r, "Name", FieldStyle));
 
@@ -209,7 +209,7 @@ namespace Obel.MSS.Editor
 
         public static float GetHeight(EditorState editor)
         {
-            return headerHeight + 6 + Mathf.Lerp(0, 77 + (editor.state.Count == 0 ? 14 : editor.TweensListHeight - 7), editor.foldout.faded);
+            return HeaderHeight + 6 + Mathf.Lerp(0, 77 + (editor.state.Count == 0 ? 14 : editor.TweensListHeight - 7), editor.foldout.faded);
         }
 
         #endregion
@@ -229,18 +229,18 @@ namespace Obel.MSS.Editor
 
                 Reorder(group);
             },
-                group, "[MSS] Remove state");
+            group, "[MSS] Remove state");
         }
 
         public void OnTweenAdded<T>(T tween) where T : Tween
         {
-            TweensListHeight += EditorTween.Get(tween).Height;
+            TweensListHeight += EditorTween.Get(tween).TotalHeight;
             Repaint();
         }
 
         public void OnTweenRemoving<T>(T tween) where T : Tween
         {
-            TweensListHeight -= EditorTween.Get(tween).Height;
+            TweensListHeight -= EditorTween.Get(tween).TotalHeight;
             Repaint();
         }
 

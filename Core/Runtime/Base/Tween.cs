@@ -8,26 +8,18 @@ namespace Obel.MSS
     public class Tween : CollectionItem
     {
         [SerializeField] private string s_Ease;
-        //private Ease.EaseDelegate ease;
-        //public Ease.EaseDelegate Ease { get => ease ?? (ease = Ease.Get(s_Ease)); }
-
-        //
-
         private Func<float, float, float> ease;
         public Func<float, float, float> Ease
         {
-
             get
             {
                 if (ease == null) ease = MSS.Ease.Get(s_Ease);
-
                 return ease;
             } 
 
-            set
+            set 
             {
                 ease = value;
-
                 if (ease != null) s_Ease = ease.Method.Name;
             }
         }

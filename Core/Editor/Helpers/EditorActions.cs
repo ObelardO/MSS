@@ -32,7 +32,7 @@ namespace Obel.MSS.Editor
             {
                 action = action,
                 recordeble = recordable,
-                reason = reason
+                reason = string.Concat("[MSS] ", reason ?? "Action")
             });
         }
 
@@ -43,7 +43,7 @@ namespace Obel.MSS.Editor
             for (int i = actions.Count - 1; i >= 0; i--)
             {
                 if (actions[i].recordeble != null)
-                    Undo.RecordObject(actions[i].recordeble, actions[i].reason ?? "[MSS] Action");
+                    Undo.RecordObject(actions[i].recordeble, actions[i].reason);
 
                 actions[i].action.Invoke();
                 actions.RemoveAt(i);

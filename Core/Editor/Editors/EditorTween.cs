@@ -13,16 +13,19 @@ namespace Obel.MSS.Editor
         public virtual string Name { get; }
         public virtual string DisplayName { get; private set; }
 
-        public virtual Type @Type { get; set; }
+        public virtual Type Type { get; set; }
 
         public Action AddAction { get; set; }
 
-        private float s_Height = 28;
+        private float s_Height = 0;
         public virtual float Height
         {
             get => s_Height;
             set => s_Height = value;
         }
+        public float HeaderHeight => 24;
+
+        public float TotalHeight => HeaderHeight + Height;
 
         #endregion
 
@@ -52,9 +55,12 @@ namespace Obel.MSS.Editor
 
         public void DrawHeader(Rect rect, Tween tween)
         {
-            EditorLayout.SetPosition(rect.x, rect.y);
+            rect.height -= 2;
+            GUI.Box(rect, string.Empty, EditorStyles.helpBox);
+            rect.height += 2;
+            rect.y += 2;
 
-            //EditorLayout.SetSize(new Vector2(20, 20));
+            EditorLayout.SetPosition(rect.x, rect.y);
 
             EditorLayout.Control(18, (Rect r) =>
             {
@@ -65,7 +71,7 @@ namespace Obel.MSS.Editor
 
             EditorGUI.BeginDisabledGroup(!tween.Enabled);
 
-            EditorLayout.Control(180, (Rect r) => EditorGUI.LabelField(r, DisplayName));
+            EditorLayout.Control(100, (Rect r) => EditorGUI.LabelField(r, DisplayName, EditorStyles.popup));
 
             if (tween.Ease != null) EditorLayout.Control(80, (Rect r) => EditorEase.Draw(r, tween.Ease.Method.Name));
 
@@ -81,7 +87,8 @@ namespace Obel.MSS.Editor
 
         private static readonly List<IGenericTweenEditor> editors = new List<IGenericTweenEditor>();
 
-        private static State selectedState;
+        public static State selectedState { get; private set; }
+        public static Tween selectedTween { get; private set; }
 
         #endregion
 
@@ -99,7 +106,12 @@ namespace Obel.MSS.Editor
                 return;
             }
 
+            selectedTween = tween;
+
             editor.DrawHeader(rect, tween);
+
+            rect.y += editor.HeaderHeight;
+            rect.height -= editor.HeaderHeight;
 
             EditorGUI.BeginDisabledGroup(!tween.Enabled);
             editor.Draw(rect, tween);
@@ -116,7 +128,7 @@ namespace Obel.MSS.Editor
         {
             IGenericTweenEditor editor = EditorTween.Get(@Type);
 
-            return editor == null ? EditorGUIUtility.singleLineHeight : editor.Height;
+            return editor == null ? EditorGUIUtility.singleLineHeight : editor.Height + editor.HeaderHeight;
         }
 
         #endregion
@@ -137,17 +149,7 @@ namespace Obel.MSS.Editor
                         T tween = EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", editor.Name));
                         selectedState.Add(tween);
 
-                        // TODO 
-
-                        if (!EditorEase.HasEases) Debug.Log("NO EASES!");
-
-                        if (EditorEase.HasEases)
-                        {
-                            tween.Ease = Ease.Get(EditorEase.FirstEaseName);
-                            Debug.Log(EditorEase.FirstEaseName);
-                            //Debug.Log("Ease added! " + tween.Ease.Method.Name);
-                        }
-
+                        if (EditorEase.HasEases) tween.Ease = Ease.Get(EditorEase.FirstEaseName);
 
                         EditorState.Get(selectedState).OnTweenAdded(tween);
 
@@ -180,7 +182,7 @@ namespace Obel.MSS.Editor
         }
 
         public static void OnRemoveButton(State state, int index)
-        {
+        {   
             EditorActions.Add(() =>
             {
                 Tween tween = state[index];
@@ -192,7 +194,7 @@ namespace Obel.MSS.Editor
                 AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(state));
 
             },
-                state);
+            state);
         }
 
         #endregion

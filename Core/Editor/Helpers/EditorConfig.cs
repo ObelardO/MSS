@@ -33,8 +33,9 @@ namespace Obel.MSS.Editor
 
         public static class Colors
         {
-            public static Color redColor = new Color(1, 0.65f, 0.65f, 1);
-            public static Color greenColor = new Color(0.65f, 1, 0.65f, 1);
+            public static Color red = new Color(1, 0.65f, 0.65f, 1);
+            public static Color green = new Color(0.65f, 1, 0.65f, 1);
+            public static Color grey = new Color(0.35f, 0.35f, 0.35f, 1);
         }
 
         #endregion
