@@ -7,6 +7,10 @@ namespace Obel.MSS
     public class EaseQuad
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+#if UNITY_EDITOR
+        // TODO fix execution order
+        [UnityEditor.InitializeOnLoadMethod]
+#endif
         private static void ApplicationStart()
         {
             Ease.Add(QuadIn, "Quad/In");
