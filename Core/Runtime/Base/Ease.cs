@@ -13,11 +13,13 @@ namespace Obel.MSS
         {
             public Func<float, float, float> ease;
             public string path;
+            public int sort = 0;
 
-            public EaseInfo(Func<float, float, float> ease, string path)
+            public EaseInfo(Func<float, float, float> ease, string path, int sort = 0)
             {
                 this.ease = ease;
                 this.path = path;
+                this.sort = sort;
 
                 Debug.LogFormat("Added ease \"{0}\" path: \"{1}\"", ease.Method.Name, path);
             }
@@ -29,21 +31,27 @@ namespace Obel.MSS
 
         #region Public methods
 
-        public static void Add(Func<float, float, float> ease, string path = null)
+        public static void Add(Func<float, float, float> ease, string path = null, int sort = 0)
         {
             if (path == null) path = ease.Method.Name;
 
             if (eases.Where(e => e.ease.Equals(ease)).ToArray().Length > 0) return;
 
-            eases.Add(new EaseInfo(ease, path));
+            eases.Add(new EaseInfo(ease, path, sort));
         }
 
         public static void BindAll(Action<Func<float, float, float>, string> bindCallback)
         {
             Debug.Log("Binding eases!");
+            eases = eases.OrderBy(e => e.sort).ToList();
             eases.ForEach(e => bindCallback(e.ease, e.path));
         }
-        
+
+        private static int GetSort(EaseInfo e) 
+        {
+            return e.sort;
+        }
+
         public static Func<float, float, float> Get(string name)
         {
             return eases.Where(e => e.ease.Method.Name.Equals(name)).FirstOrDefault()?.ease;

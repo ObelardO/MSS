@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace Obel.MSS
+﻿namespace Obel.MSS
 {
     public class EaseCubic
     {
@@ -20,24 +16,30 @@ namespace Obel.MSS
 
         #region Public methods
 
-        public static float CubicIn(float t, float d)
+        private static float CubicIn(float t, float d)
         {
             return (t /= d) * t * t;
         }
 
-        public static float CubicOut(float t, float d)
+        private static float CubicOut(float t, float d)
         {
-            return ((t = t / d - 1) * t * t + 1);
+            return (t /= d - 1) * t * t + 1;
         }
 
-        public static float CubicInOut(float t, float d)
+        private static float CubicInOut(float t, float d)
         {
             if ((t /= d / 2) < 1) return 0.5f * t * t * t;
             return 0.5f * ((t -= 2) * t * t + 2);
         }
 
+        /*
+        public static float CubicOutIn(float t, float b, float c, float d)
+        {
+            if (t < d / 2) return CubicOut(t * 2, b, c / 2, d);
+            return CubicIn((t * 2) - d, b + c / 2, c / 2, d);
+        }
+        */
+
         #endregion
     }
 }
-
-
