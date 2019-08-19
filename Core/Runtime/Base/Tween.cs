@@ -1,12 +1,12 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Events;
-//using static Obel.MSS.Ease;
 
 namespace Obel.MSS
 {
     public class Tween : CollectionItem
     {
+        #region Properties
+
         [SerializeField] private string s_Ease;
         private Func<float, float, float> ease;
         public Func<float, float, float> Ease
@@ -32,16 +32,22 @@ namespace Obel.MSS
             set => s_Enabled = value;
             get => s_Enabled;
         }
+
+        #endregion
     }
 
     public class GenericTween<T> : Tween where T : struct
     {
+        #region Properties
+
         [SerializeField, HideInInspector] private T s_Value;
         public T Value
         {
             set => s_Value = value;
             get => s_Value;
         }
+
+        #endregion
     }
 }
 

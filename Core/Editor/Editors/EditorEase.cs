@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Obel.MSS.Editor
@@ -10,13 +7,10 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
-        public static bool HasEases => eases.Count > 0;
-        public static string FirstEaseName => HasEases ? eases.Keys.First() : null;
-
-        private static Dictionary<string, string> eases = new Dictionary<string, string>();
+        public static bool HasEases { private set; get; }
+        public static string FirstEaseName { private set; get; }
 
         private static GenericMenu easesMenu = new GenericMenu();
-
         private static Tween selectedTween;
 
         #endregion
@@ -37,18 +31,22 @@ namespace Obel.MSS.Editor
         [InitializeOnLoadMethod]
         private static void ApplicationStart()
         {
-            Ease.onEaseAdded = OnEaseAdded;
+            EditorApplication.delayCall += () => Ease.BindAll((ease, path) => Bind(ease.Method.Name, path));
         }
 
         #region Inspector callbacks
 
-        private static void OnEaseAdded(string name, string path)
+        private static void Bind(string name, string path)
         {
-            eases.Add(name, path);
-
             easesMenu.AddItem(new GUIContent(path), false, () => selectedTween.Ease = Ease.Get(name));
 
-            Debug.LogFormat("Ease \"{0}\" added. path: {1}", name, path);
+            if (!HasEases)
+            {
+                HasEases = true;
+                FirstEaseName = name;
+            }
+
+            Debug.LogFormat("Ease \"{0}\" binded", name);
         }
 
         #endregion

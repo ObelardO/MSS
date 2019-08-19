@@ -6,19 +6,19 @@ namespace Obel.MSS
 {
     public class EaseQuad
     {
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-#if UNITY_EDITOR
-        // TODO fix execution order
+        #if UNITY_EDITOR
         [UnityEditor.InitializeOnLoadMethod]
-#endif
+        #elif UNITY_STANDALONE
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        #endif
         private static void ApplicationStart()
         {
-            //typeof(EaseQuad).GetMethods
-
             Ease.Add(QuadIn, "Quad/In");
             Ease.Add(QuadOut, "Quad/Out");
             Ease.Add(QuadInOut, "Quad/InOut");
         }
+
+        #region Public methods
 
         public static float QuadIn(float t, float d)
         {
@@ -35,6 +35,8 @@ namespace Obel.MSS
             if ((t /= d / 2) < 1) return 0.5f * t * t;
             return -0.5f * ((--t) * (t - 2) - 1);
         }
+
+        #endregion
 
         /*
         public static float QuadOutIn(float t, float b, float c, float d)

@@ -147,7 +147,9 @@ namespace Obel.MSS.Editor
                 EditorGUI.EndDisabledGroup();
             }
             else
+            {
                 EditorGUI.PropertyField(rectToggle, editor.serializedState.FindProperty("s_Enabled"), GUIContent.none);
+            }
 
             Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, HeaderHeight);
             editor.foldout.target = EditorGUI.Foldout(rectFoldout, editor.foldout.target, new GUIContent(editor.state.Name), true, EditorConfig.Styles.Foldout);
@@ -245,6 +247,5 @@ namespace Obel.MSS.Editor
         }
 
         #endregion
-
     }
 }

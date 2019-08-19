@@ -8,7 +8,6 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
-
         private static readonly GUIContent profileLabel = new GUIContent("States"),
                                            newButton = new GUIContent("New");
 

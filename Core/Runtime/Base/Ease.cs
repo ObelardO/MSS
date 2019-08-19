@@ -7,32 +7,54 @@ namespace Obel.MSS
 {
     public static class Ease
     {
-        public delegate void OnEaseAddedDelegate(string name, string path);
-        public static OnEaseAddedDelegate onEaseAdded;
+        #region Properties
 
-        private static List<Func<float, float, float>> eases = new List<Func<float, float, float>>();
+        private class EaseInfo
+        {
+            public Func<float, float, float> ease;
+            public string path;
+
+            public EaseInfo(Func<float, float, float> ease, string path)
+            {
+                this.ease = ease;
+                this.path = path;
+
+                Debug.LogFormat("Added ease \"{0}\" path: \"{1}\"", ease.Method.Name, path);
+            }
+        }
+
+        private static List<EaseInfo> eases = new List<EaseInfo>();
+
+        #endregion
+
+        #region Public methods
 
         public static void Add(Func<float, float, float> ease, string path = null)
         {
-            if (eases.Contains(ease)) return;
+            if (path == null) path = ease.Method.Name;
 
-            // TODO FIX INIT ORDER!
+            if (eases.Where(e => e.ease.Equals(ease)).ToArray().Length > 0) return;
 
-            Debug.Log(onEaseAdded == null);
+            eases.Add(new EaseInfo(ease, path));
+        }
 
-            eases.Add(ease);
-            onEaseAdded.Invoke(ease.Method.Name, path);
+        public static void BindAll(Action<Func<float, float, float>, string> bindCallback)
+        {
+            Debug.Log("Binding eases!");
+            eases.ForEach(e => bindCallback(e.ease, e.path));
         }
         
         public static Func<float, float, float> Get(string name)
         {
-            return eases.Where(e => e.Method.Name.Equals(name)).FirstOrDefault();
+            return eases.Where(e => e.ease.Method.Name.Equals(name)).FirstOrDefault()?.ease;
         }
 
-        public static float Linear(float t, float b, float c, float d)
+        public static float Linear(float t, float d)
         {
-            return c * t / d + b;
+            return t / d;
         }
+
+        #endregion
 
         /*
 

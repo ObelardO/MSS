@@ -6,18 +6,19 @@ namespace Obel.MSS
 {
     public class EaseCubic
     {
-#if UNITY_STANDALONE
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-#endif
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
         [UnityEditor.InitializeOnLoadMethod]
-#endif
+        #elif UNITY_STANDALONE
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        #endif
         private static void ApplicationStart()
         {
             Ease.Add(CubicIn, "Cubic/In");
             Ease.Add(CubicOut, "Cubic/Out");
             Ease.Add(CubicInOut, "Cubic/InOut");
         }
+
+        #region Public methods
 
         public static float CubicIn(float t, float d)
         {
@@ -34,6 +35,8 @@ namespace Obel.MSS
             if ((t /= d / 2) < 1) return 0.5f * t * t * t;
             return 0.5f * ((t -= 2) * t * t + 2);
         }
+
+        #endregion
     }
 }
 
