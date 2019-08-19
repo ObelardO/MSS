@@ -152,6 +152,9 @@ namespace Obel.MSS
             return QuintIn((t * 2) - d, b + c / 2, c / 2, d);
         }
 
+
+
+
         public static float SineIn(float t, float b, float c, float d)
         {
             return -c * Mathf.Cos(t / d * (Mathf.PI / 2)) + c + b;
