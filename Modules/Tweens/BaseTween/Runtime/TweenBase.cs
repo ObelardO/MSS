@@ -6,6 +6,12 @@ namespace Obel.MSS
     [Serializable]
     public class TweenBase : GenericTween<Vector3>
     {
-        public int b;
+        public int instanceID;
+
+        public override void Capture()
+        {
+            //ganeObject.
+            Debug.Log("Captureing BASE tween");
+        }
     }
 }

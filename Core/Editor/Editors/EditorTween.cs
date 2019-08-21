@@ -62,7 +62,7 @@ namespace Obel.MSS.Editor
 
             EditorLayout.SetPosition(rect.x, rect.y);
 
-            EditorLayout.Control(18, (Rect r) =>
+            EditorLayout.Control(18, r =>
             {
                 bool tweenEnabled = EditorGUI.ToggleLeft(r, GUIContent.none, tween.Enabled);
                 if (tweenEnabled != tween.Enabled) EditorActions.Add(() => tween.Enabled = tweenEnabled, tween);
@@ -71,17 +71,20 @@ namespace Obel.MSS.Editor
 
             EditorGUI.BeginDisabledGroup(!tween.Enabled);
 
-            EditorLayout.Control(100, (Rect r) => EditorGUI.LabelField(r, DisplayName, EditorStyles.popup));
+            EditorLayout.Control(100, r => EditorGUI.LabelField(r, DisplayName, EditorStyles.popup));
 
-            EditorLayout.Control(80, (Rect r) =>
+            EditorLayout.Control(80, r =>
             {
                 if (tween.Ease != null) EditorEase.Draw(r, tween.Ease.Method.Name);
-                else
-                {
-                    EditorGUI.HelpBox(r, tween.EaseName, MessageType.Warning);
-                }
+                else EditorGUI.HelpBox(r, tween.EaseName, MessageType.Warning);
             }
             );
+
+            EditorLayout.Control(60, r =>
+            {
+                r.height = 15;
+                if (GUI.Button(r, "Capture")) tween.Capture();
+            });
 
             EditorGUI.EndDisabledGroup();
         }
