@@ -100,7 +100,7 @@ namespace Obel.MSS
     }
 
     [System.Serializable]
-    public class CollectionItem : /*:/* UnityEngine.Object*/// : ScriptableObject
+    public class CollectionItem /*:/* UnityEngine.Object*/// : ScriptableObject
     {
         #region Properties
 
