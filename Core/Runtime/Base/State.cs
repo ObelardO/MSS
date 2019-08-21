@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Obel.MSS
 {
+    [Serializable]
     public class State : Collection<Tween>
     {
         #region Properties
@@ -43,8 +45,8 @@ namespace Obel.MSS
             get => IsDefaultState || s_Enabled;
         }
 
-        public bool IsClosedState { get => this == ((StatesGroup)Parent).ClosedState; }
-        public bool IsOpenedState { get => this == ((StatesGroup)Parent).OpenedState; }
+        public bool IsClosedState { get => this == ((StatesGroup)Parent)?.ClosedState; }
+        public bool IsOpenedState { get => this == ((StatesGroup)Parent)?.OpenedState; }
         public bool IsDefaultState { get => IsClosedState || IsOpenedState; }
 
         #endregion

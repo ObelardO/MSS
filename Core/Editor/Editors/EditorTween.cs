@@ -65,7 +65,7 @@ namespace Obel.MSS.Editor
             EditorLayout.Control(18, (Rect r) =>
             {
                 bool tweenEnabled = EditorGUI.ToggleLeft(r, GUIContent.none, tween.Enabled);
-                if (tweenEnabled != tween.Enabled) EditorActions.Add(() => tween.Enabled = tweenEnabled, tween);
+                if (tweenEnabled != tween.Enabled) EditorActions.Add(() => tween.Enabled = tweenEnabled/*, tween*/);
             }
             );
 
@@ -108,9 +108,11 @@ namespace Obel.MSS.Editor
         {
             IGenericTweenEditor editor = Get(tween.GetType());
 
+            if (editors.Count == 0) Debug.Log("NO EDITORS");
+
             if (editor == null)
             {
-                EditorGUI.HelpBox(rect, "unknown tween module: \"" + tween.name + "\"", MessageType.Warning);
+                EditorGUI.HelpBox(rect, "unknown tween module: \"" + typeof(Tween).Name + "\"", MessageType.Warning);
                 return;
             }
 
@@ -136,14 +138,14 @@ namespace Obel.MSS.Editor
         {
             IGenericTweenEditor editor = EditorTween.Get(@Type);
 
-            return editor == null ? EditorGUIUtility.singleLineHeight : editor.Height + editor.HeaderHeight;
+            return editor == null ? EditorGUIUtility.singleLineHeight : editor.TotalHeight;
         }
 
         #endregion
 
         #region Inspector callbacks
 
-        public static void Add<T>(EditorGenericTween<T> editor) where T : Tween
+        public static void Add<T>(EditorGenericTween<T> editor) where T : Tween, new()
         {
             if (!editors.Contains(editor))
             {
@@ -154,16 +156,19 @@ namespace Obel.MSS.Editor
                 {
                     EditorActions.Add(() =>
                     {
-                        T tween = EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", editor.Name));
+                        T tween = new T();//EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", editor.Name));
                         selectedState.Add(tween);
 
                         if (EditorEase.HasEases) tween.Ease = Ease.Get(EditorEase.FirstEaseName);
 
+                        selectedState.items.ForEach(t => Debug.Log(t.GetType()));
+
                         EditorState.Get(selectedState).OnTweenAdded(tween);
 
-                    }, selectedState);
+                    }/*, selectedState*/);
                 };
 
+                Debug.Log("ADDED EDITOR FOR TWEEN : " + editor.Name + " TYPE : " + editor.Type);
             }
         }
 
@@ -180,11 +185,17 @@ namespace Obel.MSS.Editor
 
             GenericMenu tweensMenu = new GenericMenu();
 
+
+
             foreach (IGenericTweenEditor editor in editors)
             {
+                
+
                 if (selectedState.items.Where(t => t.GetType() == editor.Type).Count() == 0)
                     tweensMenu.AddItem(new GUIContent(editor.Name), false, () => editor.AddAction());
             }
+
+
 
             tweensMenu.ShowAsContext();
         }
@@ -198,11 +209,11 @@ namespace Obel.MSS.Editor
                 EditorState.Get(state).OnTweenRemoving(tween);
 
                 state.Remove(tween, false);
-                EditorAssets.Remove(tween);
-                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(state));
+                //EditorAssets.Remove(tween);
+                //AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(state));
 
-            },
-            state);
+            }/*,
+            state*/);
         }
 
         #endregion

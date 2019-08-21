@@ -16,6 +16,7 @@ namespace Obel.MSS.Editor
 
         #region Public methods
 
+        /*
         public static T Create<T>(string assetName) where T : CollectionItem
         {
             T newAsset = ScriptableObject.CreateInstance<T>();
@@ -88,11 +89,12 @@ namespace Obel.MSS.Editor
         {
             AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(assetObject));
         }
+        */
 
-        public static T AddItem<T>(Collection<T> root, string name = "[MSS]") where T : CollectionItem
+        public static T AddItem<T>(Collection<T> root, string name = "[MSS]") where T : CollectionItem, new()
         {
-            T newItem = Save<T>(root, name);
-            root.Add(newItem);
+            T newItem = new T()/*Save<T>(root, name)*/;
+            root.Add(new T());
             return newItem;
         }
 

@@ -1,5 +1,8 @@
-﻿namespace Obel.MSS
+﻿using System;
+
+namespace Obel.MSS
 {
+    [Serializable]
     public class StatesGroup : Collection<State>
     {
         #region Properties

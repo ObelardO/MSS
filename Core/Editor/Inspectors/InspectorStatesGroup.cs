@@ -1,5 +1,5 @@
 ﻿using UnityEditor;
-
+/*
 namespace Obel.MSS.Editor
 {
     [CustomEditor(typeof(StatesGroup))]
@@ -45,3 +45,4 @@ namespace Obel.MSS.Editor
         #endregion
     }
 }
+*/

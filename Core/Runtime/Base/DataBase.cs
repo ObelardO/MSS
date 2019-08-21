@@ -5,12 +5,13 @@ using UnityEngine;
 
 namespace Obel.MSS
 {
-    public class Collection<T> : CollectionItem where T : CollectionItem
+    [Serializable]
+    public class Collection<T> : CollectionItem where T : CollectionItem, new()
     {
         #region Properties
 
         [SerializeField]
-        public List<T> items;
+        public List<T> items = new List<T>();
 
         public int Count => items.Count;
         public T Last => items[Count - 1];
@@ -32,7 +33,7 @@ namespace Obel.MSS
 
         private void InitItems()
         {
-            if (items == null) items = new List<T>();
+            //if (items == null) items = new List<T>();
             OnInit();
         }
 
@@ -45,7 +46,7 @@ namespace Obel.MSS
 
         public T AddNew()
         {
-            Add(CreateInstance<T>());
+            Add(new T());/*CreateInstance<T>())*/
             return Last;
         }
 
@@ -65,7 +66,7 @@ namespace Obel.MSS
         {
             if (!Contains(item)) return;
             items.Remove(item);
-            if (destroyItem) DestroyImmediate(item);
+            //if (destroyItem) DestroyImmediate(item);
         }
 
         public void Clear(bool destroyItem = true)
@@ -98,7 +99,8 @@ namespace Obel.MSS
         #endregion
     }
 
-    public class CollectionItem : ScriptableObject
+    [System.Serializable]
+    public class CollectionItem : /*:/* UnityEngine.Object*/// : ScriptableObject
     {
         #region Properties
 
@@ -121,6 +123,13 @@ namespace Obel.MSS
         #endregion
 
         #region Public methods
+
+        /*
+        public CollectionItem()
+        {
+
+        }
+        */
 
         public void Init(CollectionItem parent)
         {

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Obel.MSS
 {
+    [Serializable]
     public class Tween : CollectionItem
     {
         #region Properties
@@ -34,8 +35,11 @@ namespace Obel.MSS
         }
 
         #endregion
+
+        public virtual void Capture() { }
     }
 
+    [Serializable]
     public class GenericTween<T> : Tween where T : struct
     {
         #region Properties
