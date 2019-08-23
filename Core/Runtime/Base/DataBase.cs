@@ -10,7 +10,7 @@ namespace Obel.MSS
         #region Properties
 
         [SerializeField]
-        public List<T> items;
+        public List<T> items = new List<T>();
 
         public int Count => items.Count;
         public T Last => items[Count - 1];
@@ -23,7 +23,8 @@ namespace Obel.MSS
 
         private void OnEnable()
         {
-            InitItems();
+            //InitItems();
+            //OnInit();
         }
 
         #endregion
@@ -32,11 +33,11 @@ namespace Obel.MSS
 
         private void InitItems()
         {
-            if (items == null) items = new List<T>();
-            OnInit();
+            //if (items == null) items = new List<T>();
+            //OnInit();
         }
 
-        public virtual void OnInit() { }
+        //public virtual void OnInit() { }
 
         public void ForEach(Action<T> forEachCallback)
         {
@@ -126,7 +127,10 @@ namespace Obel.MSS
         {
             Parent = parent ?? (this);
             ID = base.GetHashCode();
+            OnInit();
         }
+
+        public virtual void OnInit() { }
 
         #endregion
     }

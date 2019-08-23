@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+using UnityEditor.Build.Content;
 using UnityEngine;
 
 namespace Obel.MSS.Editor
@@ -11,7 +12,7 @@ namespace Obel.MSS.Editor
         private static readonly GUIContent profileLabel = new GUIContent("States"),
                                            newButton = new GUIContent("New");
 
-        private static States states;
+        public static States states { private set; get; }
 
         #endregion
 
@@ -33,6 +34,8 @@ namespace Obel.MSS.Editor
             EditorActions.Clear();
             EditorState.Clear();
             EditorState.Repaint = null;
+
+            states = null;
         }
 
         #endregion

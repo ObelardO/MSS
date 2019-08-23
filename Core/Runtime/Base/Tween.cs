@@ -35,7 +35,7 @@ namespace Obel.MSS
 
         #endregion
 
-        public virtual void Capture() { }
+        public virtual void Capture(GameObject gameObject) { }
     }
 
     public class GenericTween<T> : Tween where T : struct

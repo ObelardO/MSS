@@ -22,7 +22,13 @@ namespace Obel.MSS.Editor
 
         public override void Draw(Rect rect, TweenPosition tween)
         {
-            EditorGUI.LabelField(rect, "THIS IS POSITION TWEEN");
+            rect.x += 4;
+            rect.width -= 8;
+
+            tween.Value = EditorGUI.Vector3Field(rect, string.Empty, tween.Value);
+
+            //EditorGUI.LabelField(rect, "THIS IS POSITION TWEEN");
+
         }
 
         #endregion

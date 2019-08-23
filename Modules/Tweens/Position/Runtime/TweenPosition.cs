@@ -8,9 +8,16 @@ namespace Obel.MSS
     {
         public float position;
 
-        public override void Capture()
+        public override void OnInit()
         {
-            Debug.Log("Captureing position tween");
+            Debug.Log("SAY HELLO TO POSITION TWEEN");
+        }
+
+        public override void Capture(GameObject gameObject)
+        {
+            Value = gameObject.transform.position;
+
+            Debug.Log("Captureing position tween from " + gameObject.name);
         }
     }
 }

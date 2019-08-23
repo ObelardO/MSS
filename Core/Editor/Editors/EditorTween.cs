@@ -63,10 +63,10 @@ namespace Obel.MSS.Editor
             EditorLayout.SetPosition(rect.x, rect.y);
 
             EditorLayout.Control(18, r =>
-            {
-                bool tweenEnabled = EditorGUI.ToggleLeft(r, GUIContent.none, tween.Enabled);
-                if (tweenEnabled != tween.Enabled) EditorActions.Add(() => tween.Enabled = tweenEnabled, tween);
-            }
+                {
+                    bool tweenEnabled = EditorGUI.ToggleLeft(r, GUIContent.none, tween.Enabled);
+                    if (tweenEnabled != tween.Enabled) EditorActions.Add(() => tween.Enabled = tweenEnabled, tween);
+                }
             );
 
             EditorGUI.BeginDisabledGroup(!tween.Enabled);
@@ -74,19 +74,23 @@ namespace Obel.MSS.Editor
             EditorLayout.Control(100, r => EditorGUI.LabelField(r, DisplayName, EditorStyles.popup));
 
             EditorLayout.Control(80, r =>
-            {
-                if (tween.Ease != null) EditorEase.Draw(r, tween.Ease.Method.Name);
-                else EditorGUI.HelpBox(r, tween.EaseName, MessageType.Warning);
-            }
+                {
+                    if (tween.Ease != null) EditorEase.Draw(r, tween.Ease.Method.Name);
+                    else EditorGUI.HelpBox(r, tween.EaseName, MessageType.Warning);
+                }
             );
+
+            EditorGUI.BeginDisabledGroup(InspectorStates.states == null);
 
             EditorLayout.Control(60, r =>
             {
                 r.height = 15;
-                if (GUI.Button(r, "Capture")) tween.Capture();
+                if (GUI.Button(r, "Capture")) EditorActions.Add(() => tween.Capture(InspectorStates.states.gameObject), tween);
             });
 
             EditorGUI.EndDisabledGroup();
+
+        EditorGUI.EndDisabledGroup();
         }
 
         #endregion
