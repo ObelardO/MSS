@@ -23,7 +23,7 @@ namespace Obel.MSS.Editor
             get => s_Height;
             set => s_Height = value;
         }
-        public float HeaderHeight => 24;
+        public float HeaderHeight => 50;
 
         public float TotalHeight => HeaderHeight + Height;
 
@@ -59,6 +59,7 @@ namespace Obel.MSS.Editor
             GUI.Box(rect, string.Empty, EditorStyles.helpBox);
             rect.height += 2;
             rect.y += 2;
+            rect.width -= 8;
 
             EditorLayout.SetPosition(rect.x, rect.y);
 
@@ -87,6 +88,25 @@ namespace Obel.MSS.Editor
                 r.height = 15;
                 if (GUI.Button(r, "Capture")) EditorActions.Add(() => tween.Capture(InspectorStates.states.gameObject), tween);
             });
+
+            EditorLayout.Space();
+
+            EditorLayout.Control(rect.width, r =>
+            {
+                r.height = 15;
+
+                float rangeMin = tween.Range.x;
+                float rangeMax = tween.Range.y;
+
+                EditorGUI.BeginChangeCheck();
+                EditorGUI.MinMaxSlider(r, ref rangeMin, ref rangeMax, 0, 1);
+
+                if (EditorGUI.EndChangeCheck())
+                {
+                    EditorActions.Add(() => tween.Range = new Vector2(rangeMin, rangeMax), tween, "tween range");
+                }
+            });
+
 
             EditorGUI.EndDisabledGroup();
 

@@ -26,9 +26,6 @@ namespace Obel.MSS.Editor
             rect.width -= 8;
 
             tween.Value = EditorGUI.Vector3Field(rect, string.Empty, tween.Value);
-
-            //EditorGUI.LabelField(rect, "THIS IS POSITION TWEEN");
-
         }
 
         #endregion
