@@ -16,6 +16,8 @@ namespace Obel.MSS.Editor
         public virtual Type Type { get; set; }
 
         public Action AddAction { get; set; }
+        public Action DrawValueAction { get; set; }
+        public Action ApplyValueAction { get; set; }
 
         private float s_Height = 0;
         public virtual float Height
@@ -46,12 +48,19 @@ namespace Obel.MSS.Editor
 
         #region Inspector
 
+        /*
+        public virtual void DrawValueField(Rect rect, Tween tween) => DrawValueField(rect, tween as T);
+
+        public virtual void DrawValueField(Rect rect, T tween) { }
+        */
+
         public virtual void Draw(Rect rect, Tween tween) => Draw(rect, tween as T);
 
         public virtual void Draw(Rect rect, T tween)
         {
             EditorGUI.HelpBox(rect, "no drawer for tween: \"" + Name + "\"", MessageType.Warning);
         }
+        
 
         public void DrawHeader(Rect rect, Tween tween)
         {

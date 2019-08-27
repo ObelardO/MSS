@@ -21,6 +21,8 @@ namespace Obel.MSS.Editor
 
         #region Inspector
 
+        //void DrawValueField(Rect rect, Tween tween);
+
         void Draw(Rect rect, Tween tween);
 
         void DrawHeader(Rect rect, Tween tween);

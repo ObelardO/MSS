@@ -13,11 +13,7 @@ namespace Obel.MSS.Editor
         #endregion
 
         [InitializeOnLoadMethod]
-        private static void ApplicationStart()
-        {
-            EditorTween.Add(new EditorBasePosition()); 
-            
-        }
+        private static void ApplicationStart() => EditorTween.Add(new EditorBasePosition());
 
         #region Inspector
 
