@@ -33,6 +33,14 @@ namespace Obel.MSS
             get => s_Enabled;
         }
 
+        [SerializeField, HideInInspector]
+        private Vector2 s_Range = Vector2.up;
+        public Vector2 Range
+        {
+            set => s_Range = value;
+            get => s_Range;
+        }
+
         #endregion
 
         public virtual void Capture(GameObject gameObject) { }
