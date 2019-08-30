@@ -21,21 +21,9 @@ namespace Obel.MSS.Editor
 
         #region Inspector
 
-        /*
-        public void ApplyValue(dynamic value, TweenPosition tween)
-        {
-            tween.Value = value;
-        }
-
-        public dynamic DrawValueProperty(Rect rect, TweenPosition tween)
-        {
-            return EditorGUI.Vector3Field(rect, string.Empty, tween.Value);
-        }
-        */
-
         public override void Draw(Rect rect, TweenPosition tween)
         {
-            tween.Value = EditorGUI.Vector3Field(rect, string.Empty, tween.Value);
+            DrawValue(tween, () => EditorGUI.Vector3Field(rect, DisplayName, tween.Value));
         }
 
         #endregion

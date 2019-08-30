@@ -12,22 +12,14 @@ namespace Obel.MSS.Editor
 
         public virtual string Name { get; }
         public virtual string DisplayName { get; private set; }
+        public virtual float Height { get; }
+        public virtual bool Multiple => false;
 
-        public virtual Type Type { get; set; }
-
-        public Action AddAction { get; set; }
-        public Action DrawValueAction { get; set; }
-        public Action ApplyValueAction { get; set; }
-
-        private float s_Height = 0;
-        public virtual float Height
-        {
-            get => s_Height;
-            set => s_Height = value;
-        }
         public float HeaderHeight => 50;
-
         public float TotalHeight => HeaderHeight + Height;
+
+        public Type Type { get; set; }
+        public Action AddAction { get; set; }
 
         #endregion
 
@@ -48,20 +40,22 @@ namespace Obel.MSS.Editor
 
         #region Inspector
 
-        /*
-        public virtual void DrawValueField(Rect rect, Tween tween) => DrawValueField(rect, tween as T);
-
-        public virtual void DrawValueField(Rect rect, T tween) { }
-        */
-
         public virtual void Draw(Rect rect, Tween tween) => Draw(rect, tween as T);
 
         public virtual void Draw(Rect rect, T tween)
         {
             EditorGUI.HelpBox(rect, "no drawer for tween: \"" + Name + "\"", MessageType.Warning);
         }
-        
 
+        //TODO Try to pass only GUI method without DrawValue
+        public void DrawValue<U>(GenericTween<U> tween, Func<U> drawingMethod) where U : struct
+        {
+            EditorGUI.BeginChangeCheck();
+            U value = drawingMethod();
+            if (EditorGUI.EndChangeCheck()) EditorActions.Add(() => tween.Value = value, tween);
+        }
+
+        //TODO Move to static methods at EditorTween
         public void DrawHeader(Rect rect, Tween tween)
         {
             rect.height -= 2;
@@ -115,12 +109,11 @@ namespace Obel.MSS.Editor
                     EditorActions.Add(() => tween.Range = new Vector2(rangeMin, rangeMax), tween, "tween range");
                 }
             });
-
-
             EditorGUI.EndDisabledGroup();
 
-        EditorGUI.EndDisabledGroup();
+            EditorGUI.EndDisabledGroup();
         }
+
 
         #endregion
     }
@@ -170,8 +163,7 @@ namespace Obel.MSS.Editor
 
         public static float GetHeight(Type @Type)
         {
-            IGenericTweenEditor editor = EditorTween.Get(@Type);
-
+            IGenericTweenEditor editor = Get(@Type);
             return editor == null ? EditorGUIUtility.singleLineHeight : editor.Height + editor.HeaderHeight;
         }
 
@@ -205,10 +197,7 @@ namespace Obel.MSS.Editor
 
         public static IGenericTweenEditor Get<T>(T tween) => Get(tween.GetType());
 
-        public static IGenericTweenEditor Get(Type type)
-        {
-            return editors.Where(t => t.Type.Equals(type)).FirstOrDefault();
-        }
+        public static IGenericTweenEditor Get(Type type) => editors.Where(t => t.Type.Equals(type)).FirstOrDefault();
 
         public static void OnAddButton(State state)
         {
@@ -218,7 +207,7 @@ namespace Obel.MSS.Editor
 
             foreach (IGenericTweenEditor editor in editors)
             {
-                if (selectedState.items.Where(t => t.GetType() == editor.Type).Count() == 0)
+                if (editor.Multiple || selectedState.items.Where(t => t.GetType() == editor.Type).Count() == 0)
                     tweensMenu.AddItem(new GUIContent(editor.Name), false, () => editor.AddAction());
             }
 

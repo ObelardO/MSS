@@ -15,13 +15,13 @@ namespace Obel.MSS.Editor
 
         float TotalHeight { get; }
         float HeaderHeight { get; }
-        float Height { set; get; }
+        float Height { get; }
+
+        bool Multiple { get; }
 
         #endregion
 
         #region Inspector
-
-        //void DrawValueField(Rect rect, Tween tween);
 
         void Draw(Rect rect, Tween tween);
 
