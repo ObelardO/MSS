@@ -9,7 +9,7 @@ namespace Obel.MSS.Editor
         #region Properties
 
         public override string Name => "T/Position";
-        public override float Height => 50;
+        //public override float Height => 50;
 
         #endregion
 

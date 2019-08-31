@@ -236,13 +236,13 @@ namespace Obel.MSS.Editor
 
         public void OnTweenAdded<T>(T tween) where T : Tween
         {
-            TweensListHeight += EditorTween.Get(tween).TotalHeight;
+            TweensListHeight += EditorTween.GetHeight(tween);
             Repaint();
         }
 
         public void OnTweenRemoving<T>(T tween) where T : Tween
         {
-            TweensListHeight -= EditorTween.Get(tween).TotalHeight;
+            TweensListHeight -= EditorTween.GetHeight(tween);
             Repaint();
         }
 
