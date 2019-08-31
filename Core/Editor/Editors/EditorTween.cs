@@ -6,7 +6,9 @@ using UnityEngine;
 
 namespace Obel.MSS.Editor
 {
-    internal class EditorGenericTween<T> : IGenericTweenEditor where T : Tween
+    internal class EditorGenericTween<T, U> : IGenericTweenEditor
+        where T : GenericTween<U>
+        where U : struct
     {
         #region Properties
 
@@ -20,6 +22,8 @@ namespace Obel.MSS.Editor
 
         public Type Type { get; set; }
         public Action AddAction { get; set; }
+
+        public Func<Rect, string, U, U> DrawValueFunc { set; get; }
 
         #endregion
 
@@ -48,21 +52,25 @@ namespace Obel.MSS.Editor
         }
 
 
-        public virtual U drawingMethod<U>(GenericTween<U> tween) where U : struct
-        {
-            return tween.Value;
-        }
+        //public delegate U DrawValueMethod<U>(Rect r, string s, U v) where U : struct;
+        //public DrawValueMethod<U> DrawValueFunc;
 
-        //TODO Try to pass only GUI method without DrawValue
-        public void DrawValue<U>(GenericTween<U> tween, Rect r, Func<Rect, string, U, U> drawingMethod) where U : struct
-        {
-            EditorGUI.BeginChangeCheck();
-            U value = drawingMethod(r, DisplayName, tween.Value);
-            if (EditorGUI.EndChangeCheck()) EditorActions.Add(() => tween.Value = value, tween);
-        }
+
+
+        /*
+    //TODO Try to pass only GUI method without DrawValue
+    public void DrawValue<U>(GenericTween<U> tween, Rect r, Func<Rect, string, U, U> drawingMethod) where U : struct
+    {
+        EditorGUI.BeginChangeCheck();
+        U value = drawingMethod(r, DisplayName, tween.Value);
+        if (EditorGUI.EndChangeCheck()) EditorActions.Add(() => tween.Value = value, tween);
+    }
+    */
+
+        public virtual void DrawHeader(Rect rect, Tween tween) => DrawHeader(rect, tween as T);
 
         //TODO Move to static methods at EditorTween
-        public void DrawHeader(Rect rect, Tween tween)
+        public void DrawHeader(Rect rect, T tween)
         {
             rect.height -= 2;
             GUI.Box(rect, string.Empty, EditorStyles.helpBox);
@@ -115,6 +123,18 @@ namespace Obel.MSS.Editor
                     EditorActions.Add(() => tween.Range = new Vector2(rangeMin, rangeMax), tween, "tween range");
                 }
             });
+
+            EditorLayout.Space();
+            EditorLayout.Control(rect.width, r =>
+            {
+                r.height = 15;
+
+                EditorGUI.BeginChangeCheck();
+                U value = DrawValueFunc(r, DisplayName, tween.Value);
+                if (EditorGUI.EndChangeCheck()) EditorActions.Add(() => tween.Value = value, tween);
+            });
+
+
             EditorGUI.EndDisabledGroup();
 
             EditorGUI.EndDisabledGroup();
@@ -177,13 +197,16 @@ namespace Obel.MSS.Editor
 
         #region Inspector callbacks
 
-        public static void Add<T>(EditorGenericTween<T> editor) where T : Tween
+        public static void Add<T, U>(EditorGenericTween<T, U> editor, Func<Rect, string, U, U> drawingValueFunc)
+            where T : GenericTween<U>
+            where U : struct
         {
             if (!editors.Contains(editor))
             {
                 editors.Add(editor);
                 editor.Type = typeof(T);
                 editor.SetDisplayName();
+                editor.DrawValueFunc = drawingValueFunc;
                 editor.AddAction = () =>
                 {
                     EditorActions.Add(() =>

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Obel.MSS.Editor
 {
-    internal class EditorBasePosition : EditorGenericTween<TweenBase>
+    internal class EditorBasePosition : EditorGenericTween<TweenBase, int>
     {
         #region Properties
 
@@ -15,13 +15,14 @@ namespace Obel.MSS.Editor
         #endregion
 
         [InitializeOnLoadMethod]
-        private static void ApplicationStart() => EditorTween.Add(new EditorBasePosition());
+        private static void ApplicationStart() => EditorTween.Add(new EditorBasePosition(), EditorGUI.IntField);
 
         #region Inspector
         
         public override void Draw(Rect rect, TweenBase tween)
         {
-            DrawValue(tween, rect, EditorGUI.IntField);
+            //tween.Value = DrawValueFunc(rect, DisplayName, tween.Value);
+            //DrawValue(tween, rect, EditorGUI.IntField);
         }
 
         #endregion
