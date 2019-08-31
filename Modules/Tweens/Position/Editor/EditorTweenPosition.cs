@@ -23,7 +23,7 @@ namespace Obel.MSS.Editor
 
         public override void Draw(Rect rect, TweenPosition tween)
         {
-            DrawValue(tween, () => EditorGUI.Vector3Field(rect, DisplayName, tween.Value));
+            DrawValue(tween, rect, EditorGUI.Vector3Field);
         }
 
         #endregion

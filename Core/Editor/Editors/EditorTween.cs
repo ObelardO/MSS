@@ -47,11 +47,17 @@ namespace Obel.MSS.Editor
             EditorGUI.HelpBox(rect, "no drawer for tween: \"" + Name + "\"", MessageType.Warning);
         }
 
+
+        public virtual U drawingMethod<U>(GenericTween<U> tween) where U : struct
+        {
+            return tween.Value;
+        }
+
         //TODO Try to pass only GUI method without DrawValue
-        public void DrawValue<U>(GenericTween<U> tween, Func<U> drawingMethod) where U : struct
+        public void DrawValue<U>(GenericTween<U> tween, Rect r, Func<Rect, string, U, U> drawingMethod) where U : struct
         {
             EditorGUI.BeginChangeCheck();
-            U value = drawingMethod();
+            U value = drawingMethod(r, DisplayName, tween.Value);
             if (EditorGUI.EndChangeCheck()) EditorActions.Add(() => tween.Value = value, tween);
         }
 

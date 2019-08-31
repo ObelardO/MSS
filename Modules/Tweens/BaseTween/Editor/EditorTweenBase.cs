@@ -18,10 +18,10 @@ namespace Obel.MSS.Editor
         private static void ApplicationStart() => EditorTween.Add(new EditorBasePosition());
 
         #region Inspector
-
+        
         public override void Draw(Rect rect, TweenBase tween)
         {
-            DrawValue(tween, () => EditorGUI.IntField(rect, DisplayName, tween.Value));
+            DrawValue(tween, rect, EditorGUI.IntField);
         }
 
         #endregion
