@@ -66,7 +66,7 @@ namespace Obel.MSS.Editor
             EditorLayout.Control(18, r =>
                 {
                     bool tweenEnabled = EditorGUI.ToggleLeft(r, GUIContent.none, tween.Enabled);
-                    if (tweenEnabled != tween.Enabled) EditorActions.Add(() => tween.Enabled = tweenEnabled, tween);
+                    if (tweenEnabled != tween.Enabled) EditorActions.Add(() => tween.Enabled = tweenEnabled, InspectorStates.states);
                 }
             );
 
@@ -86,7 +86,7 @@ namespace Obel.MSS.Editor
             EditorLayout.Control(60, r =>
             {
                 r.height = 15;
-                if (GUI.Button(r, "Capture")) EditorActions.Add(() => tween.Capture(InspectorStates.states.gameObject), tween);
+                if (GUI.Button(r, "Capture")) EditorActions.Add(() => tween.Capture(InspectorStates.states.gameObject), InspectorStates.states);
             });
 
             EditorGUI.EndDisabledGroup();
@@ -105,7 +105,7 @@ namespace Obel.MSS.Editor
 
                 if (EditorGUI.EndChangeCheck())
                 {
-                    EditorActions.Add(() => tween.Range = new Vector2(rangeMin, rangeMax), tween, "tween range");
+                    EditorActions.Add(() => tween.Range = new Vector2(rangeMin, rangeMax), InspectorStates.states, "tween range");
                 }
             });
 
@@ -115,7 +115,7 @@ namespace Obel.MSS.Editor
                 r.height = 15;
                 EditorGUI.BeginChangeCheck();
                 U value = DrawValueFunc(r, DisplayName, tween.Value);
-                if (EditorGUI.EndChangeCheck()) EditorActions.Add(() => tween.Value = value, tween);
+                if (EditorGUI.EndChangeCheck()) EditorActions.Add(() => tween.Value = value, InspectorStates.states);
             });
 
             EditorGUI.EndDisabledGroup();
@@ -146,7 +146,7 @@ namespace Obel.MSS.Editor
 
             if (editor == null)
             {
-                EditorGUI.HelpBox(rect, "unknown tween module: \"" + tween.name + "\"", MessageType.Warning);
+                EditorGUI.HelpBox(rect, "unknown tween module: \"" + tween + "\"", MessageType.Warning);
                 return;
             }
 
@@ -192,14 +192,14 @@ namespace Obel.MSS.Editor
                 {
                     EditorActions.Add(() =>
                     {
-                        T tween = EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", editor.Name));
+                        T tween = (T)Activator.CreateInstance(typeof(T));// EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", editor.Name));
                         selectedState.Add(tween);
 
                         if (EditorEase.HasEases) tween.Ease = Ease.Get(EditorEase.FirstEaseName);
 
                         EditorState.Get(selectedState).OnTweenAdded(tween);
 
-                    }, selectedState);
+                    }, InspectorStates.states);
                 };
 
             }
@@ -233,11 +233,11 @@ namespace Obel.MSS.Editor
                 EditorState.Get(state).OnTweenRemoving(tween);
 
                 state.Remove(tween, false);
-                EditorAssets.Remove(tween);
-                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(state));
+                //EditorAssets.Remove(tween);
+                //AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(state));
 
             },
-            state);
+            InspectorStates.states);
         }
 
         #endregion

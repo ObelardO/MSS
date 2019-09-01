@@ -2,6 +2,7 @@
 
 namespace Obel.MSS.Editor
 {
+    /*
     [CustomEditor(typeof(StatesGroup))]
     public class InspectorStatesGroup : UnityEditor.Editor
     {
@@ -44,4 +45,5 @@ namespace Obel.MSS.Editor
 
         #endregion
     }
+    */
 }

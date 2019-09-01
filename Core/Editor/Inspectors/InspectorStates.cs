@@ -57,7 +57,7 @@ namespace Obel.MSS.Editor
 
                         EditorGUI.BeginChangeCheck();
 
-                        states.statesGroup = EditorGUILayout.ObjectField(profileLabel, states.statesGroup, typeof(StatesGroup), false) as StatesGroup;
+                        //states.statesGroup = EditorGUILayout.ObjectField(profileLabel, states.statesGroup, typeof(StatesGroup), false) as StatesGroup;
 
                         if (states.statesGroup == null && GUILayout.Button(newButton, GUILayout.Width(50), GUILayout.Height(14))) states.statesGroup = EditorGroup.CreateStatesProfile();
 

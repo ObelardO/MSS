@@ -41,7 +41,7 @@ namespace Obel.MSS.Editor
 
             if (Repaint != null) foldout.valueChanged.AddListener(Repaint);
 
-            serializedState = new SerializedObject(state);
+            //serializedState = new SerializedObject(state);
 
             tweensReorderableList = new ReorderableList(state.items, typeof(Tween))
             {
@@ -114,12 +114,12 @@ namespace Obel.MSS.Editor
         {
             rect.width += 5;
 
-            editor.serializedState.Update();
+            //editor.serializedState.Update();
 
             DrawHeader(rect, editor);
             DrawProperties(rect, editor);
 
-            editor.serializedState.ApplyModifiedProperties();
+            //editor.serializedState.ApplyModifiedProperties();
         }
 
         public static void DrawBackground(Rect rect, int index, bool isActive, bool isFocused) => EditorGUI.DrawRect(rect, Color.clear);
@@ -148,7 +148,7 @@ namespace Obel.MSS.Editor
             }
             else
             {
-                EditorGUI.PropertyField(rectToggle, editor.serializedState.FindProperty("s_Enabled"), GUIContent.none);
+                EditorGUI.Toggle(rectToggle, editor.state.Enabled);
             }
 
             Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, HeaderHeight);
@@ -188,13 +188,13 @@ namespace Obel.MSS.Editor
             EditorLayout.Control(nameFieldWidth, (Rect r) =>
             {
                 EditorGUI.BeginDisabledGroup(editor.state.IsDefaultState);
-                EditorGUI.PropertyField(r, editor.serializedState.FindProperty("s_Name"), GUIContent.none);
-                editor.state.name = string.Format("[State] {0}", editor.state.Name); // TODO WTF?
+                EditorGUI.TextField(r, editor.state.Name);
+                //editor.state.name = string.Format("[State] {0}", editor.state.Name); // TODO WTF?
                 EditorGUI.EndDisabledGroup();
             });
 
-            EditorLayout.Control((Rect r) => EditorGUI.PropertyField(r, editor.serializedState.FindProperty("s_Delay"), GUIContent.none));
-            EditorLayout.Control((Rect r) => EditorGUI.PropertyField(r, editor.serializedState.FindProperty("s_Duration"), GUIContent.none));
+            EditorLayout.Control((Rect r) => EditorGUI.FloatField(r, editor.state.Delay));
+            EditorLayout.Control((Rect r) => EditorGUI.FloatField(r, editor.state.Duration));
 
             EditorLayout.Space(6);
 
@@ -226,12 +226,12 @@ namespace Obel.MSS.Editor
             {
                 group.Remove(state, false);
 
-                EditorAssets.Remove(state);
-                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(group));
+                //EditorAssets.Remove(state);
+                //AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(group));
 
                 Reorder(group);
             },
-            group, "[MSS] Remove state");
+            InspectorStates.states, "[MSS] Remove state");
         }
 
         public void OnTweenAdded<T>(T tween) where T : Tween

@@ -19,7 +19,7 @@ namespace Obel.MSS.Editor
         {
             if (group == null) return;
 
-            serializedStatesGroup.Update();
+            //serializedStatesGroup.Update();
 
             GUILayout.Space(3);
             GUILayout.BeginHorizontal();
@@ -36,7 +36,7 @@ namespace Obel.MSS.Editor
             Event guiEvent = Event.current;
             if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") OnUndo(group);
 
-            serializedStatesGroup.ApplyModifiedProperties();
+            //serializedStatesGroup.ApplyModifiedProperties();
         }
 
         private static void DrawAddButton(StatesGroup group)
@@ -48,7 +48,7 @@ namespace Obel.MSS.Editor
             rectAddButton.width = 30;
 
             if (GUI.Button(rectAddButton, EditorConfig.Content.iconToolbarPlus, EditorConfig.Styles.preButton))
-                EditorActions.Add(() => OnAddStateButton(group), group, "[MSS] Add State");
+                EditorActions.Add(() => OnAddStateButton(group), InspectorStates.states, "[MSS] Add State");
         }
 
         #endregion
@@ -59,7 +59,7 @@ namespace Obel.MSS.Editor
         {
             if (group == null) return;
 
-            serializedStatesGroup = new SerializedObject(group);
+            //serializedStatesGroup = new SerializedObject(group);
 
             statesReorderableList = new ReorderableList(group.items, typeof(State))
             {
@@ -81,7 +81,7 @@ namespace Obel.MSS.Editor
 
         private static void OnUndo(StatesGroup group)
         {
-            EditorAssets.Refresh(group);
+            //EditorAssets.Refresh(group);
             EditorState.Reorder(group);
             EditorActions.Clear();
             EditorState.CalculateAllTweensListsHeight();
@@ -90,7 +90,7 @@ namespace Obel.MSS.Editor
         private static void OnAddStateButton(StatesGroup group)
         {
             State state = EditorAssets.AddItem(group);
-            EditorAssets.Refresh(group);
+            //EditorAssets.Refresh(group);
 
             EditorState.Reorder(group);
             EditorState.Get(state).foldout.target = true;
@@ -100,16 +100,18 @@ namespace Obel.MSS.Editor
 
         #region Public methods
 
-        [MenuItem("Assets/Create/MSS/States Profile")]
+        
+        //[MenuItem("Assets/Create/MSS/States Profile")]
         public static StatesGroup CreateStatesProfile()
         {
-            StatesGroup newStatesGroup = EditorAssets.Create<StatesGroup>("NewStatesGroup");
+            StatesGroup newStatesGroup = System.Activator.CreateInstance(typeof(StatesGroup)) as StatesGroup;//  EditorAssets.Create<StatesGroup>("NewStatesGroup");
 
             EditorAssets.AddItem(newStatesGroup, "[State] newState");
             EditorAssets.AddItem(newStatesGroup, "[State] newState");
 
             return newStatesGroup;
         }
+        
 
         #endregion
     }

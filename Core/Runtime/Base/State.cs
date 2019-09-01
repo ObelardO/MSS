@@ -2,6 +2,7 @@
 
 namespace Obel.MSS
 {
+    [System.Serializable]
     public class State : Collection<Tween>
     {
         #region Properties

@@ -7,6 +7,7 @@ namespace Obel.MSS
     {
         #region Properties
 
+        [SerializeReference]
         public StatesGroup statesGroup;
 
         #endregion
