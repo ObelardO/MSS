@@ -91,7 +91,7 @@ namespace Obel.MSS.Editor
             AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(assetObject));
         }
 
-        */
+
 
         public static T AddItem<T>(Collection<T> root, string name = "[MSS]") where T : CollectionItem
         {
@@ -99,6 +99,8 @@ namespace Obel.MSS.Editor
             root.Add(newItem);
             return newItem;
         }
+
+            */
 
         #endregion
     }

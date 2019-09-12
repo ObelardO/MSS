@@ -89,7 +89,7 @@ namespace Obel.MSS.Editor
 
         private static void OnAddStateButton(StatesGroup group)
         {
-            State state = EditorAssets.AddItem(group);
+            State state = group.AddNew();
             //EditorAssets.Refresh(group);
 
             EditorState.Reorder(group);
@@ -104,10 +104,13 @@ namespace Obel.MSS.Editor
         //[MenuItem("Assets/Create/MSS/States Profile")]
         public static StatesGroup CreateStatesProfile()
         {
-            StatesGroup newStatesGroup = System.Activator.CreateInstance(typeof(StatesGroup)) as StatesGroup;//  EditorAssets.Create<StatesGroup>("NewStatesGroup");
+            StatesGroup newStatesGroup = new StatesGroup();// System.Activator.CreateInstance(typeof(StatesGroup)) as StatesGroup;//  EditorAssets.Create<StatesGroup>("NewStatesGroup");
 
-            EditorAssets.AddItem(newStatesGroup, "[State] newState");
-            EditorAssets.AddItem(newStatesGroup, "[State] newState");
+            newStatesGroup.AddNew();
+            newStatesGroup.AddNew();
+
+            //EditorAssets.AddItem(newStatesGroup, "[State] newState");
+           // EditorAssets.AddItem(newStatesGroup, "[State] newState");
 
             return newStatesGroup;
         }

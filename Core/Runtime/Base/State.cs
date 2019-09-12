@@ -7,7 +7,7 @@ namespace Obel.MSS
     {
         #region Properties
 
-        [SerializeField, HideInInspector]
+        [SerializeField/*, HideInInspector*/]
         private float s_Delay;
         public float Delay
         {
@@ -15,7 +15,7 @@ namespace Obel.MSS
             get => s_Delay;
         }
 
-        [SerializeField, HideInInspector]
+        [SerializeField/*, HideInInspector*/]
         private float s_Duration = 1;
         public float Duration
         {
@@ -23,7 +23,7 @@ namespace Obel.MSS
             get => s_Duration;
         }
 
-        [SerializeField, HideInInspector]
+        [SerializeField/*, HideInInspector*/]
         private string s_Name = "NewState";
         public string Name
         {
@@ -36,7 +36,7 @@ namespace Obel.MSS
             }
         }
 
-        [SerializeField, HideInInspector]
+        [SerializeField/*, HideInInspector*/]
         private bool s_Enabled = true;
         public bool Enabled
         {
@@ -44,8 +44,8 @@ namespace Obel.MSS
             get => IsDefaultState || s_Enabled;
         }
 
-        public bool IsClosedState { get => this == ((StatesGroup)Parent).ClosedState; }
-        public bool IsOpenedState { get => this == ((StatesGroup)Parent).OpenedState; }
+        public bool IsClosedState { get => this == ((StatesGroup)Parent)?.ClosedState; }
+        public bool IsOpenedState { get => this == ((StatesGroup)Parent)?.OpenedState; }
         public bool IsDefaultState { get => IsClosedState || IsOpenedState; }
 
         #endregion

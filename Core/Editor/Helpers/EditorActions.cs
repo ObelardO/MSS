@@ -28,6 +28,7 @@ namespace Obel.MSS.Editor
 
         public static void Add(Action action, Object recordable = null, string reason = null)
         {
+            UnityEngine.Debug.Log("Register action: " + reason + " " + recordable?.name ?? "null");
             actions.Add(new EditorAction()
             {
                 action = action,
@@ -42,7 +43,7 @@ namespace Obel.MSS.Editor
 
             for (int i = actions.Count - 1; i >= 0; i--)
             {
-                if (actions[i].recordeble != null)
+                if (actions[i].recordeble is Object)
                     Undo.RecordObject(actions[i].recordeble, actions[i].reason);
 
                 actions[i].action.Invoke();

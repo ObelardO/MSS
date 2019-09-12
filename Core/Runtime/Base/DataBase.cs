@@ -6,11 +6,11 @@ using UnityEngine;
 namespace Obel.MSS
 {
     [System.Serializable]
-    public class Collection<T> : CollectionItem where T : CollectionItem 
+    public class Collection<T> : CollectionItem where T : CollectionItem, new()
     {
         #region Properties
 
-        [SerializeField, SerializeReference]
+        [SerializeReference]
         public List<T> items = new List<T>();
 
         public int Count => items.Count;
@@ -47,7 +47,9 @@ namespace Obel.MSS
 
         public T AddNew()
         {
-            Add((T)Activator.CreateInstance(typeof(T))/* CreateInstance<T>()*/);
+            Add(new T());
+            // (T)Activator.CreateInstance(typeof(T))/* CreateInstance<T>()*/);
+            Last.Init(this);
             return Last;
         }
 
@@ -100,22 +102,31 @@ namespace Obel.MSS
         #endregion
     }
 
+    public interface ICollectionItem
+    {
+
+    }
+
     [System.Serializable]
-    public class CollectionItem// : ScriptableObject
+    public class CollectionItem : ICollectionItem// : ICollectionItem// : ScriptableObject
     {
         #region Properties
 
-        [SerializeField, HideInInspector]
-        private CollectionItem s_Parent;
-        public CollectionItem Parent
+        [SerializeReference/*, HideInInspector*/]
+        private ICollectionItem s_Parent;
+        public ICollectionItem Parent
         {
             private set => s_Parent = value;
             get => s_Parent;
         }
 
-        [SerializeField, HideInInspector]
+        public int a;
+
+        [SerializeField/*, HideInInspector*/]
         private int s_ID;
-        public int ID
+
+        //[field: SerializeField]
+        public int ID //{ private set; get; }
         {
             private set => s_ID = value;
             get => s_ID;
@@ -125,9 +136,10 @@ namespace Obel.MSS
 
         #region Public methods
 
-        public void Init(CollectionItem parent)
+        public void Init(ICollectionItem parent)
         {
-            Parent = parent ?? (this);
+            Debug.Log("new item! parent: " + parent);
+            Parent = parent ?? this;
             ID = base.GetHashCode();
             OnInit();
         }

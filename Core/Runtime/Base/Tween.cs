@@ -26,7 +26,7 @@ namespace Obel.MSS
         }
         public string EaseName => s_Ease;
 
-        [SerializeField, HideInInspector]
+        [SerializeField/*, HideInInspector*/]
         private bool s_Enabled = true;
         public bool Enabled
         {
@@ -34,7 +34,7 @@ namespace Obel.MSS
             get => s_Enabled;
         }
 
-        [SerializeField, HideInInspector]
+        [SerializeField/*, HideInInspector*/]
         private Vector2 s_Range = Vector2.up;
         public Vector2 Range
         {
@@ -46,12 +46,13 @@ namespace Obel.MSS
 
         public virtual void Capture(GameObject gameObject) { }
     }
+
     [System.Serializable]
     public class GenericTween<T> : Tween where T : struct
     {
         #region Properties
 
-        [SerializeField, HideInInspector] private T s_Value;
+        [SerializeField/*, HideInInspector*/] private T s_Value;
         public T Value
         {
             set => s_Value = value;

@@ -2,7 +2,7 @@
 
 namespace Obel.MSS
 {
-    [AddComponentMenu("MSS/States")]
+    [AddComponentMenu("MSS/States"), DisallowMultipleComponent]
     public class States : MonoBehaviour
     {
         #region Properties
