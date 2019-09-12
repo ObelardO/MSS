@@ -43,8 +43,8 @@ namespace Obel.MSS.Editor
 
             for (int i = actions.Count - 1; i >= 0; i--)
             {
-                if (actions[i].recordeble is Object)
-                    Undo.RecordObject(actions[i].recordeble, actions[i].reason);
+                //if (actions[i].recordeble is Object)
+                //    Undo.RecordObject(actions[i].recordeble, actions[i].reason);
 
                 actions[i].action.Invoke();
                 actions.RemoveAt(i);

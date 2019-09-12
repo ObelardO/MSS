@@ -17,12 +17,11 @@ namespace Obel.MSS.Editor
         public virtual float Height { get; }
         public virtual bool Multiple => false;
 
-        public float HeaderHeight => 64;
+        public float HeaderHeight => EditorConfig.Sizes.singleLine * 4;
         public float TotalHeight => HeaderHeight + Height;
 
         public Type Type { get; set; }
         public Action AddAction { get; set; }
-
         public Func<Rect, string, U, U> DrawValueFunc { set; get; }
 
         #endregion
@@ -75,28 +74,20 @@ namespace Obel.MSS.Editor
             EditorLayout.Control(100, r => EditorGUI.LabelField(r, DisplayName, EditorStyles.popup));
 
             EditorLayout.Control(80, r =>
-                {
-                    if (tween.Ease != null) EditorEase.Draw(r, tween.Ease.Method.Name);
-                    else EditorGUI.HelpBox(r, tween.EaseName, MessageType.Warning);
-                }
-            );
-
-            EditorGUI.BeginDisabledGroup(InspectorStates.states == null);
+            {
+                if (tween.Ease != null) EditorEase.Draw(r, tween.Ease.Method.Name);
+                else EditorGUI.HelpBox(r, tween.EaseName, MessageType.Warning);
+            });
 
             EditorLayout.Control(60, r =>
             {
-                r.height = 15;
                 if (GUI.Button(r, "Capture")) EditorActions.Add(() => tween.Capture(InspectorStates.states.gameObject), InspectorStates.states);
             });
-
-            EditorGUI.EndDisabledGroup();
 
             EditorLayout.Space();
 
             EditorLayout.Control(rect.width, r =>
             {
-                r.height = 15;
-
                 float rangeMin = tween.Range.x;
                 float rangeMax = tween.Range.y;
 
@@ -105,22 +96,21 @@ namespace Obel.MSS.Editor
 
                 if (EditorGUI.EndChangeCheck())
                 {
-                    EditorActions.Add(() => tween.Range = new Vector2(rangeMin, rangeMax), InspectorStates.states, "tween range");
+                    EditorActions.Add(() => tween.Range = new Vector2(rangeMin, rangeMax), InspectorStates.states.gameObject, "tween range");
                 }
             });
 
             EditorLayout.Space();
             EditorLayout.Control(rect.width, r =>
             {
-                r.height = 15;
+                //r.height = 15;
                 EditorGUI.BeginChangeCheck();
                 U value = DrawValueFunc(r, DisplayName, tween.Value);
-                if (EditorGUI.EndChangeCheck()) EditorActions.Add(() => tween.Value = value, InspectorStates.states);
+                if (EditorGUI.EndChangeCheck()) EditorActions.Add(() => tween.Value = value, InspectorStates.states.gameObject);
             });
 
             EditorGUI.EndDisabledGroup();
         }
-
 
         #endregion
     }
@@ -171,7 +161,7 @@ namespace Obel.MSS.Editor
         public static float GetHeight(Type @Type)
         {
             IGenericTweenEditor editor = Get(@Type);
-            return editor == null ? EditorGUIUtility.singleLineHeight : editor.Height + editor.HeaderHeight;
+            return editor == null ? EditorConfig.Sizes.singleLine : editor.TotalHeight;
         }
 
         #endregion
@@ -192,6 +182,7 @@ namespace Obel.MSS.Editor
                 {
                     EditorActions.Add(() =>
                     {
+                        //TODO Remove activator
                         T tween = (T)Activator.CreateInstance(typeof(T));// EditorAssets.Save<T>(selectedState, string.Concat("[Tween] ", editor.Name));
                         selectedState.Add(tween);
 
@@ -199,9 +190,8 @@ namespace Obel.MSS.Editor
 
                         EditorState.Get(selectedState).OnTweenAdded(tween);
 
-                    }, InspectorStates.states);
+                    }, InspectorStates.states.gameObject);
                 };
-
             }
         }
 
@@ -228,16 +218,10 @@ namespace Obel.MSS.Editor
         {   
             EditorActions.Add(() =>
             {
-                Tween tween = state[index];
-
-                EditorState.Get(state).OnTweenRemoving(tween);
-
-                state.Remove(tween, false);
-                //EditorAssets.Remove(tween);
-                //AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(state));
-
+                EditorState.Get(state).OnTweenRemoving(state[index]);
+                state.Remove(state[index], false);
             },
-            InspectorStates.states);
+            InspectorStates.states.gameObject);
         }
 
         #endregion

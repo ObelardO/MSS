@@ -26,7 +26,7 @@ namespace Obel.MSS.Editor
 
         public float TweensListHeight { private set; get; }
 
-        public static readonly float HeaderHeight = 20;
+        //public static readonly float HeaderHeight = 20;
 
         #endregion
 
@@ -127,18 +127,18 @@ namespace Obel.MSS.Editor
         private static void DrawHeader(Rect rect, EditorState editor)
         {
             Rect rectBackground = new Rect(rect.x, rect.y, rect.width, rect.height - 6);
-            EditorGUI.DrawRect(rectBackground, Color.white * 0.4f);
+            EditorGUI.DrawRect(rectBackground, EditorConfig.Colors.lightGrey);
 
-            Rect rectFoldOutBack = new Rect(rect.x, rect.y, rect.width, HeaderHeight);
+            Rect rectFoldOutBack = new Rect(rect.x, rect.y, rect.width, EditorConfig.Sizes.singleLine + 4);
             GUI.Box(rectFoldOutBack, GUIContent.none, GUI.skin.box);
 
-            Rect rectStateTabColor = new Rect(rect.x, rect.y, 2, HeaderHeight);
+            Rect rectStateTabColor = new Rect(rect.x, rect.y, 2, EditorConfig.Sizes.singleLine);
             Color tabColor = Color.gray;
             if (editor.state.IsOpenedState) tabColor = EditorConfig.Colors.green;
             if (editor.state.IsClosedState) tabColor = EditorConfig.Colors.red;
             EditorGUI.DrawRect(rectStateTabColor, tabColor);
 
-            Rect rectToggle = new Rect(rect.x + 5, rect.y, 20, HeaderHeight);
+            Rect rectToggle = new Rect(rect.x + 5, rect.y, 20, EditorConfig.Sizes.singleLine);
 
             if (editor.state.IsDefaultState)
             {
@@ -150,12 +150,13 @@ namespace Obel.MSS.Editor
             {
                 EditorGUI.Toggle(rectToggle, editor.state.Enabled);
             }
-
-            Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, HeaderHeight);
+       
+            Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, EditorConfig.Sizes.singleLine);
             editor.foldout.target = EditorGUI.Foldout(rectFoldout, editor.foldout.target, new GUIContent(editor.state.Name), true, EditorConfig.Styles.Foldout);
 
+            Rect rectRemoveButton = new Rect(rect.width - 5, rect.y, 30, EditorConfig.Sizes.singleLine);
             if (!editor.state.IsDefaultState &&
-                GUI.Button(new Rect(rect.width - 5, rect.y + 1, 30, HeaderHeight), EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
+                GUI.Button(rectRemoveButton, EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
                 OnRemoveButton(editor.state);
         }
 
@@ -166,7 +167,7 @@ namespace Obel.MSS.Editor
             EditorGUI.BeginDisabledGroup(editor.foldout.faded < 0.2f || !editor.state.Enabled);
 
             float timeFieldWidth = 54;
-            float nameFieldWidth = rect.width - timeFieldWidth * 2 - EditorLayout.offset * 4;
+            float nameFieldWidth = rect.width - timeFieldWidth * 2 - EditorConfig.Sizes.offset * 4;
 
             GUIStyle FieldStyle = EditorConfig.Styles.greyMiniLabel;
 
@@ -174,18 +175,18 @@ namespace Obel.MSS.Editor
 
             GUI.color *= Mathf.Clamp01(editor.foldout.faded - 0.5f) / 0.5f;
 
-            EditorLayout.SetPosition(rect.x, rect.y + HeaderHeight);
+            EditorLayout.SetPosition(rect.x, rect.y + EditorConfig.Sizes.singleLine);
 
-            EditorLayout.Control(nameFieldWidth, (Rect r) => EditorGUI.LabelField(r, "Name", FieldStyle));
+            EditorLayout.Control(nameFieldWidth, r => EditorGUI.LabelField(r, "Name", FieldStyle));
 
             EditorLayout.SetWidth(timeFieldWidth);
 
-            EditorLayout.Control((Rect r) => EditorGUI.LabelField(r, "Delay", FieldStyle));
-            EditorLayout.Control((Rect r) => EditorGUI.LabelField(r, "Duration", FieldStyle));
+            EditorLayout.Control(r => EditorGUI.LabelField(r, "Delay", FieldStyle));
+            EditorLayout.Control(r => EditorGUI.LabelField(r, "Duration", FieldStyle));
 
             EditorLayout.Space(2);
 
-            EditorLayout.Control(nameFieldWidth, (Rect r) =>
+            EditorLayout.Control(nameFieldWidth, r =>
             {
                 EditorGUI.BeginDisabledGroup(editor.state.IsDefaultState);
                 EditorGUI.TextField(r, editor.state.Name);
@@ -193,14 +194,14 @@ namespace Obel.MSS.Editor
                 EditorGUI.EndDisabledGroup();
             });
 
-            EditorLayout.Control((Rect r) => EditorGUI.FloatField(r, editor.state.Delay));
-            EditorLayout.Control((Rect r) => EditorGUI.FloatField(r, editor.state.Duration));
+            EditorLayout.Control(r => EditorGUI.FloatField(r, editor.state.Delay));
+            EditorLayout.Control(r => EditorGUI.FloatField(r, editor.state.Duration));
 
             EditorLayout.Space(6);
 
-            EditorLayout.SetWidth(rect.width - EditorLayout.offset * 2);
+            EditorLayout.SetWidth(rect.width - EditorConfig.Sizes.offset * 2);
 
-            EditorLayout.Control((Rect r) => editor.tweensReorderableList.DoList(r));
+            EditorLayout.Control(r => editor.tweensReorderableList.DoList(r));
 
             EditorLayout.PullColor();
 
@@ -211,7 +212,7 @@ namespace Obel.MSS.Editor
 
         public static float GetHeight(EditorState editor)
         {
-            return HeaderHeight + 6 + Mathf.Lerp(0, 77 + (editor.state.Count == 0 ? 14 : editor.TweensListHeight - 7), editor.foldout.faded);
+            return EditorConfig.Sizes.singleLine + 8 + (EditorConfig.Sizes.LineHeight * 2 + 36 + (editor.state.Count == 0 ? 14 : editor.TweensListHeight - 7)) * editor.foldout.faded;
         }
 
         #endregion

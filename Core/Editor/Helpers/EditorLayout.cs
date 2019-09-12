@@ -9,10 +9,9 @@ namespace Obel.MSS.Editor
 
         private static Vector2 startPosition;
         private static Rect rect;
-        public static float fixedWidth = 30;
-        public static float fixedHeight = 16;
-        public static float offset = 4;
-
+        private static float FixedWidth = 30;
+        private static float SingleLine => EditorConfig.Sizes.singleLine;
+        private static float Offset => EditorConfig.Sizes.offset;
         private static Color storedColor;
 
         #endregion
@@ -26,7 +25,7 @@ namespace Obel.MSS.Editor
 
         public static void SetPosition(Vector2 position)
         {
-            rect = new Rect(position.x + offset, position.y, fixedWidth, fixedHeight);
+            rect = new Rect(position.x + Offset, position.y, FixedWidth, SingleLine);
             startPosition = position;
         }
 
@@ -38,17 +37,17 @@ namespace Obel.MSS.Editor
 
         public static void SetWidth(float width)
         {
-            fixedWidth = width;
+            FixedWidth = width;
         }
 
         public static void Control(Action<Rect> drawCallback)
         {
-            Control(new Vector2(fixedWidth, fixedHeight), drawCallback);
+            Control(new Vector2(FixedWidth, SingleLine), drawCallback);
         }
 
         public static void Control(float width, Action<Rect> drawCallback)
         {
-            Control(new Vector2(width, fixedHeight), drawCallback);
+            Control(new Vector2(width, SingleLine), drawCallback);
         }
 
         public static void Control(float width, float height, Action<Rect> drawCallback)
@@ -61,17 +60,17 @@ namespace Obel.MSS.Editor
             rect.width = size.x;
             rect.height = size.y;
             drawCallback(rect);
-            rect.x += offset + rect.width;
+            rect.x += Offset + rect.width;
         }
 
         public static void Space()
         {
-            Space(offset);
+            Space(Offset);
         }
 
         public static void Space(float height)
         {
-            rect.x = startPosition.x + offset;
+            rect.x = startPosition.x + Offset;
             rect.y += height + rect.height;
         }
 

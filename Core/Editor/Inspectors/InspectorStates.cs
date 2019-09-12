@@ -49,7 +49,7 @@ namespace Obel.MSS.Editor
             GUILayout.BeginHorizontal();
                 GUILayout.Space(-8);
 
-                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.BeginVertical(/*GUI.skin.box*/);
                     GUILayout.Space(2);
 
                     GUILayout.BeginHorizontal();
