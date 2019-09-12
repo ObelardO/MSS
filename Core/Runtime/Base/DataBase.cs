@@ -22,21 +22,24 @@ namespace Obel.MSS
 
         #region Unity methods
 
+        /*
         private void OnEnable()
         {
             //InitItems();
             //OnInit();
         }
+        */
 
         #endregion
 
         #region Collection methods
-
+        /*
         private void InitItems()
         {
             //if (items == null) items = new List<T>();
             //OnInit();
         }
+        */
 
         //public virtual void OnInit() { }
 
@@ -112,24 +115,30 @@ namespace Obel.MSS
     {
         #region Properties
 
+        //[SerializeField/*, HideInInspector*/]
+        //private int s_ID;
+        //[field: SerializeField]
+        public int ID;// { private set; get; }
+
+        [field: SerializeField]
+        public virtual string Name { private set; get; }
+
+        //[field: SerializeField]
+        public bool Enabled = true;// { private set; get; }
+
+        /*{
+            private set => s_ID = value;
+            get => s_ID;
+        }*/
+
+
         [SerializeReference/*, HideInInspector*/]
         private ICollectionItem s_Parent;
+        //[field: SerializeReference]
         public ICollectionItem Parent
         {
             private set => s_Parent = value;
             get => s_Parent;
-        }
-
-        public int a;
-
-        [SerializeField/*, HideInInspector*/]
-        private int s_ID;
-
-        //[field: SerializeField]
-        public int ID //{ private set; get; }
-        {
-            private set => s_ID = value;
-            get => s_ID;
         }
 
         #endregion

@@ -7,46 +7,50 @@ namespace Obel.MSS
     {
         #region Properties
 
-        [SerializeField/*, HideInInspector*/]
-        private float s_Delay;
-        public float Delay
-        {
+        //[SerializeField/*, HideInInspector*/]
+
+
+        //private float s_Delay;
+
+
+        public float Delay;// { set; get; }
+        /*{
             set => s_Delay = value;
             get => s_Delay;
-        }
+        }*/
 
-        [SerializeField/*, HideInInspector*/]
-        private float s_Duration = 1;
-        public float Duration
-        {
+        //[SerializeField/*, HideInInspector*/]
+        //private float s_Duration = 1;
+        public float Duration = 1;
+        /*{
             set => s_Duration = value;
             get => s_Duration;
-        }
+        }*/
 
-        [SerializeField/*, HideInInspector*/]
-        private string s_Name = "NewState";
-        public string Name
+        //[SerializeField/*, HideInInspector*/]
+        //private string s_Name = "NewState";
+        public override string Name
         {
-            private set => s_Name = value;
             get
             {
                 if (IsClosedState) return "closed";
                 if (IsOpenedState) return "opened";
-                return s_Name;
+                return base.Name;
             }
         }
 
-        [SerializeField/*, HideInInspector*/]
-        private bool s_Enabled = true;
+        //[SerializeField/*, HideInInspector*/]
+        /*private bool s_Enabled = true;
         public bool Enabled
         {
             private set => s_Enabled = value;
             get => IsDefaultState || s_Enabled;
         }
+        */
 
-        public bool IsClosedState { get => this == ((StatesGroup)Parent)?.ClosedState; }
-        public bool IsOpenedState { get => this == ((StatesGroup)Parent)?.OpenedState; }
-        public bool IsDefaultState { get => IsClosedState || IsOpenedState; }
+        public bool IsClosedState => this == ((StatesGroup)Parent)?.ClosedState;
+        public bool IsOpenedState => this == ((StatesGroup)Parent)?.OpenedState;
+        public bool IsDefaultState => IsClosedState || IsOpenedState;
 
         #endregion
     }
