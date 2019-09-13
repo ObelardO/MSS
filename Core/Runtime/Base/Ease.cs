@@ -9,11 +9,14 @@ namespace Obel.MSS
     {
         #region Properties
 
+        public static Func<float, float, float> Default => EaseInfo.Default.ease;
+
         private class EaseInfo
         {
             public Func<float, float, float> ease;
             public string path;
             public int sort = 0;
+            public static EaseInfo Default { private set; get; }
 
             public EaseInfo(Func<float, float, float> ease, string path, int sort = 0)
             {
@@ -21,7 +24,9 @@ namespace Obel.MSS
                 this.path = path;
                 this.sort = sort;
 
-                Debug.LogFormat("Added ease \"{0}\" path: \"{1}\"", ease.Method.Name, path);
+                if (Default == null || Default.sort > sort) Default = this;
+
+                Debug.Log($"[MSS] [Eases] Registred: {ease.Method.Name} in {path}");//  ease \"{0}\" path: \"{1}\"", ease.Method.Name, path);
             }
         }
 
@@ -42,9 +47,10 @@ namespace Obel.MSS
 
         public static void BindAll(Action<Func<float, float, float>, string> bindCallback)
         {
-            Debug.Log("Binding eases!");
-            eases = eases.OrderBy(e => e.sort).ToList();
+            Debug.Log("[MSS] [Eases] Start binding...");
+            //eases = eases.OrderBy(e => e.sort).ToList();
             eases.ForEach(e => bindCallback(e.ease, e.path));
+            Debug.Log("[MSS] [Eases] Done.");
         }
 
         private static int GetSort(EaseInfo e) 

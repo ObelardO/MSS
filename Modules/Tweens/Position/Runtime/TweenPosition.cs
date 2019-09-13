@@ -10,14 +10,12 @@ namespace Obel.MSS
 
         public override void OnInit()
         {
-            Debug.Log("SAY HELLO TO POSITION TWEEN");
+            Debug.Log("[MSS] [Tweens] Say hello to new position tween");
         }
 
         public override void Capture(GameObject gameObject)
         {
             Value = gameObject.transform.position;
-
-            Debug.Log("Captureing position tween from " + gameObject.name);
         }
     }
 }

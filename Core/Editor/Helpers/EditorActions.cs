@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using Object = UnityEngine.Object;
+using Debug = UnityEngine.Debug;
 
 namespace Obel.MSS.Editor
 {
@@ -15,7 +16,7 @@ namespace Obel.MSS.Editor
 
         #region Subclasses
 
-        private class EditorAction
+        private struct EditorAction
         {
             public Action action;
             public Object recordeble;
@@ -28,12 +29,12 @@ namespace Obel.MSS.Editor
 
         public static void Add(Action action, Object recordable = null, string reason = null)
         {
-            UnityEngine.Debug.Log("Register action: " + reason + " " + recordable?.name ?? "null");
+            Debug.Log($"[MSS] [Editor] [Actions] Registred: {reason} {recordable?.name ?? "without UNDO"}");
             actions.Add(new EditorAction()
             {
                 action = action,
                 recordeble = recordable,
-                reason = string.Concat("[MSS] ", reason ?? "Action")
+                reason = reason ?? "Action"
             });
         }
 
@@ -43,18 +44,22 @@ namespace Obel.MSS.Editor
 
             for (int i = actions.Count - 1; i >= 0; i--)
             {
-                //if (actions[i].recordeble is Object)
-                //    Undo.RecordObject(actions[i].recordeble, actions[i].reason);
-
+                if (actions[i].recordeble != null)
+                {
+                    //Undo.RecordObject(actions[i].recordeble, $"[MSS] {actions[i].reason}");
+                    Debug.Log("[MSS] [Editor] [Actions] Undo recording: " + actions[i].recordeble.name);
+                    Undo.RegisterCompleteObjectUndo(actions[i].recordeble, $"[MSS] {actions[i].reason}");
+                }
+                    
+                Debug.Log("[MSS] [Editor] [Actions] Do: " + actions[i].reason);
                 actions[i].action.Invoke();
+
+                Debug.Log("[MSS] [Editor] [Actions] Done.");
                 actions.RemoveAt(i);
             }
         }
 
-        public static void Clear()
-        {
-            actions.Clear();
-        }
+        public static void Clear() => actions.Clear();
 
         #endregion
     }

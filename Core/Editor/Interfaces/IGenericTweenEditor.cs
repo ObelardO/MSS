@@ -8,9 +8,7 @@ namespace Obel.MSS.Editor
         #region Properties
 
         string Name { get; }
-
         Type Type { set; get; }
-
         Action AddAction { set; get; }
 
         float TotalHeight { get; }

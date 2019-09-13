@@ -9,7 +9,7 @@ namespace Obel.MSS.Editor
         #region Properties
 
         public override string Name => "T/Position";
-        //public override float Height => 50;
+        public override float Height => 32;
 
         #endregion
 
@@ -17,13 +17,12 @@ namespace Obel.MSS.Editor
         private static void ApplicationStart() => EditorTween.Add(new EditorTweenPosition(), EditorGUI.Vector3Field);
 
         #region Inspector
-
-
+        
         public override void Draw(Rect rect, TweenPosition tween)
         {
-            //DrawValue(tween, rect, EditorGUI.Vector3Field);
+            EditorGUI.DrawRect(rect, Color.red * 0.5f);
         }
-
+        
         #endregion
     }
 }

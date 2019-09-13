@@ -32,13 +32,6 @@ namespace Obel.MSS.Editor
             {
                 normal = { textColor = Color.grey}
             };
-
-            /*
-            internal static void Init()
-            {
-                Foldout.fontStyle = FontStyle.Bold;
-            }
-            */
         }
 
         public static class Colors

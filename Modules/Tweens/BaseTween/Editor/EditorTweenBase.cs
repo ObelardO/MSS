@@ -8,21 +8,20 @@ namespace Obel.MSS.Editor
         #region Properties
 
         public override string Name => "T/Base";
-        public override string DisplayName => "f";
+        public override string DisplayName => "Empty tween";
         public override bool Multiple => true;
-        //public override float Height => 28;
+        public override float Height => 32;
 
         #endregion
 
         [InitializeOnLoadMethod]
-        private static void ApplicationStart() => EditorTween.Add(new EditorBasePosition(), EditorGUI.IntField);
+        private static void ApplicationStart() => EditorTween.Add(new EditorBasePosition());
 
         #region Inspector
         
         public override void Draw(Rect rect, TweenBase tween)
         {
-            //tween.Value = DrawValueFunc(rect, DisplayName, tween.Value);
-            //DrawValue(tween, rect, EditorGUI.IntField);
+            EditorGUI.DrawRect(rect, Color.green * 0.5f);
         }
 
         #endregion

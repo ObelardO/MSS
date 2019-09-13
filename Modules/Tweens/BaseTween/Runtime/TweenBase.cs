@@ -6,18 +6,14 @@ namespace Obel.MSS
     [Serializable]
     public class TweenBase : GenericTween<int>
     {
-        public int instanceID;
-
         public override void OnInit()
         {
-            Debug.Log("SAY HELLO TO BASE TWEEN");
+            Debug.Log("[MSS] [Tweens] Say hello to new base tween!");
         }
 
         public override void Capture(GameObject gameObject)
         {
             Value = gameObject.GetInstanceID();
-
-            Debug.Log("Captureing BASE tween from " + gameObject.name);
         }
     }
 }

@@ -48,7 +48,7 @@ namespace Obel.MSS.Editor
             rectAddButton.width = 30;
 
             if (GUI.Button(rectAddButton, EditorConfig.Content.iconToolbarPlus, EditorConfig.Styles.preButton))
-                EditorActions.Add(() => OnAddStateButton(group), InspectorStates.states, "[MSS] Add State");
+                EditorActions.Add(() => OnAddStateButton(group), InspectorStates.states.gameObject, "Add State");
         }
 
         #endregion
@@ -81,7 +81,6 @@ namespace Obel.MSS.Editor
 
         private static void OnUndo(StatesGroup group)
         {
-            //EditorAssets.Refresh(group);
             EditorState.Reorder(group);
             EditorActions.Clear();
             EditorState.CalculateAllTweensListsHeight();
@@ -90,7 +89,6 @@ namespace Obel.MSS.Editor
         private static void OnAddStateButton(StatesGroup group)
         {
             State state = group.AddNew();
-            //EditorAssets.Refresh(group);
 
             EditorState.Reorder(group);
             EditorState.Get(state).foldout.target = true;
@@ -100,21 +98,15 @@ namespace Obel.MSS.Editor
 
         #region Public methods
 
-        
-        //[MenuItem("Assets/Create/MSS/States Profile")]
         public static StatesGroup CreateStatesProfile()
         {
-            StatesGroup newStatesGroup = new StatesGroup();// System.Activator.CreateInstance(typeof(StatesGroup)) as StatesGroup;//  EditorAssets.Create<StatesGroup>("NewStatesGroup");
+            StatesGroup newStatesGroup = new StatesGroup();
 
             newStatesGroup.AddNew();
             newStatesGroup.AddNew();
-
-            //EditorAssets.AddItem(newStatesGroup, "[State] newState");
-           // EditorAssets.AddItem(newStatesGroup, "[State] newState");
 
             return newStatesGroup;
         }
-        
 
         #endregion
     }

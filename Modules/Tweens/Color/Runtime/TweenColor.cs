@@ -6,18 +6,14 @@ namespace Obel.MSS
     [Serializable]
     public class TweenColor : GenericTween<Color>
     {
-        public float position;
-
         public override void OnInit()
         {
-            Debug.Log("SAY HELLO TO COLOR TWEEN");
+            Debug.Log("[MSS] [Tweens] Say hello to new color tween!");
         }
 
         public override void Capture(GameObject gameObject)
         {
             Value = gameObject.GetComponent<Light>()?.color ?? Color.white;
-
-            Debug.Log("Captureing color tween from " + gameObject.name);
         }
     }
 }

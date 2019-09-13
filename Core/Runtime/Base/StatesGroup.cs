@@ -1,12 +1,14 @@
-﻿namespace Obel.MSS
+﻿using System;
+
+namespace Obel.MSS
 {
-    [System.Serializable]
+    [Serializable]
     public class StatesGroup : Collection<State>
     {
         #region Properties
 
-        public State ClosedState { get => Get((int)DefaultState.Closed); }
-        public State OpenedState { get => Get((int)DefaultState.Opened); }
+        public State ClosedState => Get((int)DefaultState.Closed);
+        public State OpenedState => Get((int)DefaultState.Opened);
 
         #endregion
     }

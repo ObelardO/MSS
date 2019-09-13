@@ -52,7 +52,6 @@ namespace Obel.MSS
         {
             Add(new T());
             // (T)Activator.CreateInstance(typeof(T))/* CreateInstance<T>()*/);
-            Last.Init(this);
             return Last;
         }
 
@@ -147,7 +146,7 @@ namespace Obel.MSS
 
         public void Init(ICollectionItem parent)
         {
-            Debug.Log("new item! parent: " + parent);
+            Debug.Log($"[MSS] [DataBase] Registred: {Name} Parent: {parent}");
             Parent = parent ?? this;
             ID = base.GetHashCode();
             OnInit();

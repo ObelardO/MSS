@@ -10,6 +10,7 @@ namespace Obel.MSS.Editor
 
         public override string Name => "Color";
         public override bool Multiple => true;
+        //public override float Height => 32;
 
         #endregion
 
@@ -18,11 +19,12 @@ namespace Obel.MSS.Editor
 
         #region Inspector
 
-
+        /*
         public override void Draw(Rect rect, TweenColor tween)
         {
-            //DrawValue(tween, rect, EditorGUI.Vector3Field);
+            EditorGUI.DrawRect(rect, Color.blue);
         }
+        */
 
         #endregion
     }

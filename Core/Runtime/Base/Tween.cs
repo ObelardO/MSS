@@ -26,13 +26,13 @@ namespace Obel.MSS
         }
         public string EaseName => s_Ease;
 
-        [SerializeField/*, HideInInspector*/]
-        private bool s_Enabled = true;
+        //[SerializeField/*, HideInInspector*/]
+        /*private bool s_Enabled = true;
         public bool Enabled
         {
             set => s_Enabled = value;
             get => s_Enabled;
-        }
+        }*/
 
         [SerializeField/*, HideInInspector*/]
         private Vector2 s_Range = Vector2.up;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -15,8 +16,6 @@ namespace Obel.MSS.Editor
         #endregion
 
         #region Public methods
-
-        /*
 
         public static T Create<T>(string assetName) where T : CollectionItem
         {
@@ -91,17 +90,14 @@ namespace Obel.MSS.Editor
             AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(assetObject));
         }
 
-
-
         public static T AddItem<T>(Collection<T> root, string name = "[MSS]") where T : CollectionItem
         {
             T newItem = (T)Activator.CreateInstance(typeof(T));// Save<T>(root, name);
             root.Add(newItem);
             return newItem;
         }
-
-            */
-
+    
         #endregion
     }
 }
+*/

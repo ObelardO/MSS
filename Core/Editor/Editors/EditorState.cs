@@ -15,7 +15,7 @@ namespace Obel.MSS.Editor
                                            delayLabel = new GUIContent("Delay"),
                                            durationLabel = new GUIContent("Duration");
 
-        static private Dictionary<int, EditorState> statesDictionary = new Dictionary<int, EditorState>();
+        private static Dictionary<int, EditorState> editors = new Dictionary<int, EditorState>();
 
         public State state;
         public AnimBool foldout;
@@ -26,8 +26,6 @@ namespace Obel.MSS.Editor
 
         public float TweensListHeight { private set; get; }
 
-        //public static readonly float HeaderHeight = 20;
-
         #endregion
 
         #region Public methods
@@ -37,7 +35,7 @@ namespace Obel.MSS.Editor
             foldout = new AnimBool(false);
             this.state = state;
 
-            statesDictionary.Add(state.ID, this);
+            editors.Add(state.ID, this);
 
             if (Repaint != null) foldout.valueChanged.AddListener(Repaint);
 
@@ -68,30 +66,27 @@ namespace Obel.MSS.Editor
         {
             EditorState editor = null;
 
-            if (statesDictionary.ContainsKey(state.ID))
-                editor = statesDictionary[state.ID];
+            if (editors.ContainsKey(state.ID))
+                editor = editors[state.ID];
             else
                 editor = new EditorState(state);
 
             return editor;
         }
 
-        public static void Clear()
-        {
-            statesDictionary.Clear();
-        }
+        public static void Clear() => editors.Clear();
 
         public static void CalculateAllTweensListsHeight()
         {
-            foreach (KeyValuePair<int, EditorState> state in statesDictionary) statesDictionary[state.Key].CalculateTweensListHeight();
+            foreach (KeyValuePair<int, EditorState> editor in editors) editors[editor.Key].CalculateTweensListHeight();
         }
 
         public static void Reorder(StatesGroup group)
         {
-            foreach (KeyValuePair<int, EditorState> state in statesDictionary)
+            foreach (KeyValuePair<int, EditorState> editor in editors)
                 for (int i = 0; i < group.Count; i++)
-                    if (state.Key.Equals(group[i].ID))
-                        statesDictionary[state.Key].state = group[i];
+                    if (editor.Key.Equals(group[i].ID))
+                        editors[editor.Key].state = group[i];
         }
 
         #endregion
@@ -129,10 +124,10 @@ namespace Obel.MSS.Editor
             Rect rectBackground = new Rect(rect.x, rect.y, rect.width, rect.height - 6);
             EditorGUI.DrawRect(rectBackground, EditorConfig.Colors.lightGrey);
 
-            Rect rectFoldOutBack = new Rect(rect.x, rect.y, rect.width, EditorConfig.Sizes.singleLine + 4);
+            Rect rectFoldOutBack = new Rect(rect.x, rect.y, rect.width, EditorConfig.Sizes.LineHeight);
             GUI.Box(rectFoldOutBack, GUIContent.none, GUI.skin.box);
 
-            Rect rectStateTabColor = new Rect(rect.x, rect.y, 2, EditorConfig.Sizes.singleLine);
+            Rect rectStateTabColor = new Rect(rect.x, rect.y, 2, EditorConfig.Sizes.LineHeight);
             Color tabColor = Color.gray;
             if (editor.state.IsOpenedState) tabColor = EditorConfig.Colors.green;
             if (editor.state.IsClosedState) tabColor = EditorConfig.Colors.red;
@@ -154,7 +149,7 @@ namespace Obel.MSS.Editor
             Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, EditorConfig.Sizes.singleLine);
             editor.foldout.target = EditorGUI.Foldout(rectFoldout, editor.foldout.target, new GUIContent(editor.state.Name), true, EditorConfig.Styles.Foldout);
 
-            Rect rectRemoveButton = new Rect(rect.width - 5, rect.y, 30, EditorConfig.Sizes.singleLine);
+            Rect rectRemoveButton = new Rect(rect.width - 5, rect.y + (EditorConfig.Sizes.LineHeight - 20) * 0.5f , 30, 20);
             if (!editor.state.IsDefaultState &&
                 GUI.Button(rectRemoveButton, EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
                 OnRemoveButton(editor.state);
@@ -212,7 +207,9 @@ namespace Obel.MSS.Editor
 
         public static float GetHeight(EditorState editor)
         {
-            return EditorConfig.Sizes.singleLine + 8 + (EditorConfig.Sizes.LineHeight * 2 + 36 + (editor.state.Count == 0 ? 14 : editor.TweensListHeight - 7)) * editor.foldout.faded;
+            return EditorConfig.Sizes.singleLine + 8 + 
+                   (EditorConfig.Sizes.LineHeight * 2 + 36 + 
+                   (editor.state.Count == 0 ? 14 : editor.TweensListHeight - 7)) * editor.foldout.faded;
         }
 
         #endregion
@@ -226,13 +223,9 @@ namespace Obel.MSS.Editor
             EditorActions.Add(() =>
             {
                 group.Remove(state, false);
-
-                //EditorAssets.Remove(state);
-                //AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(group));
-
                 Reorder(group);
             },
-            InspectorStates.states, "[MSS] Remove state");
+            InspectorStates.states.gameObject, "Remove state");
         }
 
         public void OnTweenAdded<T>(T tween) where T : Tween
