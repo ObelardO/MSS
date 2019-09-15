@@ -48,9 +48,8 @@ namespace Obel.MSS
         public static void BindAll(Action<Func<float, float, float>, string> bindCallback)
         {
             Debug.Log("[MSS] [Eases] Start binding...");
-            //eases = eases.OrderBy(e => e.sort).ToList();
             eases.ForEach(e => bindCallback(e.ease, e.path));
-            Debug.Log("[MSS] [Eases] Done.");
+            Debug.Log("[MSS] [Eases] Binding done.");
         }
 
         private static int GetSort(EaseInfo e) 

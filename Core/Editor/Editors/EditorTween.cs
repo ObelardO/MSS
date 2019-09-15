@@ -186,23 +186,24 @@ namespace Obel.MSS.Editor
             where T : GenericTween<U>, new()
             where U : struct
         {
-            if (!editors.Contains(editor))
+            if (editors.Contains(editor)) return;
+
+            editors.Add(editor);
+            editor.Type = typeof(T);
+            editor.SetDisplayName();
+            editor.DrawValueFunc = drawValueFunc;
+            editor.AddAction = () => /*EditorActions.Add(() =>*/ //TODO Need or not? 
             {
-                editors.Add(editor);
-                editor.Type = typeof(T);
-                editor.SetDisplayName();
-                editor.DrawValueFunc = drawValueFunc;
-                editor.AddAction = () => /*EditorActions.Add(() =>*/ //TODO Need or not? 
-                {
-                    T tween = new T();
-                    SelectedState.Add(tween);
+                T tween = new T();
+                SelectedState.Add(tween);
 
-                    if (Ease.Default != null) tween.Ease = Ease.Default;
+                if (Ease.Default != null) tween.Ease = Ease.Default;
 
-                    EditorState.Get(SelectedState).OnTweenAdded(tween);
+                EditorState.Get(SelectedState).OnTweenAdded(tween);
 
-                }/*, InspectorStates.states.gameObject)*/;
-            }
+            }/*, InspectorStates.states.gameObject)*/;
+
+            Debug.Log($"[MSS] [Editor] [Tweens] Registred: {editor.DisplayName}");
         }
 
         public static IGenericTweenEditor Get<T>(T tween) => Get(tween.GetType());
