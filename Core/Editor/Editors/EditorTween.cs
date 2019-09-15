@@ -172,11 +172,13 @@ namespace Obel.MSS.Editor
 
         public static float GetHeight<T>(T tween) where T : Tween => GetHeight(tween.GetType());
 
-        public static float GetHeight(Type @Type)
-        {
-            IGenericTweenEditor editor = Get(@Type);
-            return editor == null ? EditorConfig.Sizes.singleLine : editor.TotalHeight;
-        }
+        public static float GetHeight(Type @Type) => Get(@Type)?.TotalHeight ?? EditorConfig.Sizes.singleLine;
+        /*{
+            //IGenericTweenEditor editor = Get(@Type);
+            //return editor == null ? EditorConfig.Sizes.singleLine : editor.TotalHeight;
+
+            return Get(@Type)?.TotalHeight ?? EditorConfig.Sizes.singleLine;
+        }*/
 
         #endregion
 
