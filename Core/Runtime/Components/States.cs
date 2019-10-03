@@ -14,7 +14,12 @@ namespace Obel.MSS
 
         #region Unity methods
 
-        private void Reset() => statesGroup = null;
+        private void Reset()
+        {
+            statesGroup.Clear();
+        }
+
+        //statesGroup = null;
 
         private void OnEnable() { }
 

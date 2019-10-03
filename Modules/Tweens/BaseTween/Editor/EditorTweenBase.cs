@@ -22,6 +22,7 @@ namespace Obel.MSS.Editor
         public override void Draw(Rect rect, TweenBase tween)
         {
             EditorGUI.DrawRect(rect, Color.green * 0.5f);
+            EditorGUI.LabelField(rect, "testring string");
         }
 
         #endregion

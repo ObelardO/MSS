@@ -143,7 +143,7 @@ namespace Obel.MSS.Editor
             }
             else
             {
-                EditorGUI.Toggle(rectToggle, editor.state.Enabled);
+                editor.state.enabled = EditorGUI.Toggle(rectToggle, editor.state.enabled);
             }
        
             Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, EditorConfig.Sizes.singleLine);
@@ -159,7 +159,7 @@ namespace Obel.MSS.Editor
         {
             if (editor.foldout.faded == 0) return;
 
-            EditorGUI.BeginDisabledGroup(editor.foldout.faded < 0.2f || !editor.state.Enabled);
+            EditorGUI.BeginDisabledGroup(editor.foldout.faded < 0.2f || !editor.state.enabled);
 
             float timeFieldWidth = 54;
             float nameFieldWidth = rect.width - timeFieldWidth * 2 - EditorConfig.Sizes.offset * 4;
@@ -184,7 +184,7 @@ namespace Obel.MSS.Editor
             EditorLayout.Control(nameFieldWidth, r =>
             {
                 EditorGUI.BeginDisabledGroup(editor.state.IsDefaultState);
-                EditorGUI.TextField(r, editor.state.Name);
+                editor.state.Name = EditorGUI.TextField(r, editor.state.Name);
                 //editor.state.name = string.Format("[State] {0}", editor.state.Name); // TODO WTF?
                 EditorGUI.EndDisabledGroup();
             });

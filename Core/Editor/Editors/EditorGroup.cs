@@ -8,7 +8,7 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
-        private static SerializedObject serializedStatesGroup;
+        //private static SerializedObject serializedStatesGroup;
         private static ReorderableList statesReorderableList;
 
         #endregion
@@ -59,7 +59,11 @@ namespace Obel.MSS.Editor
         {
             if (group == null) return;
 
+            Debug.Log("New states list");
+
             //serializedStatesGroup = new SerializedObject(group);
+
+            statesReorderableList = null;
 
             statesReorderableList = new ReorderableList(group.items, typeof(State))
             {

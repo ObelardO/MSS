@@ -27,6 +27,8 @@ namespace Obel.MSS.Editor
             states = (States)target;
 
             EditorGroup.OnEnable(states.statesGroup);
+
+            Debug.Log("MSS INSPECTOR BEGIN");
         }
 
         private void OnDisable()
@@ -36,6 +38,8 @@ namespace Obel.MSS.Editor
             EditorState.Repaint = null;
 
             states = null;
+
+            Debug.Log("MSS INSPECTOR END");
         }
 
         #endregion
@@ -44,6 +48,8 @@ namespace Obel.MSS.Editor
 
         public override void OnInspectorGUI()
         {
+            //DrawDefaultInspector();
+
             serializedObject.Update();
 
             GUILayout.BeginHorizontal();
@@ -55,17 +61,18 @@ namespace Obel.MSS.Editor
                     GUILayout.BeginHorizontal();
                         GUILayout.Space(12);
 
-                        EditorGUI.BeginChangeCheck();
+                        //EditorGUI.BeginChangeCheck();
 
                         //states.statesGroup = EditorGUILayout.ObjectField(profileLabel, states.statesGroup, typeof(StatesGroup), false) as StatesGroup;
 
                         if (states.statesGroup == null && GUILayout.Button(newButton, GUILayout.Width(50), GUILayout.Height(14))) states.statesGroup = EditorGroup.CreateStatesProfile();
 
-                        if (EditorGUI.EndChangeCheck())
+                        /*if (EditorGUI.EndChangeCheck())
                         {
                             EditorState.Clear();
                             EditorGroup.OnEnable(states.statesGroup);
-                        }   
+                        }*/ 
+                        
                     GUILayout.EndHorizontal();
 
                     EditorGroup.Draw(states.statesGroup);

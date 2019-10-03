@@ -24,7 +24,7 @@ namespace Obel.MSS
                 if (ease != null) s_Ease = ease.Method.Name;
             }
         }
-        public string EaseName => s_Ease;
+        //public string EaseName => s_Ease;
 
         //[SerializeField/*, HideInInspector*/]
         /*private bool s_Enabled = true;
@@ -34,13 +34,17 @@ namespace Obel.MSS
             get => s_Enabled;
         }*/
 
-        [SerializeField/*, HideInInspector*/]
+        public Vector2 Range = Vector2.up;
+
+        /*
+        [SerializeField]
         private Vector2 s_Range = Vector2.up;
         public Vector2 Range
         {
             set => s_Range = value;
             get => s_Range;
         }
+        */
 
         #endregion
 
@@ -52,12 +56,17 @@ namespace Obel.MSS
     {
         #region Properties
 
-        [SerializeField/*, HideInInspector*/] private T s_Value;
+        //[field: SerializeField]
+        public T Value;/* { set; get; }*/
+
+        /*
+        [SerializeField] private T s_Value;
         public T Value
         {
             set => s_Value = value;
             get => s_Value;
         }
+        */
 
         #endregion
     }

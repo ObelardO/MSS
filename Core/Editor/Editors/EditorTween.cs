@@ -65,19 +65,19 @@ namespace Obel.MSS.Editor
 
             EditorLayout.Control(18, r =>
                 {
-                    bool tweenEnabled = EditorGUI.ToggleLeft(r, GUIContent.none, tween.Enabled);
-                    if (tweenEnabled != tween.Enabled) EditorActions.Add(() => tween.Enabled = tweenEnabled, InspectorStates.states.gameObject);
+                    bool tweenEnabled = EditorGUI.ToggleLeft(r, GUIContent.none, tween.enabled);
+                    if (tweenEnabled != tween.enabled) EditorActions.Add(() => tween.enabled = tweenEnabled, InspectorStates.states.gameObject);
                 }
             );
 
-            EditorGUI.BeginDisabledGroup(!tween.Enabled);
+            EditorGUI.BeginDisabledGroup(!tween.enabled);
 
             EditorLayout.Control(100, r => EditorGUI.LabelField(r, DisplayName, EditorStyles.popup));
 
             EditorLayout.Control(80, r =>
             {
                 if (tween.Ease != null) EditorEase.Draw(r, tween.Ease.Method.Name);
-                else EditorGUI.HelpBox(r, tween.EaseName, MessageType.Warning);
+                else EditorGUI.HelpBox(r, tween.Ease.Method.Name, MessageType.Warning);
             });
 
             EditorLayout.Control(60, r =>
@@ -87,7 +87,7 @@ namespace Obel.MSS.Editor
                     tween.Capture(InspectorStates.states.gameObject);
                     Debug.Log($"[MSS] [Editor] [Tweens] Say hello to new {DisplayName} tween!");
                 }, 
-                InspectorStates.states.gameObject);
+                InspectorStates.states);
             });
 
             EditorLayout.Space();
@@ -161,7 +161,7 @@ namespace Obel.MSS.Editor
             rect.x += EditorConfig.Sizes.offset;
             rect.width -= EditorConfig.Sizes.offset * 2;
 
-            EditorGUI.BeginDisabledGroup(!tween.Enabled);
+            EditorGUI.BeginDisabledGroup(!tween.enabled);
             editor.Draw(rect, tween);
             EditorGUI.EndDisabledGroup();
         }

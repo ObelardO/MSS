@@ -50,9 +50,16 @@ namespace Obel.MSS.Editor
                     Debug.Log("[MSS] [Editor] [Actions] Undo recording: " + actions[i].recordeble.name);
                     Undo.RegisterCompleteObjectUndo(actions[i].recordeble, $"[MSS] {actions[i].reason}");
                 }
-                    
-                Debug.Log("[MSS] [Editor] [Actions] Do: " + actions[i].reason);
-                actions[i].action.Invoke();
+
+                try
+                {
+                    Debug.Log("[MSS] [Editor] [Actions] Do: " + actions[i].reason);
+                    actions[i].action.Invoke();
+                }
+                catch 
+                {
+                    Debug.LogWarning("[MSS] [Editor] [Actions] Something wrong with action: " + actions[i].reason);
+                }
 
                 Debug.Log("[MSS] [Editor] [Actions] Done.");
                 actions.RemoveAt(i);

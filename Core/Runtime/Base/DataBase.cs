@@ -1,57 +1,34 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Obel.MSS
 {
-    [System.Serializable]
+    [Serializable]
     public class Collection<T> : CollectionItem where T : CollectionItem, new()
     {
         #region Properties
 
         [SerializeReference]
-        public List<T> items = new List<T>();
+        public /*readonly*/ List<T> items = new List<T>();
 
         public int Count => items.Count;
-        public T Last => items[Count - 1];
-        public T this[int i] => items[i];
-        public T First => items[0];
-
-        #endregion
-
-        #region Unity methods
-
-        /*
-        private void OnEnable()
-        {
-            //InitItems();
-            //OnInit();
-        }
-        */
+        public T Last => Count > 0 ? items[Count - 1] : null;
+        public T this[int i] => IndexInvalid(i) ? null : items[i];
+        public T First => Count > 0 ? items[0] : null; 
 
         #endregion
 
         #region Collection methods
-        /*
-        private void InitItems()
-        {
-            //if (items == null) items = new List<T>();
-            //OnInit();
-        }
-        */
-
-        //public virtual void OnInit() { }
 
         public void ForEach(Action<T> forEachCallback)
         {
-            items.ToList().ForEach(item => forEachCallback(item));
+            items.ForEach(item => forEachCallback(item));
         }
 
         public T AddNew()
         {
             Add(new T());
-            // (T)Activator.CreateInstance(typeof(T))/* CreateInstance<T>()*/);
             return Last;
         }
 
@@ -71,7 +48,6 @@ namespace Obel.MSS
         {
             if (!Contains(item)) return;
             items.Remove(item);
-            //if (destroyItem) DestroyImmediate(item); TODO  dispose
         }
 
         public void Clear(bool destroyItem = true)
@@ -87,13 +63,7 @@ namespace Obel.MSS
         public T Get(int index)
         {
             if (IndexInvalid(index)) return null;
-
             return items[index];
-        }
-
-        public virtual T Find(int id)
-        {
-            return items.Where(i => i.ID == id).FirstOrDefault();
         }
 
         private bool IndexInvalid(int index)
@@ -104,37 +74,23 @@ namespace Obel.MSS
         #endregion
     }
 
-    public interface ICollectionItem
-    {
-
-    }
-
-    [System.Serializable]
+    [Serializable]
     public class CollectionItem : ICollectionItem// : ICollectionItem// : ScriptableObject
     {
         #region Properties
 
-        //[SerializeField/*, HideInInspector*/]
-        //private int s_ID;
-        //[field: SerializeField]
-        public int ID;// { private set; get; }
+        [field: SerializeField]
+        public int ID { private set; get; }
 
         [field: SerializeField]
-        public virtual string Name { private set; get; }
+        public virtual string Name { set; get; }
 
         //[field: SerializeField]
-        public bool Enabled = true;// { private set; get; }
+        public bool enabled = true;// { private set; get; }
 
-        /*{
-            private set => s_ID = value;
-            get => s_ID;
-        }*/
-
-
-        [SerializeReference/*, HideInInspector*/]
+        [SerializeReference]
         private ICollectionItem s_Parent;
-        //[field: SerializeReference]
-        public ICollectionItem Parent
+        public ICollectionItem Parent// { private set; get; }
         {
             private set => s_Parent = value;
             get => s_Parent;

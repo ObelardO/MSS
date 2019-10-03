@@ -37,7 +37,14 @@ namespace Obel.MSS
                 if (IsOpenedState) return "opened";
                 return base.Name;
             }
+            set
+            {
+                if (!IsDefaultState) base.Name = value;
+            }
+             
         }
+        //першин кирилл борисович - эксимер
+        //Юсеф - россолимо
 
         //[SerializeField/*, HideInInspector*/]
         /*private bool s_Enabled = true;
