@@ -39,7 +39,9 @@ namespace Obel.MSS.Editor
 
             if (Repaint != null) foldout.valueChanged.AddListener(Repaint);
 
-            //serializedState = new SerializedObject(state);
+            serializedState = new SerializedObject(InspectorStates.states);//.FindProperty("statesGroup").FindPropertyRelative("itemes").serializedObject;
+           
+
 
             tweensReorderableList = new ReorderableList(state.items, typeof(Tween))
             {
@@ -109,12 +111,12 @@ namespace Obel.MSS.Editor
         {
             rect.width += 5;
 
-            //editor.serializedState.Update();
+            editor.serializedState.Update();
 
             DrawHeader(rect, editor);
             DrawProperties(rect, editor);
 
-            //editor.serializedState.ApplyModifiedProperties();
+            editor.serializedState.ApplyModifiedProperties();
         }
 
         public static void DrawBackground(Rect rect, int index, bool isActive, bool isFocused) => EditorGUI.DrawRect(rect, Color.clear);
@@ -145,11 +147,11 @@ namespace Obel.MSS.Editor
             {
                 editor.state.enabled = EditorGUI.Toggle(rectToggle, editor.state.enabled);
             }
-       
+
             Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, EditorConfig.Sizes.singleLine);
             editor.foldout.target = EditorGUI.Foldout(rectFoldout, editor.foldout.target, new GUIContent(editor.state.Name), true, EditorConfig.Styles.Foldout);
 
-            Rect rectRemoveButton = new Rect(rect.width - 5, rect.y + (EditorConfig.Sizes.LineHeight - 20) * 0.5f , 30, 20);
+            Rect rectRemoveButton = new Rect(rect.width - 5, rect.y + (EditorConfig.Sizes.LineHeight - 20) * 0.5f, 30, 20);
             if (!editor.state.IsDefaultState &&
                 GUI.Button(rectRemoveButton, EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
                 OnRemoveButton(editor.state);
@@ -185,7 +187,6 @@ namespace Obel.MSS.Editor
             {
                 EditorGUI.BeginDisabledGroup(editor.state.IsDefaultState);
                 editor.state.Name = EditorGUI.TextField(r, editor.state.Name);
-                //editor.state.name = string.Format("[State] {0}", editor.state.Name); // TODO WTF?
                 EditorGUI.EndDisabledGroup();
             });
 
@@ -207,9 +208,9 @@ namespace Obel.MSS.Editor
 
         public static float GetHeight(EditorState editor)
         {
-            return EditorConfig.Sizes.singleLine + 8 + 
-                   (EditorConfig.Sizes.LineHeight * 2 + 36 + 
-                   (editor.state.Count == 0 ? 14 : editor.TweensListHeight - 7)) * editor.foldout.faded;
+            return (EditorConfig.Sizes.singleLine + 8 +
+                   (EditorConfig.Sizes.LineHeight * 2 + 36 +
+                   (editor.state.Count == 0 ? 14 : editor.TweensListHeight - 7)) * editor.foldout.faded);
         }
 
         #endregion
@@ -225,7 +226,7 @@ namespace Obel.MSS.Editor
                 group.Remove(state, false);
                 Reorder(group);
             },
-            InspectorStates.states.gameObject, "Remove state");
+            InspectorStates.states, "Remove state");
         }
 
         public void OnTweenAdded<T>(T tween) where T : Tween

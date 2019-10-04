@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Obel.MSS.Editor
 {
     [CustomEditor(typeof(States))]
-    public class InspectorStates : UnityEditor.Editor
+    internal class InspectorStates : UnityEditor.Editor
     {
         #region Properties
 
@@ -75,17 +75,39 @@ namespace Obel.MSS.Editor
                         
                     GUILayout.EndHorizontal();
 
-                    EditorGroup.Draw(states.statesGroup);
+                    if (states.statesGroup != null) EditorGroup.Draw(states.statesGroup);
 
                 GUILayout.EndVertical();
             GUILayout.EndHorizontal();
 
             EditorActions.Process();
 
+            Event guiEvent = Event.current;
+            if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") OnUndo(states.statesGroup);
+
             serializedObject.ApplyModifiedProperties();
         }
 
         #endregion
+
+        #region Inspector callbacks
+
+        private static void OnUndo(StatesGroup group)
+        {
+            if (group == null) return;
+
+            //Debug.Log("YYY");
+
+            return;
+
+            EditorState.Reorder(group);
+            EditorGroup.OnEnable(group);
+            EditorActions.Clear();
+            EditorState.CalculateAllTweensListsHeight();
+        }
+
+        #endregion
+
     }
 }
  

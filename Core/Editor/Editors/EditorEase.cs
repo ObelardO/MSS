@@ -2,9 +2,11 @@
 using UnityEditor;
 using UnityEngine;
 
+using Obel.MSS;
+
 namespace Obel.MSS.Editor
 {
-    public static class EditorEase
+    internal static class EditorEase
     {
         #region Properties
 

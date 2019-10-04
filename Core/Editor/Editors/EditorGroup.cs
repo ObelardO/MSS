@@ -33,8 +33,7 @@ namespace Obel.MSS.Editor
 
             DrawAddButton(group);
 
-            Event guiEvent = Event.current;
-            if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") OnUndo(group);
+
 
             //serializedStatesGroup.ApplyModifiedProperties();
         }
@@ -48,7 +47,7 @@ namespace Obel.MSS.Editor
             rectAddButton.width = 30;
 
             if (GUI.Button(rectAddButton, EditorConfig.Content.iconToolbarPlus, EditorConfig.Styles.preButton))
-                EditorActions.Add(() => OnAddStateButton(group), InspectorStates.states.gameObject, "Add State");
+                EditorActions.Add(() => OnAddStateButton(group), InspectorStates.states, "Add State");
         }
 
         #endregion
@@ -83,12 +82,14 @@ namespace Obel.MSS.Editor
             };
         }
 
+        /*
         private static void OnUndo(StatesGroup group)
         {
             EditorState.Reorder(group);
             EditorActions.Clear();
             EditorState.CalculateAllTweensListsHeight();
         }
+        */
 
         private static void OnAddStateButton(StatesGroup group)
         {
@@ -108,6 +109,8 @@ namespace Obel.MSS.Editor
 
             newStatesGroup.AddNew();
             newStatesGroup.AddNew();
+
+            OnEnable(newStatesGroup);
 
             return newStatesGroup;
         }

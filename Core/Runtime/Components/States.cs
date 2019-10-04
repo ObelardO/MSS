@@ -16,7 +16,7 @@ namespace Obel.MSS
 
         private void Reset()
         {
-            statesGroup.Clear();
+            statesGroup?.Clear();
         }
 
         //statesGroup = null;

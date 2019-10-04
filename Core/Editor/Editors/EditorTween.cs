@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
+
 namespace Obel.MSS.Editor
 {
     internal class EditorGenericTween<T, U> : IGenericTweenEditor
@@ -66,7 +67,7 @@ namespace Obel.MSS.Editor
             EditorLayout.Control(18, r =>
                 {
                     bool tweenEnabled = EditorGUI.ToggleLeft(r, GUIContent.none, tween.enabled);
-                    if (tweenEnabled != tween.enabled) EditorActions.Add(() => tween.enabled = tweenEnabled, InspectorStates.states.gameObject);
+                    if (tweenEnabled != tween.enabled) EditorActions.Add(() => tween.enabled = tweenEnabled, InspectorStates.states);
                 }
             );
 
@@ -102,7 +103,7 @@ namespace Obel.MSS.Editor
 
                 if (EditorGUI.EndChangeCheck())
                 {
-                    EditorActions.Add(() => tween.Range = new Vector2(rangeMin, rangeMax), InspectorStates.states.gameObject, "tween range");
+                    EditorActions.Add(() => tween.Range = new Vector2(rangeMin, rangeMax), InspectorStates.states, "tween range");
                 }
             });
 
@@ -114,7 +115,7 @@ namespace Obel.MSS.Editor
                     EditorGUI.BeginChangeCheck();
                     U value = DrawValueFunc(r, DisplayName, tween.Value);
                     if (EditorGUI.EndChangeCheck())
-                        EditorActions.Add(() => tween.Value = value, InspectorStates.states.gameObject);
+                        EditorActions.Add(() => tween.Value = value, InspectorStates.states);
                 });
             }
 
@@ -221,7 +222,7 @@ namespace Obel.MSS.Editor
             foreach (IGenericTweenEditor editor in editors)
             {
                 if (editor.Multiple || SelectedState.items.Where(t => t.GetType() == editor.Type).Count() == 0)
-                    tweensMenu.AddItem(new GUIContent(editor.Name), false, () => EditorActions.Add(editor.AddAction, InspectorStates.states.gameObject));
+                    tweensMenu.AddItem(new GUIContent(editor.Name), false, () => EditorActions.Add(editor.AddAction, InspectorStates.states));
             }
 
             tweensMenu.ShowAsContext();

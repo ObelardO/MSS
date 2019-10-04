@@ -103,7 +103,7 @@ namespace Obel.MSS
         public void Init(ICollectionItem parent)
         {
             Debug.Log($"[MSS] [DataBase] Registred: {Name} Parent: {parent}");
-            Parent = parent ?? this;
+            Parent = parent;// ?? this;
             ID = base.GetHashCode();
             OnInit();
         }
