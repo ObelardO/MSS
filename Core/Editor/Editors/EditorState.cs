@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 using UnityEngine.Events;
 using UnityEditorInternal;
+using Obel.MSS;
 
 namespace Obel.MSS.Editor
 {
@@ -11,20 +13,21 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
-        private static readonly GUIContent contentLabel = new GUIContent("Name"),
-                                           delayLabel = new GUIContent("Delay"),
-                                           durationLabel = new GUIContent("Duration");
+        private static readonly GUIContent ContentLabel = new GUIContent("Name"),
+                                           DelayLabel = new GUIContent("Delay"),
+                                           DurationLabel = new GUIContent("Duration");
 
-        private static Dictionary<int, EditorState> editors = new Dictionary<int, EditorState>();
+        private static readonly Dictionary<int, EditorState> Editors = new Dictionary<int, EditorState>();
 
-        public State state;
-        public AnimBool foldout;
-        public SerializedObject serializedState;
-        public ReorderableList tweensReorderableList;
+        private State _state;
+
+        private readonly AnimBool _foldout;
+        private readonly ReorderableList _list;
+        private SerializedObject _serializedState;
 
         public static UnityAction Repaint;
 
-        public float TweensListHeight { private set; get; }
+        public float ListHeight { private set; get; }
 
         #endregion
 
@@ -32,18 +35,16 @@ namespace Obel.MSS.Editor
 
         public EditorState(State state)
         {
-            foldout = new AnimBool(false);
-            this.state = state;
+            _foldout = new AnimBool(false);
+            this._state = state;
 
-            editors.Add(state.ID, this);
+            Editors.Add(state.Id, this);
 
-            if (Repaint != null) foldout.valueChanged.AddListener(Repaint);
+            if (Repaint != null) _foldout.valueChanged.AddListener(Repaint);
 
-            serializedState = new SerializedObject(InspectorStates.states);//.FindProperty("statesGroup").FindPropertyRelative("itemes").serializedObject;
-           
+            //serializedState = new SerializedObject(InspectorStates.states);//.FindProperty("statesGroup").FindPropertyRelative("itemes").serializedObject;
 
-
-            tweensReorderableList = new ReorderableList(state.items, typeof(Tween))
+            _list = new ReorderableList(state.Items as IList, typeof(Tween))
             {
                 displayAdd = true,
                 displayRemove = true,
@@ -56,88 +57,91 @@ namespace Obel.MSS.Editor
                 onAddCallback = list => EditorTween.OnAddButton(state),
                 onRemoveCallback = list => EditorTween.OnRemoveButton(state, list.index),
                 drawHeaderCallback = EditorTween.DrawHeader,
-                drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => EditorTween.Draw(rect, state[index]),
+                drawElementCallback = (rect, index, isActive, isFocused) => EditorTween.Draw(rect, state[index]),
                 elementHeightCallback = index => EditorTween.GetHeight(state[index].GetType()),
                 drawNoneElementCallback = EditorTween.DrawEmptyList
             };
 
-            CalculateTweensListHeight();
+            CalculateListHeight();
         }
 
-        public static EditorState Get(State state)
+        public void Open() => _foldout.target = true;
+
+        public static void Open(EditorState editor) => editor.Open();
+
+        public void Close() => _foldout.target = false;
+
+        public static void Close(EditorState editor) => editor.Close();
+
+        public static EditorState Get(State state) => Editors.ContainsKey(state.Id) ? Editors[state.Id] : new EditorState(state);
+
+        public static void Clear() => Editors.Clear();
+
+        public static void CalculateAllListsHeight()
         {
-            EditorState editor = null;
-
-            if (editors.ContainsKey(state.ID))
-                editor = editors[state.ID];
-            else
-                editor = new EditorState(state);
-
-            return editor;
-        }
-
-        public static void Clear() => editors.Clear();
-
-        public static void CalculateAllTweensListsHeight()
-        {
-            foreach (KeyValuePair<int, EditorState> editor in editors) editors[editor.Key].CalculateTweensListHeight();
+            foreach (var editor in Editors) Editors[editor.Key].CalculateListHeight();
         }
 
         public static void Reorder(StatesGroup group)
         {
-            foreach (KeyValuePair<int, EditorState> editor in editors)
-                for (int i = 0; i < group.Count; i++)
-                    if (editor.Key.Equals(group[i].ID))
-                        editors[editor.Key].state = group[i];
+            foreach (var editor in Editors)
+            {
+                for (var i = 0; i < group.Count; i++)
+                {
+                    if (editor.Key.Equals(group[i].Id)) Editors[editor.Key]._state = group[i];
+                }
+            }
+
+            CalculateAllListsHeight();
         }
 
         #endregion
 
         #region Private methods
 
-        private void CalculateTweensListHeight()
+        private void CalculateListHeight()
         {
-            TweensListHeight = 0;
-            for (int i = 0; i < state.Count; i++) TweensListHeight += EditorTween.GetHeight(state[i]);
+            ListHeight = 0;
+            for (var i = 0; i < _state.Count; i++) ListHeight += EditorTween.GetHeight(_state[i]);
         }
 
         #endregion
 
         #region Inspector
 
-        public static void Draw(Rect rect, State state) => Draw(rect, EditorState.Get(state));
+        public static void Draw(Rect rect, State state) => Draw(rect, Get(state));
 
         public static void Draw(Rect rect, EditorState editor)
         {
             rect.width += 5;
 
-            editor.serializedState.Update();
+            //editor.serializedState.Update();
 
             DrawHeader(rect, editor);
             DrawProperties(rect, editor);
 
-            editor.serializedState.ApplyModifiedProperties();
+            //editor.serializedState.ApplyModifiedProperties();
         }
 
         public static void DrawBackground(Rect rect, int index, bool isActive, bool isFocused) => EditorGUI.DrawRect(rect, Color.clear);
 
         private static void DrawHeader(Rect rect, EditorState editor)
         {
-            Rect rectBackground = new Rect(rect.x, rect.y, rect.width, rect.height - 6);
-            EditorGUI.DrawRect(rectBackground, EditorConfig.Colors.lightGrey);
+            var rectBackground = new Rect(rect.x, rect.y, rect.width, rect.height - 6);
+            EditorGUI.DrawRect(rectBackground, EditorConfig.Colors.LightGrey);
 
-            Rect rectFoldOutBack = new Rect(rect.x, rect.y, rect.width, EditorConfig.Sizes.LineHeight);
+            var rectFoldOutBack = new Rect(rect.x, rect.y, rect.width, EditorConfig.Sizes.LineHeight);
             GUI.Box(rectFoldOutBack, GUIContent.none, GUI.skin.box);
 
-            Rect rectStateTabColor = new Rect(rect.x, rect.y, 2, EditorConfig.Sizes.LineHeight);
-            Color tabColor = Color.gray;
-            if (editor.state.IsOpenedState) tabColor = EditorConfig.Colors.green;
-            if (editor.state.IsClosedState) tabColor = EditorConfig.Colors.red;
+            var rectStateTabColor = new Rect(rect.x, rect.y, 2, EditorConfig.Sizes.LineHeight);
+            var tabColor = Color.gray;
+            if (editor._state.IsOpenedState) tabColor = EditorConfig.Colors.Green;
+            if (editor._state.IsClosedState) tabColor = EditorConfig.Colors.Red;
             EditorGUI.DrawRect(rectStateTabColor, tabColor);
 
-            Rect rectToggle = new Rect(rect.x + 5, rect.y, 20, EditorConfig.Sizes.singleLine);
+            var rectToggle = new Rect(rect.x + 5, rect.y, 20, EditorConfig.Sizes.SingleLine);
 
-            if (editor.state.IsDefaultState)
+            if (editor._state.IsDefaultState)
             {
                 EditorGUI.BeginDisabledGroup(true);
                 EditorGUI.Toggle(rectToggle, GUIContent.none, true);
@@ -145,59 +149,59 @@ namespace Obel.MSS.Editor
             }
             else
             {
-                editor.state.enabled = EditorGUI.Toggle(rectToggle, editor.state.enabled);
+                editor._state.Enabled = EditorGUI.Toggle(rectToggle, editor._state.Enabled);
             }
 
-            Rect rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, EditorConfig.Sizes.singleLine);
-            editor.foldout.target = EditorGUI.Foldout(rectFoldout, editor.foldout.target, new GUIContent(editor.state.Name), true, EditorConfig.Styles.Foldout);
+            var rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, EditorConfig.Sizes.SingleLine);
+            editor._foldout.target = EditorGUI.Foldout(rectFoldout, editor._foldout.target, new GUIContent(editor._state.Name), true, EditorConfig.Styles.Foldout);
 
-            Rect rectRemoveButton = new Rect(rect.width - 5, rect.y + (EditorConfig.Sizes.LineHeight - 20) * 0.5f, 30, 20);
-            if (!editor.state.IsDefaultState &&
-                GUI.Button(rectRemoveButton, EditorConfig.Content.iconToolbarMinus, EditorConfig.Styles.preButton))
-                OnRemoveButton(editor.state);
+            var rectRemoveButton = new Rect(rect.width - 5, rect.y + (EditorConfig.Sizes.LineHeight - 20) * 0.5f, 30, 20);
+            if (!editor._state.IsDefaultState &&
+                GUI.Button(rectRemoveButton, EditorConfig.Content.IconToolbarMinus, EditorConfig.Styles.PreButton))
+                OnRemoveButton(editor._state);
         }
 
         private static void DrawProperties(Rect rect, EditorState editor)
         {
-            if (editor.foldout.faded == 0) return;
+            if (editor._foldout.faded < 0.01f) return;
 
-            EditorGUI.BeginDisabledGroup(editor.foldout.faded < 0.2f || !editor.state.enabled);
+            EditorGUI.BeginDisabledGroup(editor._foldout.faded < 0.2f || !editor._state.Enabled);
 
-            float timeFieldWidth = 54;
-            float nameFieldWidth = rect.width - timeFieldWidth * 2 - EditorConfig.Sizes.offset * 4;
+            const float timeFieldWidth = 54;
+            var nameFieldWidth = rect.width - timeFieldWidth * 2 - EditorConfig.Sizes.Offset * 4;
 
-            GUIStyle FieldStyle = EditorConfig.Styles.greyMiniLabel;
+            var fieldStyle = EditorConfig.Styles.GreyMiniLabel;
 
             EditorLayout.PushColor();
 
-            GUI.color *= Mathf.Clamp01(editor.foldout.faded - 0.5f) / 0.5f;
+            GUI.color *= Mathf.Clamp01(editor._foldout.faded - 0.5f) / 0.5f;
 
-            EditorLayout.SetPosition(rect.x, rect.y + EditorConfig.Sizes.singleLine);
+            EditorLayout.SetPosition(rect.x, rect.y + EditorConfig.Sizes.SingleLine);
 
-            EditorLayout.Control(nameFieldWidth, r => EditorGUI.LabelField(r, "Name", FieldStyle));
+            EditorLayout.Control(nameFieldWidth, r => EditorGUI.LabelField(r, ContentLabel, fieldStyle));
 
             EditorLayout.SetWidth(timeFieldWidth);
 
-            EditorLayout.Control(r => EditorGUI.LabelField(r, "Delay", FieldStyle));
-            EditorLayout.Control(r => EditorGUI.LabelField(r, "Duration", FieldStyle));
+            EditorLayout.Control(r => EditorGUI.LabelField(r, DelayLabel, fieldStyle));
+            EditorLayout.Control(r => EditorGUI.LabelField(r, DurationLabel, fieldStyle));
 
             EditorLayout.Space(2);
 
             EditorLayout.Control(nameFieldWidth, r =>
             {
-                EditorGUI.BeginDisabledGroup(editor.state.IsDefaultState);
-                editor.state.Name = EditorGUI.TextField(r, editor.state.Name);
+                EditorGUI.BeginDisabledGroup(editor._state.IsDefaultState);
+                editor._state.Name = EditorGUI.TextField(r, editor._state.Name);
                 EditorGUI.EndDisabledGroup();
             });
 
-            EditorLayout.Control(r => EditorGUI.FloatField(r, editor.state.Delay));
-            EditorLayout.Control(r => EditorGUI.FloatField(r, editor.state.Duration));
+            EditorLayout.Control(r => EditorGUI.FloatField(r, editor._state.Delay));
+            EditorLayout.Control(r => EditorGUI.FloatField(r, editor._state.Duration));
 
             EditorLayout.Space(6);
 
-            EditorLayout.SetWidth(rect.width - EditorConfig.Sizes.offset * 2);
+            EditorLayout.SetWidth(rect.width - EditorConfig.Sizes.Offset * 2);
 
-            EditorLayout.Control(r => editor.tweensReorderableList.DoList(r));
+            EditorLayout.Control(r => editor._list.DoList(r));
 
             EditorLayout.PullColor();
 
@@ -208,9 +212,10 @@ namespace Obel.MSS.Editor
 
         public static float GetHeight(EditorState editor)
         {
-            return (EditorConfig.Sizes.singleLine + 8 +
+            return (EditorConfig.Sizes.SingleLine + 8 +
                    (EditorConfig.Sizes.LineHeight * 2 + 36 +
-                   (editor.state.Count == 0 ? 14 : editor.TweensListHeight - 7)) * editor.foldout.faded);
+                   (editor._state.Count == 0 ? 14 : editor.ListHeight - 7)) *
+                    editor._foldout.faded);
         }
 
         #endregion
@@ -219,25 +224,25 @@ namespace Obel.MSS.Editor
 
         private static void OnRemoveButton(State state)
         {
-            StatesGroup group = (StatesGroup)state.Parent;
+            var group = (StatesGroup)state.Parent;
 
             EditorActions.Add(() =>
             {
                 group.Remove(state, false);
                 Reorder(group);
             },
-            InspectorStates.states, "Remove state");
+            InspectorStates.States, "Remove state");
         }
 
         public void OnTweenAdded<T>(T tween) where T : Tween
         {
-            TweensListHeight += EditorTween.GetHeight(tween);
+            ListHeight += EditorTween.GetHeight(tween);
             Repaint();
         }
 
         public void OnTweenRemoving<T>(T tween) where T : Tween
         {
-            TweensListHeight -= EditorTween.GetHeight(tween);
+            ListHeight -= EditorTween.GetHeight(tween);
             Repaint();
         }
 

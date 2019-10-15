@@ -9,28 +9,28 @@ namespace Obel.MSS
     {
         #region Properties
 
-        public static Func<float, float, float> Default => EaseInfo.Default.ease;
+        public static Func<float, float, float> DefaultFunc => EaseInfo.Default?.Ease;
 
         private class EaseInfo
         {
-            public Func<float, float, float> ease;
-            public string path;
-            public int sort = 0;
+            public Func<float, float, float> Ease { get; }
+            public string Path { get; }
+            private readonly int _sort;
             public static EaseInfo Default { private set; get; }
 
-            public EaseInfo(Func<float, float, float> ease, string path, int sort = 0)
+            public EaseInfo(Func<float, float, float> easeFunc, string path, int sort = 0)
             {
-                this.ease = ease;
-                this.path = path;
-                this.sort = sort;
+                Ease = easeFunc;
+                Path = path;
+                _sort = sort;
 
-                if (Default == null || Default.sort > sort) Default = this;
+                if (Default == null || Default._sort > sort) Default = this;
 
-                Debug.Log($"[MSS] [Eases] Registred: {ease.Method.Name} in {path}");//  ease \"{0}\" path: \"{1}\"", ease.Method.Name, path);
+                Debug.Log($"[MSS] [Eases] Registered: {easeFunc.Method.Name} in {path}");
             }
         }
 
-        private static List<EaseInfo> eases = new List<EaseInfo>();
+        private static readonly List<EaseInfo> Eases = new List<EaseInfo>();
 
         #endregion
 
@@ -40,26 +40,21 @@ namespace Obel.MSS
         {
             if (path == null) path = ease.Method.Name;
 
-            if (eases.Where(e => e.ease.Equals(ease)).ToArray().Length > 0) return;
+            if (Eases.Where(e => e.Ease.Equals(ease)).ToArray().Length > 0) return;
 
-            eases.Add(new EaseInfo(ease, path, sort));
+            Eases.Add(new EaseInfo(ease, path, sort));
         }
 
         public static void BindAll(Action<Func<float, float, float>, string> bindCallback)
         {
             Debug.Log("[MSS] [Eases] Start binding...");
-            eases.ForEach(e => bindCallback(e.ease, e.path));
+            Eases.ForEach(e => bindCallback(e.Ease, e.Path));
             Debug.Log("[MSS] [Eases] Binding done.");
-        }
-
-        private static int GetSort(EaseInfo e) 
-        {
-            return e.sort;
         }
 
         public static Func<float, float, float> Get(string name)
         {
-            return eases.Where(e => e.ease.Method.Name.Equals(name)).FirstOrDefault()?.ease;
+            return Eases.FirstOrDefault(e => e.Ease.Method.Name.Equals(name))?.Ease;
         }
 
         public static float Linear(float t, float d)

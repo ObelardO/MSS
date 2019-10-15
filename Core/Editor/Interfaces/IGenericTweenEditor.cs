@@ -1,9 +1,10 @@
 ﻿using System;
 using UnityEngine;
+using Obel.MSS;
 
 namespace Obel.MSS.Editor
 {
-    internal interface IGenericTweenEditor
+    public interface IGenericTweenEditor
     {
         #region Properties
 

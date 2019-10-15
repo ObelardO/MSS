@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEditor;
 using UnityEngine;
-
 using Obel.MSS;
 
 namespace Obel.MSS.Editor
@@ -10,8 +9,8 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
-        private static GenericMenu easesMenu = new GenericMenu();
-        private static Tween selectedTween;
+        private static readonly GenericMenu EasesMenu = new GenericMenu();
+        private static Tween _selectedTween;
 
         #endregion
 
@@ -21,8 +20,8 @@ namespace Obel.MSS.Editor
         {
             if (!GUI.Button(rect, name, EditorStyles.popup)) return;
 
-            selectedTween = EditorTween.SelectedTween;
-            easesMenu.ShowAsContext();
+            _selectedTween = EditorTween.SelectedTween;
+            EasesMenu.ShowAsContext();
         }
 
         #endregion
@@ -35,10 +34,12 @@ namespace Obel.MSS.Editor
 
         #region Inspector callbacks
 
-        private static void Bind(Func<float, float, float> ease, string path)
+        private static void Bind(Func<float, float, float> easeFunc, string path)
         {
-            easesMenu.AddItem(new GUIContent(path), false, () => selectedTween.Ease = ease);
-            Debug.Log($"[MSS] [Editor] [Eases] {path} binded");
+            //(selectedTween.Parent as State).Items.Add(new Tween());
+
+            EasesMenu.AddItem(new GUIContent(path), false, () => _selectedTween.EaseFunc = easeFunc);
+            Debug.Log($"[MSS] [Editor] [Eases] {path} bonded");
         }
 
         #endregion

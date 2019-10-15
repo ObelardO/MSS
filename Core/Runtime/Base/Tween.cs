@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Obel.MSS.Base;
 
 namespace Obel.MSS
 {
@@ -8,47 +9,28 @@ namespace Obel.MSS
     {
         #region Properties
 
-        [SerializeField] private string s_Ease;
-        private Func<float, float, float> ease;
-        public Func<float, float, float> Ease
+        [SerializeField] private string _ease;
+        private Func<float, float, float> _easeFunc;
+        public Func<float, float, float> EaseFunc
         {
-            get
-            {
-                if (ease == null) ease = MSS.Ease.Get(s_Ease);
-                return ease;
-            } 
+            get => _easeFunc ?? (_easeFunc = Ease.Get(_ease));
 
             set 
             {
-                ease = value;
-                if (ease != null) s_Ease = ease.Method.Name;
+                _easeFunc = value;
+                if (_easeFunc != null) _ease = _easeFunc.Method.Name;
             }
         }
-        //public string EaseName => s_Ease;
-
-        //[SerializeField/*, HideInInspector*/]
-        /*private bool s_Enabled = true;
-        public bool Enabled
-        {
-            set => s_Enabled = value;
-            get => s_Enabled;
-        }*/
 
         public Vector2 Range = Vector2.up;
 
-        /*
-        [SerializeField]
-        private Vector2 s_Range = Vector2.up;
-        public Vector2 Range
-        {
-            set => s_Range = value;
-            get => s_Range;
-        }
-        */
-
         #endregion
 
+        #region Public methods
+
         public virtual void Capture(GameObject gameObject) { }
+
+        #endregion
     }
 
     [System.Serializable]
@@ -56,17 +38,7 @@ namespace Obel.MSS
     {
         #region Properties
 
-        //[field: SerializeField]
-        public T Value;/* { set; get; }*/
-
-        /*
-        [SerializeField] private T s_Value;
-        public T Value
-        {
-            set => s_Value = value;
-            get => s_Value;
-        }
-        */
+        public T Value;
 
         #endregion
     }

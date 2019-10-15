@@ -1,5 +1,4 @@
 ﻿using UnityEditor;
-using UnityEditor.Build.Content;
 using UnityEngine;
 
 namespace Obel.MSS.Editor
@@ -9,10 +8,12 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
-        private static readonly GUIContent profileLabel = new GUIContent("States"),
-                                           newButton = new GUIContent("New");
+        private static readonly GUIContent ProfileLabel = new GUIContent("States"),
+                                           NewButton = new GUIContent("New");
 
-        public static States states { private set; get; }
+        public static States States { private set; get; }
+
+        public static SerializedObject SerializedState { private set; get; }
 
         #endregion
 
@@ -24,9 +25,11 @@ namespace Obel.MSS.Editor
             EditorState.Clear();
             EditorState.Repaint = Repaint;
 
-            states = (States)target;
+            States = (States)target;
 
-            EditorGroup.OnEnable(states.statesGroup);
+            SerializedState = serializedObject;
+
+            EditorGroup.OnEnable(States.statesGroup);
 
             Debug.Log("MSS INSPECTOR BEGIN");
         }
@@ -37,7 +40,7 @@ namespace Obel.MSS.Editor
             EditorState.Clear();
             EditorState.Repaint = null;
 
-            states = null;
+            States = null;
 
             Debug.Log("MSS INSPECTOR END");
         }
@@ -50,42 +53,32 @@ namespace Obel.MSS.Editor
         {
             //DrawDefaultInspector();
 
-            serializedObject.Update();
+            SerializedState.Update();
 
             GUILayout.BeginHorizontal();
-                GUILayout.Space(-8);
+            GUILayout.Space(-8);
 
-                GUILayout.BeginVertical(/*GUI.skin.box*/);
-                    GUILayout.Space(2);
+            GUILayout.BeginVertical();
+            GUILayout.Space(2);
 
-                    GUILayout.BeginHorizontal();
-                        GUILayout.Space(12);
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(12);
 
-                        //EditorGUI.BeginChangeCheck();
+            if (States.statesGroup == null && GUILayout.Button(NewButton, GUILayout.Width(50), GUILayout.Height(14))) States.statesGroup = EditorGroup.CreateStatesProfile();
 
-                        //states.statesGroup = EditorGUILayout.ObjectField(profileLabel, states.statesGroup, typeof(StatesGroup), false) as StatesGroup;
+            GUILayout.EndHorizontal();
 
-                        if (states.statesGroup == null && GUILayout.Button(newButton, GUILayout.Width(50), GUILayout.Height(14))) states.statesGroup = EditorGroup.CreateStatesProfile();
+            if (States.statesGroup != null) EditorGroup.Draw(States.statesGroup);
 
-                        /*if (EditorGUI.EndChangeCheck())
-                        {
-                            EditorState.Clear();
-                            EditorGroup.OnEnable(states.statesGroup);
-                        }*/ 
-                        
-                    GUILayout.EndHorizontal();
-
-                    if (states.statesGroup != null) EditorGroup.Draw(states.statesGroup);
-
-                GUILayout.EndVertical();
+            GUILayout.EndVertical();
             GUILayout.EndHorizontal();
 
             EditorActions.Process();
 
             Event guiEvent = Event.current;
-            if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") OnUndo(states.statesGroup);
+            if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") OnUndo(States.statesGroup);
 
-            serializedObject.ApplyModifiedProperties();
+            SerializedState.ApplyModifiedProperties();
         }
 
         #endregion
@@ -96,18 +89,17 @@ namespace Obel.MSS.Editor
         {
             if (group == null) return;
 
-            //Debug.Log("YYY");
+            Debug.Log("Undo performed");
 
-            return;
-
-            EditorState.Reorder(group);
             EditorGroup.OnEnable(group);
-            EditorActions.Clear();
-            EditorState.CalculateAllTweensListsHeight();
+            EditorState.Reorder(group);
+
+            EditorState.CalculateAllListsHeight();
         }
 
         #endregion
-
+  
     }
 }
- 
+
+    

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿using Obel.MSS.Base;
 
 namespace Obel.MSS
 {
@@ -7,28 +7,10 @@ namespace Obel.MSS
     {
         #region Properties
 
-        //[SerializeField/*, HideInInspector*/]
+        public float Delay;
 
-
-        //private float s_Delay;
-
-
-        public float Delay;// { set; get; }
-        /*{
-            set => s_Delay = value;
-            get => s_Delay;
-        }*/
-
-        //[SerializeField/*, HideInInspector*/]
-        //private float s_Duration = 1;
         public float Duration = 1;
-        /*{
-            set => s_Duration = value;
-            get => s_Duration;
-        }*/
 
-        //[SerializeField/*, HideInInspector*/]
-        //private string s_Name = "NewState";
         public override string Name
         {
             get
@@ -43,18 +25,7 @@ namespace Obel.MSS
             }
              
         }
-        //першин кирилл борисович - эксимер
-        //Юсеф - россолимо
-
-        //[SerializeField/*, HideInInspector*/]
-        /*private bool s_Enabled = true;
-        public bool Enabled
-        {
-            private set => s_Enabled = value;
-            get => IsDefaultState || s_Enabled;
-        }
-        */
-
+    
         public bool IsClosedState => this == ((StatesGroup)Parent)?.ClosedState;
         public bool IsOpenedState => this == ((StatesGroup)Parent)?.OpenedState;
         public bool IsDefaultState => IsClosedState || IsOpenedState;

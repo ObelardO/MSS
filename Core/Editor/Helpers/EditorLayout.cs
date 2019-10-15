@@ -7,12 +7,12 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
-        private static Vector2 startPosition;
-        private static Rect rect;
-        private static float FixedWidth = 30;
-        private static float SingleLine => EditorConfig.Sizes.singleLine;
-        private static float Offset => EditorConfig.Sizes.offset;
-        private static Color storedColor;
+        private static Vector2 _startPosition;
+        private static Rect _rect;
+        private static float _fixedWidth = 30;
+        private static float SingleLine => EditorConfig.Sizes.SingleLine;
+        private static float Offset => EditorConfig.Sizes.Offset;
+        private static Color _storedColor;
 
         #endregion
 
@@ -25,24 +25,24 @@ namespace Obel.MSS.Editor
 
         public static void SetPosition(Vector2 position)
         {
-            rect = new Rect(position.x + Offset, position.y, FixedWidth, SingleLine);
-            startPosition = position;
+            _rect = new Rect(position.x + Offset, position.y, _fixedWidth, SingleLine);
+            _startPosition = position;
         }
 
         public static void SetSize(Vector2 size)
         {
-            rect.width = size.x;
-            rect.height = size.y;
+            _rect.width = size.x;
+            _rect.height = size.y;
         }
 
         public static void SetWidth(float width)
         {
-            FixedWidth = width;
+            _fixedWidth = width;
         }
 
         public static void Control(Action<Rect> drawCallback)
         {
-            Control(new Vector2(FixedWidth, SingleLine), drawCallback);
+            Control(new Vector2(_fixedWidth, SingleLine), drawCallback);
         }
 
         public static void Control(float width, Action<Rect> drawCallback)
@@ -57,10 +57,10 @@ namespace Obel.MSS.Editor
 
         public static void Control(Vector2 size, Action<Rect> drawCallback)
         {
-            rect.width = size.x;
-            rect.height = size.y;
-            drawCallback(rect);
-            rect.x += Offset + rect.width;
+            _rect.width = size.x;
+            _rect.height = size.y;
+            drawCallback(_rect);
+            _rect.x += Offset + _rect.width;
         }
 
         public static void Space()
@@ -70,18 +70,18 @@ namespace Obel.MSS.Editor
 
         public static void Space(float height)
         {
-            rect.x = startPosition.x + Offset;
-            rect.y += height + rect.height;
+            _rect.x = _startPosition.x + Offset;
+            _rect.y += height + _rect.height;
         }
 
         public static void PushColor()
         {
-            storedColor = GUI.color;
+            _storedColor = GUI.color;
         }
 
         public static void PullColor()
         {
-            GUI.color = storedColor;
+            GUI.color = _storedColor;
         }
 
         #endregion

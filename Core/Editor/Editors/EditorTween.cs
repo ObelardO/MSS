@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-
+using Obel.MSS;
 
 namespace Obel.MSS.Editor
 {
-    internal class EditorGenericTween<T, U> : IGenericTweenEditor
-        where T : GenericTween<U>
-        where U : struct
+    public class EditorGenericTween<T, TU> : IGenericTweenEditor
+        where T : GenericTween<TU>
+        where TU : struct
     {
         #region Properties
 
@@ -23,7 +23,7 @@ namespace Obel.MSS.Editor
 
         public Type Type { get; set; }
         public Action AddAction { get; set; }
-        public Func<Rect, string, U, U> DrawValueFunc { set; get; }
+        public Func<Rect, string, TU, TU> DrawValueFunc { set; get; }
 
         #endregion
 
@@ -48,62 +48,61 @@ namespace Obel.MSS.Editor
 
         public virtual void Draw(Rect rect, T tween)
         {
-            EditorGUI.HelpBox(rect, "no drawer for tween: \"" + Name + "\"", MessageType.Warning);
+            EditorGUI.HelpBox(rect, $"no drawer for tween: { Name }", MessageType.Warning);
         }
 
         public void DrawHeader(Rect rect, Tween tween) => DrawHeader(rect, tween as T);
 
         public void DrawHeader(Rect rect, T tween)
         {
-            //TODO Make marging method
-            rect.height -= EditorConfig.Sizes.offset;
+            //TODO Make margin method
+            rect.height -= EditorConfig.Sizes.Offset;
             GUI.Box(rect, string.Empty, EditorStyles.helpBox);
-            rect.height += EditorConfig.Sizes.offset;
-            rect.y += EditorConfig.Sizes.offset;
-            rect.width -= EditorConfig.Sizes.offset * 2;
+            rect.height += EditorConfig.Sizes.Offset;
+            rect.y += EditorConfig.Sizes.Offset;
+            rect.width -= EditorConfig.Sizes.Offset * 2;
 
             EditorLayout.SetPosition(rect.x, rect.y);
 
             EditorLayout.Control(18, r =>
-                {
-                    bool tweenEnabled = EditorGUI.ToggleLeft(r, GUIContent.none, tween.enabled);
-                    if (tweenEnabled != tween.enabled) EditorActions.Add(() => tween.enabled = tweenEnabled, InspectorStates.states);
-                }
-            );
+            {
+                var tweenEnabled = EditorGUI.ToggleLeft(r, GUIContent.none, tween.Enabled);
+                if (tweenEnabled != tween.Enabled)
+                    EditorActions.Add(() => tween.Enabled = tweenEnabled, InspectorStates.States);
+            });
 
-            EditorGUI.BeginDisabledGroup(!tween.enabled);
+            EditorGUI.BeginDisabledGroup(!tween.Enabled);
 
             EditorLayout.Control(100, r => EditorGUI.LabelField(r, DisplayName, EditorStyles.popup));
 
             EditorLayout.Control(80, r =>
             {
-                if (tween.Ease != null) EditorEase.Draw(r, tween.Ease.Method.Name);
-                else EditorGUI.HelpBox(r, tween.Ease.Method.Name, MessageType.Warning);
+                if (tween.EaseFunc != null) EditorEase.Draw(r, tween.EaseFunc.Method.Name);
+                else EditorGUI.HelpBox(r, tween.EaseFunc?.Method.Name, MessageType.Warning);
             });
 
             EditorLayout.Control(60, r =>
             {
                 if (GUI.Button(r, "Capture")) EditorActions.Add(() =>
                 {
-                    tween.Capture(InspectorStates.states.gameObject);
-                    Debug.Log($"[MSS] [Editor] [Tweens] Say hello to new {DisplayName} tween!");
-                }, 
-                InspectorStates.states);
+                    tween.Capture(InspectorStates.States.gameObject);
+                    Debug.Log($"[MSS] [Editor] [Tween] Say hello to new {DisplayName} tween!");
+                },
+                InspectorStates.States);
             });
 
             EditorLayout.Space();
 
+            var rangeMin = tween.Range.x;
+            var rangeMax = tween.Range.y;
             EditorLayout.Control(rect.width, r =>
             {
-                float rangeMin = tween.Range.x;
-                float rangeMax = tween.Range.y;
-
                 EditorGUI.BeginChangeCheck();
                 EditorGUI.MinMaxSlider(r, ref rangeMin, ref rangeMax, 0, 1);
 
                 if (EditorGUI.EndChangeCheck())
                 {
-                    EditorActions.Add(() => tween.Range = new Vector2(rangeMin, rangeMax), InspectorStates.states, "tween range");
+                    EditorActions.Add(() => tween.Range = new Vector2(rangeMin, rangeMax), InspectorStates.States, "tween range");
                 }
             });
 
@@ -113,9 +112,9 @@ namespace Obel.MSS.Editor
                 EditorLayout.Control(rect.width, r =>
                 {
                     EditorGUI.BeginChangeCheck();
-                    U value = DrawValueFunc(r, DisplayName, tween.Value);
+                    var value = DrawValueFunc(r, DisplayName, tween.Value);
                     if (EditorGUI.EndChangeCheck())
-                        EditorActions.Add(() => tween.Value = value, InspectorStates.states);
+                        EditorActions.Add(() => tween.Value = value, InspectorStates.States);
                 });
             }
 
@@ -125,11 +124,11 @@ namespace Obel.MSS.Editor
         #endregion
     }
 
-    internal static class EditorTween
+    public static class EditorTween
     {
         #region Properties
 
-        private static readonly List<IGenericTweenEditor> editors = new List<IGenericTweenEditor>();
+        private static readonly List<IGenericTweenEditor> Editors = new List<IGenericTweenEditor>();
 
         public static State SelectedState { get; private set; }
         public static Tween SelectedTween { get; private set; }
@@ -156,13 +155,13 @@ namespace Obel.MSS.Editor
 
             if (editor.Height <= 0) return;
 
-            //TODO Make marging method
-            rect.y += editor.HeaderHeight - EditorConfig.Sizes.offset;
-            rect.height = editor.Height - EditorConfig.Sizes.offset;
-            rect.x += EditorConfig.Sizes.offset;
-            rect.width -= EditorConfig.Sizes.offset * 2;
+            //TODO Make margin method
+            rect.y += editor.HeaderHeight - EditorConfig.Sizes.Offset;
+            rect.height = editor.Height - EditorConfig.Sizes.Offset;
+            rect.x += EditorConfig.Sizes.Offset;
+            rect.width -= EditorConfig.Sizes.Offset * 2;
 
-            EditorGUI.BeginDisabledGroup(!tween.enabled);
+            EditorGUI.BeginDisabledGroup(!tween.Enabled);
             editor.Draw(rect, tween);
             EditorGUI.EndDisabledGroup();
         }
@@ -173,69 +172,63 @@ namespace Obel.MSS.Editor
 
         public static float GetHeight<T>(T tween) where T : Tween => GetHeight(tween.GetType());
 
-        public static float GetHeight(Type @Type) => Get(@Type)?.TotalHeight ?? EditorConfig.Sizes.singleLine;
-        /*{
-            //IGenericTweenEditor editor = Get(@Type);
-            //return editor == null ? EditorConfig.Sizes.singleLine : editor.TotalHeight;
-
-            return Get(@Type)?.TotalHeight ?? EditorConfig.Sizes.singleLine;
-        }*/
+        public static float GetHeight(Type type) => Get(type)?.TotalHeight ?? EditorConfig.Sizes.SingleLine;
 
         #endregion
 
         #region Inspector callbacks
 
-        public static void Add<T, U>(EditorGenericTween<T, U> editor, Func<Rect, string, U, U> drawValueFunc = null)
-            where T : GenericTween<U>, new()
-            where U : struct
+        public static void Add<T, TU>(EditorGenericTween<T, TU> editor, Func<Rect, string, TU, TU> drawValueFunc = null)
+            where T : GenericTween<TU>, new()
+            where TU : struct
         {
-            if (editors.Contains(editor)) return;
+            if (Editors.Contains(editor)) return;
 
-            editors.Add(editor);
+            Editors.Add(editor);
             editor.Type = typeof(T);
             editor.SetDisplayName();
             editor.DrawValueFunc = drawValueFunc;
             editor.AddAction = () => /*EditorActions.Add(() =>*/ //TODO Need or not? 
             {
-                T tween = new T();
+                var tween = new T();
                 SelectedState.Add(tween);
 
-                if (Ease.Default != null) tween.Ease = Ease.Default;
+                if (Ease.DefaultFunc != null) tween.EaseFunc = Ease.DefaultFunc;
 
                 EditorState.Get(SelectedState).OnTweenAdded(tween);
 
             }/*, InspectorStates.states.gameObject)*/;
 
-            Debug.Log($"[MSS] [Editor] [Tweens] Registred: {editor.DisplayName}");
+            Debug.Log($"[MSS] [Editor] [Tween] Registered: {editor.DisplayName}");
         }
 
         public static IGenericTweenEditor Get<T>(T tween) => Get(tween.GetType());
 
-        public static IGenericTweenEditor Get(Type type) => editors.Where(t => t.Type.Equals(type)).FirstOrDefault();
+        public static IGenericTweenEditor Get(Type type) => Editors.FirstOrDefault(t => t.Type == type);
 
         public static void OnAddButton(State state)
         {
             SelectedState = state;
 
-            GenericMenu tweensMenu = new GenericMenu();
+            var tweenMenu = new GenericMenu();
 
-            foreach (IGenericTweenEditor editor in editors)
+            foreach (var editor in Editors)
             {
-                if (editor.Multiple || SelectedState.items.Where(t => t.GetType() == editor.Type).Count() == 0)
-                    tweensMenu.AddItem(new GUIContent(editor.Name), false, () => EditorActions.Add(editor.AddAction, InspectorStates.states));
+                if (editor.Multiple || SelectedState.Items.All(t => t.GetType() != editor.Type))
+                    tweenMenu.AddItem(new GUIContent(editor.Name), false, () => EditorActions.Add(editor.AddAction, InspectorStates.States));
             }
 
-            tweensMenu.ShowAsContext();
+            tweenMenu.ShowAsContext();
         }
 
         public static void OnRemoveButton(State state, int index)
-        {   
+        {
             EditorActions.Add(() =>
             {
                 EditorState.Get(state).OnTweenRemoving(state[index]);
                 state.Remove(state[index], false);
             },
-            InspectorStates.states.gameObject);
+            InspectorStates.States.gameObject);
         }
 
         #endregion

@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Obel.MSS
+namespace Obel.MSS.Base
 {
     [Serializable]
     public class Collection<T> : CollectionItem where T : CollectionItem, new()
     {
         #region Properties
 
-        [SerializeReference]
-        public /*readonly*/ List<T> items = new List<T>();
+        [SerializeReference] // can't be readonly - editor Undo can't fill readonly fields
+        private List<T> items = new List<T>();
 
+        public IReadOnlyList<T> Items => items;
         public int Count => items.Count;
         public T Last => Count > 0 ? items[Count - 1] : null;
         public T this[int i] => IndexInvalid(i) ? null : items[i];
-        public T First => Count > 0 ? items[0] : null; 
+        public T First => Count > 0 ? items[0] : null;
 
         #endregion
 
@@ -23,7 +24,8 @@ namespace Obel.MSS
 
         public void ForEach(Action<T> forEachCallback)
         {
-            items.ForEach(item => forEachCallback(item));
+            //items.ForEach(item => forEachCallback(item));
+            items.ForEach(forEachCallback);
         }
 
         public T AddNew()
@@ -62,8 +64,7 @@ namespace Obel.MSS
 
         public T Get(int index)
         {
-            if (IndexInvalid(index)) return null;
-            return items[index];
+            return IndexInvalid(index) ? null : items[index];
         }
 
         private bool IndexInvalid(int index)
@@ -75,25 +76,24 @@ namespace Obel.MSS
     }
 
     [Serializable]
-    public class CollectionItem : ICollectionItem// : ICollectionItem// : ScriptableObject
+    public class CollectionItem : ICollectionItem
     {
         #region Properties
 
         [field: SerializeField]
-        public int ID { private set; get; }
+        public int Id { private set; get; }
 
         [field: SerializeField]
         public virtual string Name { set; get; }
 
-        //[field: SerializeField]
-        public bool enabled = true;// { private set; get; }
+        public bool Enabled = true;
 
         [SerializeReference]
-        private ICollectionItem s_Parent;
-        public ICollectionItem Parent// { private set; get; }
+        private ICollectionItem _parent;
+        public ICollectionItem Parent
         {
-            private set => s_Parent = value;
-            get => s_Parent;
+            private set => _parent = value;
+            get => _parent;
         }
 
         #endregion
@@ -102,9 +102,9 @@ namespace Obel.MSS
 
         public void Init(ICollectionItem parent)
         {
-            Debug.Log($"[MSS] [DataBase] Registred: {Name} Parent: {parent}");
-            Parent = parent;// ?? this;
-            ID = base.GetHashCode();
+            Debug.Log($"[MSS] [DataBase] Registered: {Name} Parent: {parent}");
+            Parent = parent;
+            Id = base.GetHashCode();
             OnInit();
         }
 

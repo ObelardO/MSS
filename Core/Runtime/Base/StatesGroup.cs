@@ -1,4 +1,5 @@
 ﻿using System;
+using Obel.MSS.Base;
 
 namespace Obel.MSS
 {

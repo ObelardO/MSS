@@ -10,7 +10,7 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
-        private static List<EditorAction> actions = new List<EditorAction>();
+        private static readonly List<EditorAction> Actions = new List<EditorAction>();
 
         #endregion
 
@@ -18,9 +18,16 @@ namespace Obel.MSS.Editor
 
         private struct EditorAction
         {
-            public Action action;
-            public Object recordeble;
-            public string reason;
+            public Action Action { get; }
+            public Object Recordable { get; }
+            public string Reason { get; }
+
+            public EditorAction(Action action, Object recordable = null, string reason = null)
+            {
+                Action = action;
+                Recordable = recordable;
+                Reason = reason ?? "Action";
+            }
         }
 
         #endregion
@@ -29,44 +36,39 @@ namespace Obel.MSS.Editor
 
         public static void Add(Action action, Object recordable = null, string reason = null)
         {
-            Debug.Log($"[MSS] [Editor] [Actions] Registred: {reason} {recordable?.name ?? "without UNDO"}");
-            actions.Add(new EditorAction()
-            {
-                action = action,
-                recordeble = recordable,
-                reason = reason ?? "Action"
-            });
+            Debug.Log($"[MSS] [Editor] [Actions] Registered: {reason} {recordable?.name ?? "without UNDO"}");
+            Actions.Add(new EditorAction(action, recordable, reason));
         }
 
         public static void Process()
         {
-            if (actions.Count == 0) return;
+            if (Actions.Count == 0) return;
 
-            for (int i = actions.Count - 1; i >= 0; i--)
+            for (var i = Actions.Count - 1; i >= 0; i--)
             {
-                if (actions[i].recordeble != null)
+                if (Actions[i].Recordable != null)
                 {
-                    //Undo.RecordObject(actions[i].recordeble, $"[MSS] {actions[i].reason}");
-                    Debug.Log("[MSS] [Editor] [Actions] Undo recording: " + actions[i].recordeble.name);
-                    Undo.RegisterCompleteObjectUndo(actions[i].recordeble, $"[MSS] {actions[i].reason}");
+                    //Undo.RecordObject(Actions[i].Recordable, $"[MSS] {Actions[i].Reason}");
+                    Debug.Log("[MSS] [Editor] [Actions] Undo recording: " + Actions[i].Recordable.name);
+                    Undo.RegisterCompleteObjectUndo(Actions[i].Recordable, $"[MSS] {Actions[i].Reason}");
                 }
 
                 try
                 {
-                    Debug.Log("[MSS] [Editor] [Actions] Do: " + actions[i].reason);
-                    actions[i].action.Invoke();
+                    Debug.Log("[MSS] [Editor] [Actions] Do: " + Actions[i].Reason);
+                    Actions[i].Action.Invoke();
                 }
-                catch 
+                catch
                 {
-                    Debug.LogWarning("[MSS] [Editor] [Actions] Something wrong with action: " + actions[i].reason);
+                    Debug.LogWarning("[MSS] [Editor] [Actions] Something wrong with action: " + Actions[i].Reason);
                 }
 
                 Debug.Log("[MSS] [Editor] [Actions] Done.");
-                actions.RemoveAt(i);
+                Actions.RemoveAt(i);
             }
         }
 
-        public static void Clear() => actions.Clear();
+        public static void Clear() => Actions.Clear();
 
         #endregion
     }
