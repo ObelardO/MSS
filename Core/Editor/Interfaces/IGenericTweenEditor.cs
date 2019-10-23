@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using Obel.MSS;
 
 namespace Obel.MSS.Editor
 {
@@ -16,7 +15,7 @@ namespace Obel.MSS.Editor
         float HeaderHeight { get; }
         float Height { get; }
 
-        bool Multiple { get; }
+        bool IsMultiple { get; }
 
         #endregion
 

@@ -9,7 +9,6 @@ namespace Obel.MSS.Editor
     internal static class EditorActions
     {
         #region Properties
-
         private static readonly List<EditorAction> Actions = new List<EditorAction>();
 
         #endregion
@@ -40,18 +39,21 @@ namespace Obel.MSS.Editor
             Actions.Add(new EditorAction(action, recordable, reason));
         }
 
+        public static void Record(Object recordable, string reason = null)
+        {
+            if (recordable == null) return;
+
+            Debug.LogFormat("[MSS] [Editor] [Actions] Undo recording: {0}", recordable.name);
+            Undo.RegisterCompleteObjectUndo(recordable, $"[MSS] {reason ?? "Change " + recordable.name}");
+        }
+
         public static void Process()
         {
             if (Actions.Count == 0) return;
 
             for (var i = Actions.Count - 1; i >= 0; i--)
             {
-                if (Actions[i].Recordable != null)
-                {
-                    //Undo.RecordObject(Actions[i].Recordable, $"[MSS] {Actions[i].Reason}");
-                    Debug.Log("[MSS] [Editor] [Actions] Undo recording: " + Actions[i].Recordable.name);
-                    Undo.RegisterCompleteObjectUndo(Actions[i].Recordable, $"[MSS] {Actions[i].Reason}");
-                }
+                Record(Actions[i].Recordable, Actions[i].Reason);
 
                 try
                 {

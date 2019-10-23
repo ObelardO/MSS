@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using Obel.MSS;
 
 namespace Obel.MSS.Editor
 {
@@ -16,14 +15,16 @@ namespace Obel.MSS.Editor
         public virtual string Name { get; }
         public virtual string DisplayName { get; private set; }
         public virtual float Height { get; }
-        public virtual bool Multiple => false;
+        public virtual bool IsMultiple => false;
 
         public float HeaderHeight => EditorConfig.Sizes.LineHeight * (DrawValueFunc == null ? 2.3f : 3.3f);
         public float TotalHeight => HeaderHeight + Height;
 
         public Type Type { get; set; }
         public Action AddAction { get; set; }
-        public Func<Rect, string, TU, TU> DrawValueFunc { set; get; }
+        public Func<Rect, GUIContent, TU, TU> DrawValueFunc { set; get; }
+
+        private GUIContent _content;
 
         #endregion
 
@@ -34,6 +35,7 @@ namespace Obel.MSS.Editor
             if (!Name.Contains("/"))
             {
                 DisplayName = Name;
+                _content = new GUIContent(DisplayName);
                 return;
             }
 
@@ -106,17 +108,19 @@ namespace Obel.MSS.Editor
                 }
             });
 
-            if (DrawValueFunc != null)
-            {
-                EditorLayout.Space(2);
-                EditorLayout.Control(rect.width, r =>
-                {
-                    EditorGUI.BeginChangeCheck();
-                    var value = DrawValueFunc(r, DisplayName, tween.Value);
-                    if (EditorGUI.EndChangeCheck())
-                        EditorActions.Add(() => tween.Value = value, InspectorStates.States);
-                });
-            }
+            EditorGUI.EndDisabledGroup();
+
+            if (DrawValueFunc == null) return;
+
+            EditorGUI.BeginDisabledGroup(!tween.Enabled);
+
+            EditorLayout.Space(2);
+
+            EditorLayout.SetWidth(rect.width);
+
+            EditorLayout.PropertyField(ref tween.Value, DrawValueFunc, InspectorStates.Record, _content);
+
+            EditorGUI.EndDisabledGroup();
 
             EditorGUI.EndDisabledGroup();
         }
@@ -178,7 +182,7 @@ namespace Obel.MSS.Editor
 
         #region Inspector callbacks
 
-        public static void Add<T, TU>(EditorGenericTween<T, TU> editor, Func<Rect, string, TU, TU> drawValueFunc = null)
+        public static void Add<T, TU>(EditorGenericTween<T, TU> editor, Func<Rect, GUIContent, TU, TU> drawValueFunc = null)
             where T : GenericTween<TU>, new()
             where TU : struct
         {
@@ -214,7 +218,7 @@ namespace Obel.MSS.Editor
 
             foreach (var editor in Editors)
             {
-                if (editor.Multiple || SelectedState.Items.All(t => t.GetType() != editor.Type))
+                if (editor.IsMultiple || SelectedState.Items.All(t => t.GetType() != editor.Type))
                     tweenMenu.AddItem(new GUIContent(editor.Name), false, () => EditorActions.Add(editor.AddAction, InspectorStates.States));
             }
 

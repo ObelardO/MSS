@@ -29,7 +29,7 @@ namespace Obel.MSS.Editor
 
             SerializedState = serializedObject;
 
-            EditorGroup.OnEnable(States.statesGroup);
+            EditorGroup.OnEnable(States.Group);
 
             Debug.Log("MSS INSPECTOR BEGIN");
         }
@@ -43,6 +43,15 @@ namespace Obel.MSS.Editor
             States = null;
 
             Debug.Log("MSS INSPECTOR END");
+        }
+
+        #endregion
+
+        #region Public methods
+
+        public static void Record()
+        {
+            EditorActions.Record(States);
         }
 
         #endregion
@@ -64,11 +73,11 @@ namespace Obel.MSS.Editor
             GUILayout.BeginHorizontal();
             GUILayout.Space(12);
 
-            if (States.statesGroup == null && GUILayout.Button(NewButton, GUILayout.Width(50), GUILayout.Height(14))) States.statesGroup = EditorGroup.CreateStatesProfile();
+            if (States.Group == null && GUILayout.Button(NewButton, GUILayout.Width(50), GUILayout.Height(14))) States.Group = EditorGroup.Create();
 
             GUILayout.EndHorizontal();
 
-            if (States.statesGroup != null) EditorGroup.Draw(States.statesGroup);
+            if (States.Group != null) EditorGroup.Draw(States.Group);
 
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
@@ -76,7 +85,7 @@ namespace Obel.MSS.Editor
             EditorActions.Process();
 
             Event guiEvent = Event.current;
-            if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") OnUndo(States.statesGroup);
+            if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") EditorApplication.delayCall += () => OnUndo(States.Group);
 
             SerializedState.ApplyModifiedProperties();
         }
@@ -98,8 +107,7 @@ namespace Obel.MSS.Editor
         }
 
         #endregion
-  
+
     }
 }
 
-    

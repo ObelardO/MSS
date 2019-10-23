@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEditor;
 using UnityEngine;
-using Obel.MSS;
 
 namespace Obel.MSS.Editor
 {
@@ -36,10 +35,17 @@ namespace Obel.MSS.Editor
 
         private static void Bind(Func<float, float, float> easeFunc, string path)
         {
-            //(selectedTween.Parent as State).Items.Add(new Tween());
+            EasesMenu.AddItem(new GUIContent(path), false, () => OnEaseMenu(easeFunc));
 
-            EasesMenu.AddItem(new GUIContent(path), false, () => _selectedTween.EaseFunc = easeFunc);
             Debug.Log($"[MSS] [Editor] [Eases] {path} bonded");
+        }
+
+        private static void OnEaseMenu(Func<float, float, float> easeFunc)
+        {
+            _selectedTween.EaseFunc = easeFunc;
+
+            //TODO UNDO (on undo event assign all ease method by restored name)
+            //EditorActions.Add(() => { _selectedTween.EaseFunc = easeFunc; }, InspectorStates.States, "tween ease");
         }
 
         #endregion

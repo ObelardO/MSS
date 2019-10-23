@@ -10,7 +10,7 @@ namespace Obel.MSS.Modules.TweensEditor
         #region Properties
 
         public override string Name => "Color";
-        public override bool Multiple => true;
+        public override bool IsMultiple => true;
         //public override float Height => 32;
 
         #endregion

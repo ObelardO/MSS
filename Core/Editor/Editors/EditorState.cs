@@ -5,7 +5,6 @@ using UnityEditor;
 using UnityEditor.AnimatedValues;
 using UnityEngine.Events;
 using UnityEditorInternal;
-using Obel.MSS;
 
 namespace Obel.MSS.Editor
 {
@@ -22,7 +21,7 @@ namespace Obel.MSS.Editor
         private State _state;
 
         private readonly AnimBool _foldout;
-        private readonly ReorderableList _list;
+        private ReorderableList _tweensList;
         private SerializedObject _serializedState;
 
         public static UnityAction Repaint;
@@ -44,7 +43,12 @@ namespace Obel.MSS.Editor
 
             //serializedState = new SerializedObject(InspectorStates.states);//.FindProperty("statesGroup").FindPropertyRelative("itemes").serializedObject;
 
-            _list = new ReorderableList(state.Items as IList, typeof(Tween))
+            OnEnable();
+        }
+
+        public void OnEnable()
+        {
+            _tweensList = new ReorderableList(_state.Items as IList, typeof(Tween))
             {
                 displayAdd = true,
                 displayRemove = true,
@@ -54,11 +58,11 @@ namespace Obel.MSS.Editor
                 headerHeight = 3,
                 footerHeight = 50,
 
-                onAddCallback = list => EditorTween.OnAddButton(state),
-                onRemoveCallback = list => EditorTween.OnRemoveButton(state, list.index),
+                onAddCallback = list => EditorTween.OnAddButton(_state),
+                onRemoveCallback = list => EditorTween.OnRemoveButton(_state, list.index),
                 drawHeaderCallback = EditorTween.DrawHeader,
-                drawElementCallback = (rect, index, isActive, isFocused) => EditorTween.Draw(rect, state[index]),
-                elementHeightCallback = index => EditorTween.GetHeight(state[index].GetType()),
+                drawElementCallback = (rect, index, isActive, isFocused) => EditorTween.Draw(rect, _state[index]),
+                elementHeightCallback = index => EditorTween.GetHeight(_state[index].GetType()),
                 drawNoneElementCallback = EditorTween.DrawEmptyList
             };
 
@@ -88,11 +92,15 @@ namespace Obel.MSS.Editor
             {
                 for (var i = 0; i < group.Count; i++)
                 {
-                    if (editor.Key.Equals(group[i].Id)) Editors[editor.Key]._state = group[i];
+                    if (editor.Key.Equals(group[i].Id))
+                    {
+                        Editors[editor.Key]._state = group[i];
+                        Editors[editor.Key].OnEnable();
+                    }
                 }
             }
 
-            CalculateAllListsHeight();
+            //CalculateAllListsHeight();
         }
 
         #endregion
@@ -149,7 +157,7 @@ namespace Obel.MSS.Editor
             }
             else
             {
-                editor._state.Enabled = EditorGUI.Toggle(rectToggle, editor._state.Enabled);
+                EditorLayout.PropertyField(rectToggle, ref editor._state.Enabled, EditorGUI.Toggle, InspectorStates.Record);
             }
 
             var rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, EditorConfig.Sizes.SingleLine);
@@ -173,35 +181,28 @@ namespace Obel.MSS.Editor
             var fieldStyle = EditorConfig.Styles.GreyMiniLabel;
 
             EditorLayout.PushColor();
-
             GUI.color *= Mathf.Clamp01(editor._foldout.faded - 0.5f) / 0.5f;
 
             EditorLayout.SetPosition(rect.x, rect.y + EditorConfig.Sizes.SingleLine);
-
             EditorLayout.Control(nameFieldWidth, r => EditorGUI.LabelField(r, ContentLabel, fieldStyle));
 
             EditorLayout.SetWidth(timeFieldWidth);
-
             EditorLayout.Control(r => EditorGUI.LabelField(r, DelayLabel, fieldStyle));
             EditorLayout.Control(r => EditorGUI.LabelField(r, DurationLabel, fieldStyle));
 
             EditorLayout.Space(2);
+            EditorLayout.SetWidth(nameFieldWidth);
+            EditorGUI.BeginDisabledGroup(editor._state.IsDefaultState);
+            editor._state.Name = EditorLayout.PropertyField(editor._state.Name, InspectorStates.Record);
+            EditorGUI.EndDisabledGroup();
 
-            EditorLayout.Control(nameFieldWidth, r =>
-            {
-                EditorGUI.BeginDisabledGroup(editor._state.IsDefaultState);
-                editor._state.Name = EditorGUI.TextField(r, editor._state.Name);
-                EditorGUI.EndDisabledGroup();
-            });
-
-            EditorLayout.Control(r => EditorGUI.FloatField(r, editor._state.Delay));
-            EditorLayout.Control(r => EditorGUI.FloatField(r, editor._state.Duration));
+            EditorLayout.SetWidth(timeFieldWidth);
+            EditorLayout.PropertyField(ref editor._state.Delay, EditorGUI.FloatField, InspectorStates.Record);
+            EditorLayout.PropertyField(ref editor._state.Duration, EditorGUI.FloatField, InspectorStates.Record);
 
             EditorLayout.Space(6);
-
             EditorLayout.SetWidth(rect.width - EditorConfig.Sizes.Offset * 2);
-
-            EditorLayout.Control(r => editor._list.DoList(r));
+            EditorLayout.Control(r => editor._tweensList.DoList(r));
 
             EditorLayout.PullColor();
 

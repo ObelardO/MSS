@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
-using Obel.MSS;
 
 namespace Obel.MSS.Editor
 {
@@ -92,7 +91,7 @@ namespace Obel.MSS.Editor
 
         #region Public methods
 
-        public static StatesGroup CreateStatesProfile()
+        public static StatesGroup Create()
         {
             var newStatesGroup = new StatesGroup();
 

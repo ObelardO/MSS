@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace Obel.MSS.Editor
@@ -85,6 +86,78 @@ namespace Obel.MSS.Editor
         }
 
         #endregion
+
+        #region Generic field methods
+
+        public static T PropertyField<T>(Rect rect, T value, Func<Rect, GUIContent, T, T> drawFunc,
+            Action onChange = null, GUIContent content = null) where T : struct
+        {
+            if (content == null) content = GUIContent.none;
+
+            var tempValue = value;
+            tempValue = drawFunc(rect, content, tempValue);
+
+            if (value.Equals(tempValue)) return value;
+
+            onChange?.Invoke();
+            return tempValue;
+        }
+
+        // REF-version propertyField 
+        public static void PropertyField<T>(Rect rect, ref T value, Func<Rect, GUIContent, T, T> drawFunc,
+            Action onChange = null, GUIContent content = null) where T : struct
+        {
+            value = PropertyField(rect, value, drawFunc, onChange, content);
+        }
+
+        // propertyField with auto-layout
+        public static T PropertyField<T>(T value, Func<Rect, GUIContent, T, T> drawFunc,
+            Action onChange = null, GUIContent content = null) where T : struct
+        {
+            Control(r => value = PropertyField(r, value, drawFunc, onChange, content));
+            return value;
+        }
+
+        // REF-version propertyField with auto-layout
+        public static void PropertyField<T>(ref T value, Func<Rect, GUIContent, T, T> drawFunc,
+            Action onChange = null, GUIContent content = null) where T : struct
+        {
+            value = PropertyField(value, drawFunc, onChange, content);
+        }
+
+        #endregion
+
+        #region String field methods
+
+        public static string PropertyField(Rect rect, string value, Action onChange = null, GUIContent content = null) 
+        {
+            if (content == null) content = GUIContent.none;
+
+            var tempValue = value;
+            tempValue = EditorGUI.TextField(rect, content, tempValue);
+
+            if (value == null || value.Equals(tempValue)) return value;
+
+            onChange?.Invoke();
+            return tempValue;
+        }
+
+        public static void PropertyField(Rect rect, ref string value, Action onChange = null, GUIContent content = null)
+        {
+            value = PropertyField(rect, value, onChange, content);
+        }
+
+        public static string PropertyField(string value, Action onChange = null, GUIContent content = null)
+        {
+            Control(r => value = PropertyField(r, value, onChange, content));
+            return value;
+        }
+
+        public static void PropertyField(ref string value, Action onChange = null, GUIContent content = null)
+        {
+            value = PropertyField(value, onChange, content);
+        }
+
+        #endregion
     }
 }
-
