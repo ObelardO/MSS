@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace Obel.MSS.Editor
 {
-    public class EditorGenericTween<T, TU> : IGenericTweenEditor
-        where T : GenericTween<TU>
-        where TU : struct
+    public class EditorGenericTween<T, TV> : IGenericTweenEditor
+        where T : GenericTween<TV>
+        where TV : struct
     {
         #region Properties
 
@@ -16,15 +16,16 @@ namespace Obel.MSS.Editor
         public virtual string DisplayName { get; private set; }
         public virtual float Height { get; }
         public virtual bool IsMultiple => false;
+        public virtual bool ShowValueFuncContent => false;
 
         public float HeaderHeight => EditorConfig.Sizes.LineHeight * (DrawValueFunc == null ? 2.3f : 3.3f);
         public float TotalHeight => HeaderHeight + Height;
 
         public Type Type { get; set; }
-        public Action AddAction { get; set; }
-        public Func<Rect, GUIContent, TU, TU> DrawValueFunc { set; get; }
+        public Action<State> AddAction { get; set; }
+        public Func<Rect, GUIContent, TV, TV> DrawValueFunc { set; get; }
 
-        private GUIContent _content;
+        private GUIContent _content = GUIContent.none;
 
         #endregion
 
@@ -32,15 +33,10 @@ namespace Obel.MSS.Editor
 
         public void SetDisplayName()
         {
-            if (!Name.Contains("/"))
-            {
-                DisplayName = Name;
-                _content = new GUIContent(DisplayName);
-                return;
-            }
+            DisplayName = Name.Contains("/") ? Name.Split('/').Last() : Name;
 
-            DisplayName = Name.Split('/').Last();
-        }
+            if (ShowValueFuncContent) _content = new GUIContent(DisplayName);
+        } 
 
         #endregion
 
@@ -48,10 +44,7 @@ namespace Obel.MSS.Editor
 
         public virtual void Draw(Rect rect, Tween tween) => Draw(rect, tween as T);
 
-        public virtual void Draw(Rect rect, T tween)
-        {
-            EditorGUI.HelpBox(rect, $"no drawer for tween: { Name }", MessageType.Warning);
-        }
+        public virtual void Draw(Rect rect, T tween) => EditorGUI.HelpBox(rect, $"no drawer for tween: { Name }", MessageType.Warning);
 
         public void DrawHeader(Rect rect, Tween tween) => DrawHeader(rect, tween as T);
 
@@ -79,8 +72,8 @@ namespace Obel.MSS.Editor
 
             EditorLayout.Control(80, r =>
             {
-                if (tween.EaseFunc != null) EditorEase.Draw(r, tween.EaseFunc.Method.Name);
-                else EditorGUI.HelpBox(r, tween.EaseFunc?.Method.Name, MessageType.Warning);
+                if (tween.EaseFunc != null) EditorEase.Draw(r, tween);
+                else EditorGUI.HelpBox(r, tween.EaseName, MessageType.Warning);
             });
 
             EditorLayout.Control(60, r =>
@@ -134,14 +127,9 @@ namespace Obel.MSS.Editor
 
         private static readonly List<IGenericTweenEditor> Editors = new List<IGenericTweenEditor>();
 
-        public static State SelectedState { get; private set; }
-        public static Tween SelectedTween { get; private set; }
-
         #endregion
 
         #region Inspector
-
-        public static void DrawBackground(Rect rect, int index, bool isActive, bool isFocused) => EditorGUI.DrawRect(rect, Color.clear);
 
         public static void Draw(Rect rect, Tween tween)
         {
@@ -149,11 +137,9 @@ namespace Obel.MSS.Editor
 
             if (editor == null)
             {
-                EditorGUI.HelpBox(rect, "unknown tween module: \"" + tween + "\"", MessageType.Warning);
+                EditorGUI.HelpBox(rect, $"unknown tween module: \"{ tween }\"", MessageType.Warning);
                 return;
             }
-
-            SelectedTween = tween;
 
             editor.DrawHeader(rect, tween);
 
@@ -170,10 +156,6 @@ namespace Obel.MSS.Editor
             EditorGUI.EndDisabledGroup();
         }
 
-        public static void DrawHeader(Rect rect) => EditorGUI.LabelField(rect, "");
-
-        public static void DrawEmptyList(Rect rect) => EditorGUI.LabelField(rect, "Click + to add tween");
-
         public static float GetHeight<T>(T tween) where T : Tween => GetHeight(tween.GetType());
 
         public static float GetHeight(Type type) => Get(type)?.TotalHeight ?? EditorConfig.Sizes.SingleLine;
@@ -182,26 +164,29 @@ namespace Obel.MSS.Editor
 
         #region Inspector callbacks
 
-        public static void Add<T, TU>(EditorGenericTween<T, TU> editor, Func<Rect, GUIContent, TU, TU> drawValueFunc = null)
-            where T : GenericTween<TU>, new()
-            where TU : struct
+        public static void Add<T, TV>(EditorGenericTween<T, TV> editor, Func<Rect, GUIContent, TV, TV> drawValueFunc = null)
+            where TV : struct
+            where T : GenericTween<TV>, new()
         {
             if (Editors.Contains(editor)) return;
 
             Editors.Add(editor);
             editor.Type = typeof(T);
+
             editor.SetDisplayName();
             editor.DrawValueFunc = drawValueFunc;
-            editor.AddAction = () => /*EditorActions.Add(() =>*/ //TODO Need or not? 
+            //if (content != null) editor.Content = content;
+            editor.AddAction = state =>
             {
                 var tween = new T();
-                SelectedState.Add(tween);
+                state.Add(tween);
 
+                //TODO move ease to runtime!
                 if (Ease.DefaultFunc != null) tween.EaseFunc = Ease.DefaultFunc;
 
-                EditorState.Get(SelectedState).OnTweenAdded(tween);
-
-            }/*, InspectorStates.states.gameObject)*/;
+                //TODO move it to EditorState class
+                EditorState.Get(state).OnTweenAdded(tween);
+            };
 
             Debug.Log($"[MSS] [Editor] [Tween] Registered: {editor.DisplayName}");
         }
@@ -212,14 +197,14 @@ namespace Obel.MSS.Editor
 
         public static void OnAddButton(State state)
         {
-            SelectedState = state;
-
             var tweenMenu = new GenericMenu();
 
             foreach (var editor in Editors)
             {
-                if (editor.IsMultiple || SelectedState.Items.All(t => t.GetType() != editor.Type))
-                    tweenMenu.AddItem(new GUIContent(editor.Name), false, () => EditorActions.Add(editor.AddAction, InspectorStates.States));
+                if (!editor.IsMultiple && state.Items.Any(t => t.GetType() == editor.Type)) continue;
+
+                tweenMenu.AddItem(new GUIContent(editor.Name), false, () => 
+                    EditorActions.Add(() => editor.AddAction(state), InspectorStates.States, $"Add tween"));
             }
 
             tweenMenu.ShowAsContext();
@@ -229,10 +214,12 @@ namespace Obel.MSS.Editor
         {
             EditorActions.Add(() =>
             {
+                //TODO move it to EditorState class
                 EditorState.Get(state).OnTweenRemoving(state[index]);
+
                 state.Remove(state[index], false);
-            },
-            InspectorStates.States.gameObject);
+            }, 
+            InspectorStates.States, "Remove tween");
         }
 
         #endregion

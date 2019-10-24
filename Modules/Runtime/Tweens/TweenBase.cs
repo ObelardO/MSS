@@ -6,6 +6,8 @@ namespace Obel.MSS.Modules.Tweens
     [Serializable]
     public class TweenBase : GenericTween<int>
     {
+        #region Public methods
+
         public override void OnInit()
         {
             Debug.Log("[MSS] [Tween] Say hello to new base tween!");
@@ -15,5 +17,7 @@ namespace Obel.MSS.Modules.Tweens
         {
             Value = gameObject.GetInstanceID();
         }
+
+        #endregion
     }
 }

@@ -1,9 +1,8 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using Obel.MSS.Editor;
-using Obel.MSS.Modules.Tweens;
 
-namespace Obel.MSS.Modules.TweensEditor
+namespace Obel.MSS.Modules.Tweens.Editor
 {
     internal class EditorBasePosition : EditorGenericTween<TweenBase, int>
     {
@@ -16,8 +15,12 @@ namespace Obel.MSS.Modules.TweensEditor
 
         #endregion
 
+        #region Init
+
         [InitializeOnLoadMethod]
         private static void ApplicationStart() => EditorTween.Add(new EditorBasePosition());
+
+        #endregion
 
         #region Inspector
 

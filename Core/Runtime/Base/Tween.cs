@@ -15,12 +15,14 @@ namespace Obel.MSS
         {
             get => _easeFunc ?? (_easeFunc = Ease.Get(_ease));
 
-            set 
+            set
             {
                 _easeFunc = value;
                 if (_easeFunc != null) _ease = _easeFunc.Method.Name;
             }
         }
+
+        public string EaseName => EaseFunc?.Method.Name ?? _ease;
 
         public Vector2 Range = Vector2.up;
 

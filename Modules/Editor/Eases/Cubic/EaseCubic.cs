@@ -2,6 +2,8 @@
 {
     public class EaseCubic
     {
+        #region Init
+
         #if UNITY_EDITOR
         [UnityEditor.InitializeOnLoadMethod]
         #elif UNITY_STANDALONE
@@ -14,7 +16,9 @@
             Ease.Add(CubicInOut, "Cubic/InOut");
         }
 
-        #region Public methods
+        #endregion
+
+        #region Private methods
 
         private static float CubicIn(float t, float d)
         {

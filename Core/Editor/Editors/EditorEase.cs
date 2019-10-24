@@ -15,25 +15,29 @@ namespace Obel.MSS.Editor
 
         #region Inspector
 
-        public static void Draw(Rect rect, string name)
+        public static void Draw(Rect rect, Tween tween)
         {
-            if (!GUI.Button(rect, name, EditorStyles.popup)) return;
+            if (!GUI.Button(rect, tween.EaseName, EditorStyles.popup)) return;
 
-            _selectedTween = EditorTween.SelectedTween;
+            _selectedTween = tween;
             EasesMenu.ShowAsContext();
         }
 
         #endregion
 
+        #region Init
+
         [InitializeOnLoadMethod]
         private static void ApplicationStart()
         {
-            EditorApplication.delayCall += () => Ease.BindAll(Bind);
+            EditorApplication.delayCall += () => Ease.BindAll(OnBind);
         }
+
+        #endregion
 
         #region Inspector callbacks
 
-        private static void Bind(Func<float, float, float> easeFunc, string path)
+        private static void OnBind(Func<float, float, float> easeFunc, string path)
         {
             EasesMenu.AddItem(new GUIContent(path), false, () => OnEaseMenu(easeFunc));
 
@@ -43,9 +47,7 @@ namespace Obel.MSS.Editor
         private static void OnEaseMenu(Func<float, float, float> easeFunc)
         {
             _selectedTween.EaseFunc = easeFunc;
-
             //TODO UNDO (on undo event assign all ease method by restored name)
-            //EditorActions.Add(() => { _selectedTween.EaseFunc = easeFunc; }, InspectorStates.States, "tween ease");
         }
 
         #endregion

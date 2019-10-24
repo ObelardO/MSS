@@ -9,35 +9,30 @@ namespace Obel.MSS.Editor
     {
         #region Properties
 
-        private static SerializedObject _serializedStatesGroup;
         private static ReorderableList _statesList;
 
         #endregion
 
         #region Inspector
 
-        public static void Draw(StatesGroup group)
+        public static void Draw(Group group)
         {
             if (group == null) return;
-
-            //serializedStatesGroup.Update();
 
             GUILayout.Space(3);
             GUILayout.BeginHorizontal();
             GUILayout.Space(-6);
             GUILayout.BeginVertical();
 
-            _statesList.DoLayoutList();
+            _statesList?.DoLayoutList();
 
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
 
             DrawAddButton(group);
-
-            //serializedStatesGroup.ApplyModifiedProperties();
         }
 
-        private static void DrawAddButton(StatesGroup group)
+        private static void DrawAddButton(Group group)
         {
             var rectAddButton = EditorGUILayout.GetControlRect();
 
@@ -45,21 +40,32 @@ namespace Obel.MSS.Editor
             rectAddButton.x = rectAddButton.width - 19;
             rectAddButton.width = 30;
 
-            if (GUI.Button(rectAddButton, EditorConfig.Content.IconToolbarPlus, EditorConfig.Styles.PreButton))
-                EditorActions.Add(() => OnAddStateButton(group), InspectorStates.States, "Add State");
+            if (GUI.Button(rectAddButton, EditorConfig.Content.IconToolbarPlus, EditorConfig.Styles.PreButton)) OnAddStateButton(group);
         }
 
         #endregion
 
         #region Inspector callbacks
 
-        public static void OnEnable(StatesGroup group)
+        private static void OnAddStateButton(Group group)
+        {
+            EditorActions.Add(() =>
+            {
+                var state = group.Create();
+
+                EditorState.Reorder(group);
+                EditorState.Get(state).Open();
+            }, 
+            InspectorStates.States, "Add State");
+        }
+
+        #endregion
+
+        #region Public methods
+
+        public static void Enable(Group group)
         {
             if (group == null) return;
-
-            Debug.Log("New states list");
-
-            //serializedStatesGroup = InspectorStates.SerializedState.FindProperty("statesGroup")); 
 
             _statesList = new ReorderableList(group.Items as IList, typeof(State))
             {
@@ -77,30 +83,6 @@ namespace Obel.MSS.Editor
                 drawElementCallback = (rect, index, isActive, isFocused) => EditorState.Draw(rect, group[index]),
                 onReorderCallback = list => EditorState.Reorder(group)
             };
-        }
-
-        private static void OnAddStateButton(StatesGroup group)
-        {
-            var state = group.AddNew();
-
-            EditorState.Reorder(group);
-            EditorState.Get(state).Open();
-        }
-
-        #endregion
-
-        #region Public methods
-
-        public static StatesGroup Create()
-        {
-            var newStatesGroup = new StatesGroup();
-
-            newStatesGroup.AddNew();
-            newStatesGroup.AddNew();
-
-            OnEnable(newStatesGroup);
-
-            return newStatesGroup;
         }
 
         #endregion

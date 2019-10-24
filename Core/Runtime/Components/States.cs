@@ -8,13 +8,15 @@ namespace Obel.MSS
         #region Properties
 
         [SerializeReference]
-        public StatesGroup Group;
+        public Group Group;
 
         #endregion
 
         #region Unity methods
 
-        private void Reset() => Group?.Clear();
+        private void Reset() => Group = new Group();
+
+        private void Awake() => Group = Group ?? new Group();
 
         private void OnEnable() { }
 

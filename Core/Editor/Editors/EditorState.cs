@@ -35,18 +35,16 @@ namespace Obel.MSS.Editor
         public EditorState(State state)
         {
             _foldout = new AnimBool(false);
-            this._state = state;
+            _state = state;
 
             Editors.Add(state.Id, this);
 
             if (Repaint != null) _foldout.valueChanged.AddListener(Repaint);
 
-            //serializedState = new SerializedObject(InspectorStates.states);//.FindProperty("statesGroup").FindPropertyRelative("itemes").serializedObject;
-
-            OnEnable();
+            Enable();
         }
 
-        public void OnEnable()
+        public void Enable()
         {
             _tweensList = new ReorderableList(_state.Items as IList, typeof(Tween))
             {
@@ -60,10 +58,10 @@ namespace Obel.MSS.Editor
 
                 onAddCallback = list => EditorTween.OnAddButton(_state),
                 onRemoveCallback = list => EditorTween.OnRemoveButton(_state, list.index),
-                drawHeaderCallback = EditorTween.DrawHeader,
+                drawHeaderCallback = rect => EditorGUI.LabelField(rect, ""),
                 drawElementCallback = (rect, index, isActive, isFocused) => EditorTween.Draw(rect, _state[index]),
                 elementHeightCallback = index => EditorTween.GetHeight(_state[index].GetType()),
-                drawNoneElementCallback = EditorTween.DrawEmptyList
+                drawNoneElementCallback = rect => EditorGUI.LabelField(rect, "Click + to add tween")
             };
 
             CalculateListHeight();
@@ -86,21 +84,17 @@ namespace Obel.MSS.Editor
             foreach (var editor in Editors) Editors[editor.Key].CalculateListHeight();
         }
 
-        public static void Reorder(StatesGroup group)
+        public static void Reorder(Group group)
         {
             foreach (var editor in Editors)
             {
                 for (var i = 0; i < group.Count; i++)
                 {
-                    if (editor.Key.Equals(group[i].Id))
-                    {
-                        Editors[editor.Key]._state = group[i];
-                        Editors[editor.Key].OnEnable();
-                    }
+                    if (!editor.Key.Equals(group[i].Id) || Editors[editor.Key]._state.Equals(group[i])) continue;
+                    Editors[editor.Key]._state = group[i];
+                    Editors[editor.Key].Enable();
                 }
             }
-
-            //CalculateAllListsHeight();
         }
 
         #endregion
@@ -122,13 +116,8 @@ namespace Obel.MSS.Editor
         public static void Draw(Rect rect, EditorState editor)
         {
             rect.width += 5;
-
-            //editor.serializedState.Update();
-
             DrawHeader(rect, editor);
             DrawProperties(rect, editor);
-
-            //editor.serializedState.ApplyModifiedProperties();
         }
 
         public static void DrawBackground(Rect rect, int index, bool isActive, bool isFocused) => EditorGUI.DrawRect(rect, Color.clear);
@@ -148,7 +137,6 @@ namespace Obel.MSS.Editor
             EditorGUI.DrawRect(rectStateTabColor, tabColor);
 
             var rectToggle = new Rect(rect.x + 5, rect.y, 20, EditorConfig.Sizes.SingleLine);
-
             if (editor._state.IsDefaultState)
             {
                 EditorGUI.BeginDisabledGroup(true);
@@ -165,8 +153,7 @@ namespace Obel.MSS.Editor
 
             var rectRemoveButton = new Rect(rect.width - 5, rect.y + (EditorConfig.Sizes.LineHeight - 20) * 0.5f, 30, 20);
             if (!editor._state.IsDefaultState &&
-                GUI.Button(rectRemoveButton, EditorConfig.Content.IconToolbarMinus, EditorConfig.Styles.PreButton))
-                OnRemoveButton(editor._state);
+                GUI.Button(rectRemoveButton, EditorConfig.Content.IconToolbarMinus, EditorConfig.Styles.PreButton)) OnRemoveButton(editor._state);
         }
 
         private static void DrawProperties(Rect rect, EditorState editor)
@@ -209,7 +196,7 @@ namespace Obel.MSS.Editor
             EditorGUI.EndDisabledGroup();
         }
 
-        public static float GetHeight(State state) => GetHeight(Get(state));
+        //public static float GetHeight(State state) => GetHeight(Get(state));
 
         public static float GetHeight(EditorState editor)
         {
@@ -225,27 +212,22 @@ namespace Obel.MSS.Editor
 
         private static void OnRemoveButton(State state)
         {
-            var group = (StatesGroup)state.Parent;
+            var group = (Group)state.Parent;
 
             EditorActions.Add(() =>
             {
+                Editors.Remove(state.Id);
                 group.Remove(state, false);
                 Reorder(group);
             },
             InspectorStates.States, "Remove state");
         }
 
-        public void OnTweenAdded<T>(T tween) where T : Tween
-        {
-            ListHeight += EditorTween.GetHeight(tween);
-            Repaint();
-        }
+        public void OnTweenAdded<T>(T tween) 
+            where T : Tween => ListHeight += EditorTween.GetHeight(tween);
 
-        public void OnTweenRemoving<T>(T tween) where T : Tween
-        {
-            ListHeight -= EditorTween.GetHeight(tween);
-            Repaint();
-        }
+        public void OnTweenRemoving<T>(T tween) 
+            where T : Tween => ListHeight -= EditorTween.GetHeight(tween);
 
         #endregion
     }

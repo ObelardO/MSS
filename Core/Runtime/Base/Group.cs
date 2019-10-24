@@ -1,10 +1,11 @@
 ﻿using System;
+using UnityEngine;
 using Obel.MSS.Base;
 
 namespace Obel.MSS
 {
     [Serializable]
-    public class StatesGroup : Collection<State>
+    public class Group : Collection<State>
     {
         #region Properties
 
@@ -12,5 +13,11 @@ namespace Obel.MSS
         public State OpenedState => Get((int)DefaultState.Opened);
 
         #endregion
+
+        public Group()
+        {
+            Create();
+            Create();
+        }
     }
 }

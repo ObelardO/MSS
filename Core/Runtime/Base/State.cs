@@ -23,11 +23,11 @@ namespace Obel.MSS
             {
                 if (!IsDefaultState) base.Name = value;
             }
-             
+
         }
-    
-        public bool IsClosedState => this == ((StatesGroup)Parent)?.ClosedState;
-        public bool IsOpenedState => this == ((StatesGroup)Parent)?.OpenedState;
+
+        public bool IsClosedState => this == ((Group)Parent)?.ClosedState;
+        public bool IsOpenedState => this == ((Group)Parent)?.OpenedState;
         public bool IsDefaultState => IsClosedState || IsOpenedState;
 
         #endregion

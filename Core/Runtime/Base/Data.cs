@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Obel.MSS.Base
@@ -14,21 +15,15 @@ namespace Obel.MSS.Base
 
         public IReadOnlyList<T> Items => items;
         public int Count => items.Count;
-        public T Last => Count > 0 ? items[Count - 1] : null;
+        public T Last => items.LastOrDefault();
         public T this[int i] => IndexInvalid(i) ? null : items[i];
-        public T First => Count > 0 ? items[0] : null;
+        public T First => items.FirstOrDefault();
 
         #endregion
 
         #region Collection methods
 
-        public void ForEach(Action<T> forEachCallback)
-        {
-            //items.ForEach(item => forEachCallback(item));
-            items.ForEach(forEachCallback);
-        }
-
-        public T AddNew()
+        public T Create()
         {
             Add(new T());
             return Last;
@@ -39,29 +34,24 @@ namespace Obel.MSS.Base
             items.Add(item);
             Last.Init(this);
         }
-
+        /*
         public void Remove(int index, bool destroyItem = true)
         {
             if (IndexInvalid(index)) return;
             Remove(items[index], destroyItem);
         }
-
+        */
         public void Remove(T item, bool destroyItem = true)
         {
-            if (!Contains(item)) return;
+            if (!items.Contains(item)) return;
             items.Remove(item);
         }
-
+        /*
         public void Clear(bool destroyItem = true)
         {
-            ForEach(item => Remove(item, destroyItem));
+            items.ForEach(item => Remove(item, destroyItem));
         }
-
-        public bool Contains(T item)
-        {
-            return items.Contains(item);
-        }
-
+        */
         public T Get(int index)
         {
             return IndexInvalid(index) ? null : items[index];
@@ -102,7 +92,7 @@ namespace Obel.MSS.Base
 
         public void Init(ICollectionItem parent)
         {
-            Debug.Log($"[MSS] [DataBase] Registered: {Name} Parent: {parent}");
+            Debug.Log($"[MSS] [Data] Registered: {Name} Parent: {parent}");
             Parent = parent;
             Id = base.GetHashCode();
             OnInit();

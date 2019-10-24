@@ -4,6 +4,8 @@ namespace Obel.MSS.Modules.Eases
 {
     public class EaseQuint
     {
+        #region Init
+
         #if UNITY_EDITOR
         [UnityEditor.InitializeOnLoadMethod]
         #elif UNITY_STANDALONE
@@ -16,7 +18,9 @@ namespace Obel.MSS.Modules.Eases
             Ease.Add(QuintInOut, "Quint/InOut");
         }
 
-        #region Public methods
+        #endregion
+
+        #region Private methods
 
         private static float QuintIn(float t, float d)
         {

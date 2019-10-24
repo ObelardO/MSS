@@ -40,7 +40,7 @@ namespace Obel.MSS
         {
             if (path == null) path = ease.Method.Name;
 
-            if (Eases.Where(e => e.Ease.Equals(ease)).ToArray().Length > 0) return;
+            if (Eases.Any(e => e.Ease.Equals(ease))) return;
 
             Eases.Add(new EaseInfo(ease, path, sort));
         }

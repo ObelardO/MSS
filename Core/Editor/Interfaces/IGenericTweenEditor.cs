@@ -9,13 +9,14 @@ namespace Obel.MSS.Editor
 
         string Name { get; }
         Type Type { set; get; }
-        Action AddAction { set; get; }
+        Action<State> AddAction { set; get; }
 
         float TotalHeight { get; }
         float HeaderHeight { get; }
         float Height { get; }
 
         bool IsMultiple { get; }
+        bool ShowValueFuncContent { get; }
 
         #endregion
 

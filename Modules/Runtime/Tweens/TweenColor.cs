@@ -1,12 +1,13 @@
 ﻿using System;
 using UnityEngine;
-using Obel.MSS;
 
 namespace Obel.MSS.Modules.Tweens
 {
     [Serializable]
     public class TweenColor : GenericTween<Color>
     {
+        #region Public methods
+
         public override void OnInit()
         {
             Debug.Log("[MSS] [Tween] Say hello to new color tween!");
@@ -16,6 +17,8 @@ namespace Obel.MSS.Modules.Tweens
         {
             Value = gameObject.GetComponent<Light>()?.color ?? Color.white;
         }
+
+        #endregion
     }
 }
 

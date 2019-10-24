@@ -2,6 +2,8 @@
 {
     public class EaseQuart
     {
+        #region Init
+
         #if UNITY_EDITOR
         [UnityEditor.InitializeOnLoadMethod]
         #elif UNITY_STANDALONE
@@ -14,7 +16,9 @@
             Ease.Add(QuartInOut, "Quart/InOut");
         }
 
-        #region Public methods
+        #endregion
+
+        #region Private methods
 
         private static float QuartIn(float t, float d)
         {
