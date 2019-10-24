@@ -13,7 +13,7 @@
         {
             Ease.Add(QuadIn, "Quad/In", -1);
             Ease.Add(QuadOut, "Quad/Out", -1);
-            //Ease.Add(QuadInOut, "Quad/InOut", -2);
+            Ease.Add(QuadInOut, "Quad/InOut", -2);
         }
 
         #endregion
