@@ -172,21 +172,9 @@ namespace Obel.MSS.Editor
 
             Editors.Add(editor);
             editor.Type = typeof(T);
-
             editor.SetDisplayName();
             editor.DrawValueFunc = drawValueFunc;
-            //if (content != null) editor.Content = content;
-            editor.AddAction = state =>
-            {
-                var tween = new T();
-                state.Add(tween);
-
-                //TODO move ease to runtime!
-                if (Ease.DefaultFunc != null) tween.EaseFunc = Ease.DefaultFunc;
-
-                //TODO move it to EditorState class
-                EditorState.Get(state).OnTweenAdded(tween);
-            };
+            editor.AddAction = state => state.Add(new T());
 
             Debug.Log($"[MSS] [Editor] [Tween] Registered: {editor.DisplayName}");
         }
@@ -204,7 +192,11 @@ namespace Obel.MSS.Editor
                 if (!editor.IsMultiple && state.Items.Any(t => t.GetType() == editor.Type)) continue;
 
                 tweenMenu.AddItem(new GUIContent(editor.Name), false, () => 
-                    EditorActions.Add(() => editor.AddAction(state), InspectorStates.States, $"Add tween"));
+                    EditorActions.Add(() =>
+                    {
+                        editor.AddAction(state);
+                        EditorState.Get(state).OnTweenAdded(state.Last);
+                    }, InspectorStates.States, $"Add tween"));
             }
 
             tweenMenu.ShowAsContext();

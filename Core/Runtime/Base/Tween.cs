@@ -33,6 +33,11 @@ namespace Obel.MSS
         public virtual void Capture(GameObject gameObject) { }
 
         #endregion
+
+        public Tween()
+        {
+            if (Ease.DefaultFunc != null) EaseFunc = Ease.DefaultFunc;
+        }
     }
 
     [System.Serializable]

@@ -223,11 +223,11 @@ namespace Obel.MSS.Editor
             InspectorStates.States, "Remove state");
         }
 
-        public void OnTweenAdded<T>(T tween) 
-            where T : Tween => ListHeight += EditorTween.GetHeight(tween);
-
-        public void OnTweenRemoving<T>(T tween) 
-            where T : Tween => ListHeight -= EditorTween.GetHeight(tween);
+        public void OnTweenAdded<T>(T tween) where T : Tween => 
+            ListHeight += EditorTween.GetHeight(tween);
+            
+        public void OnTweenRemoving<T>(T tween) where T : Tween => 
+            ListHeight -= EditorTween.GetHeight(tween);
 
         #endregion
     }
