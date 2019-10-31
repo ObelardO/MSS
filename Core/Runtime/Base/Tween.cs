@@ -4,7 +4,7 @@ using Obel.MSS.Base;
 
 namespace Obel.MSS
 {
-    [System.Serializable]
+    [Serializable]
     public class Tween : CollectionItem
     {
         #region Properties
@@ -34,18 +34,43 @@ namespace Obel.MSS
 
         #endregion
 
+        #region Init
+
         public Tween()
         {
             if (Ease.DefaultFunc != null) EaseFunc = Ease.DefaultFunc;
+
+            Debug.Log("BC New tween: " + Name);
         }
+
+        #endregion
     }
 
-    [System.Serializable]
-    public class GenericTween<T> : Tween where T : struct
+    [Serializable]
+    public class GenericTween<C, T> : Tween 
+        where T : struct
+        where C : Component
     {
         #region Properties
 
+        public C Component;
+
         public T Value;
+
+        #endregion
+
+        #region Init
+
+        public GenericTween()
+        {
+            Debug.Log("SC New tween: " + Name);
+        }
+
+        public GenericTween(C component)
+        {
+            Component = component;
+            Debug.Log("SC New tween: " + Name);
+        }
 
         #endregion
     }

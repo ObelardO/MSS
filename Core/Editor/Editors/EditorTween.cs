@@ -6,8 +6,9 @@ using UnityEngine;
 
 namespace Obel.MSS.Editor
 {
-    public class EditorGenericTween<T, TV> : IGenericTweenEditor
-        where T : GenericTween<TV>
+    public class EditorGenericTween<T, TC, TV> : IGenericTweenEditor
+        where T : GenericTween<TC, TV>
+        where TC : Component
         where TV : struct
     {
         #region Properties
@@ -80,8 +81,18 @@ namespace Obel.MSS.Editor
             {
                 if (GUI.Button(r, "Capture")) EditorActions.Add(() =>
                 {
-                    tween.Capture(InspectorStates.States.gameObject);
-                    Debug.Log($"[MSS] [Editor] [Tween] Say hello to new {DisplayName} tween!");
+                    if (tween.Component == null)
+                        tween.Component = InspectorStates.States.gameObject.GetComponent<TC>();
+
+                    if (tween.Component != null)
+                    {
+                        tween.Capture(InspectorStates.States.gameObject);
+                        Debug.Log($"[MSS] [Editor] [Tween] Say hello to new {DisplayName} tween!");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[MSS] [Editor] [Tween] Failed to capture {typeof(TC)} value!");
+                    }
                 },
                 InspectorStates.States);
             });
@@ -164,9 +175,10 @@ namespace Obel.MSS.Editor
 
         #region Inspector callbacks
 
-        public static void Add<T, TV>(EditorGenericTween<T, TV> editor, Func<Rect, GUIContent, TV, TV> drawValueFunc = null)
+        public static void Add<T, TC, TV>(EditorGenericTween<T, TC, TV> editor, Func<Rect, GUIContent, TV, TV> drawValueFunc = null)
             where TV : struct
-            where T : GenericTween<TV>, new()
+            where TC : Component
+            where T : GenericTween<TC, TV>, new()
         {
             if (Editors.Contains(editor)) return;
 

@@ -23,16 +23,18 @@ namespace Obel.MSS.Base
 
         #region Collection methods
 
+        
         public T Create()
         {
             Add(new T());
             return Last;
         }
 
-        public void Add(T item)
+        public T Add(T item)
         {
-            items.Add(item);
+            items.Add(new T());
             Last.Init(this);
+            return Last;
         }
         /*
         public void Remove(int index, bool destroyItem = true)

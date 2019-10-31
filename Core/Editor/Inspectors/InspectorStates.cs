@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEditor;
+using UnityEditor.Compilation;
 using UnityEngine;
 
 namespace Obel.MSS.Editor
@@ -8,11 +9,6 @@ namespace Obel.MSS.Editor
     internal class InspectorStates : UnityEditor.Editor
     {
         #region Properties
-
-        /*
-        private static readonly GUIContent ProfileLabel = new GUIContent("States"),
-                                           NewButton = new GUIContent("New");
-        */
 
         public static States States { private set; get; }
 
@@ -62,15 +58,6 @@ namespace Obel.MSS.Editor
 
             GUILayout.BeginVertical();
             GUILayout.Space(2);
-
-            /*
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(12);
-
-            //if (States.Group == null && GUILayout.Button(NewButton, GUILayout.Width(50), GUILayout.Height(14))) States.Group = new Group();// EditorGroup.Create();
-
-            GUILayout.EndHorizontal();
-            */
 
             EditorGroup.Draw(States.Group);
 

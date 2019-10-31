@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Obel.MSS.Modules.Tweens
 {
     [Serializable]
-    public class TweenPosition : GenericTween<Vector3>
+    public class TweenPosition : GenericTween<Transform, Vector3>
     {
         #region Public methods
 
@@ -13,10 +13,7 @@ namespace Obel.MSS.Modules.Tweens
             Debug.Log("[MSS] [Tween] Say hello to new position tween");
         }
 
-        public override void Capture(GameObject gameObject)
-        {
-            Value = gameObject.transform.position;
-        }
+        public override void Capture(GameObject gameObject) => Value = gameObject.transform.position;
 
         #endregion
     }

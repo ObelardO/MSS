@@ -4,7 +4,7 @@ using Obel.MSS.Editor;
 
 namespace Obel.MSS.Modules.Tweens.Editor
 {
-    internal class EditorBasePosition : EditorGenericTween<TweenBase, int>
+    internal class EditorTweenBase : EditorGenericTween<TweenBase, Transform, Vector3>
     {
         #region Properties
 
@@ -18,7 +18,7 @@ namespace Obel.MSS.Modules.Tweens.Editor
         #region Init
 
         [InitializeOnLoadMethod]
-        private static void ApplicationStart() => EditorTween.Add(new EditorBasePosition());
+        private static void ApplicationStart() => EditorTween.Add(new EditorTweenBase());
 
         #endregion
 

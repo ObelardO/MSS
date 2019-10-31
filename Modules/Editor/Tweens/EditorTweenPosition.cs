@@ -4,7 +4,7 @@ using Obel.MSS.Editor;
 
 namespace Obel.MSS.Modules.Tweens.Editor
 {
-    internal class EditorTweenPosition : EditorGenericTween<TweenPosition, Vector3>
+    internal class EditorTweenPosition : EditorGenericTween<TweenPosition, Transform, Vector3>
     {
         #region Properties
 

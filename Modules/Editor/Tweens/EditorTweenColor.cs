@@ -1,14 +1,15 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using Obel.MSS.Editor;
+using UnityEngine.UI;
 
 namespace Obel.MSS.Modules.Tweens.Editor
 {
-    internal class EditorTweenColor : EditorGenericTween<TweenColor, Color>
+    internal class EditorTweenColor : EditorGenericTween<TweenColor, Graphic, Color>
     {
         #region Properties
 
-        public override string Name => "Color";
+        public override string Name => "UI/Color";
         public override bool IsMultiple => true;
         public override bool ShowValueFuncContent => true;
         public override float Height => 32;
