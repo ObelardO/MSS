@@ -60,12 +60,12 @@ namespace Obel.MSS
         #endregion
 
         #region Init
-        /*
+        
         public GenericTween()
         {
             Debug.Log("SC New tween: " + Name);
         }
-        
+        /*
         public GenericTween(C component)
         {
             Component = component;
