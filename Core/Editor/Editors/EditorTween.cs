@@ -6,10 +6,11 @@ using UnityEngine;
 
 namespace Obel.MSS.Editor
 {
-    public class EditorGenericTween<T, TC, TV> : IGenericTweenEditor
-        where T : GenericTween<TC, TV>
-        where TC : Component
-        where TV : struct
+    public class EditorGenericTween<T, C, V> : IGenericTweenEditor
+
+        where T : GenericTween<C, V>
+        where C : Component
+        where V : struct
     {
         #region Properties
 
@@ -24,7 +25,7 @@ namespace Obel.MSS.Editor
 
         public Type Type { get; set; }
         public Action<State> AddAction { get; set; }
-        public Func<Rect, GUIContent, TV, TV> DrawValueFunc { set; get; }
+        public Func<Rect, GUIContent, V, V> DrawValueFunc { set; get; }
 
         private GUIContent _content = GUIContent.none;
 
@@ -81,8 +82,9 @@ namespace Obel.MSS.Editor
             {
                 if (GUI.Button(r, "Capture")) EditorActions.Add(() =>
                 {
+                    //TODO that code is peace of shit 
                     if (tween.Component == null)
-                        tween.Component = InspectorStates.States.gameObject.GetComponent<TC>();
+                        tween.Component = InspectorStates.States.gameObject.GetComponent<C>();
 
                     if (tween.Component != null)
                     {
@@ -91,7 +93,7 @@ namespace Obel.MSS.Editor
                     }
                     else
                     {
-                        Debug.LogWarning($"[MSS] [Editor] [Tween] Failed to capture {typeof(TC)} value!");
+                        Debug.LogWarning($"[MSS] [Editor] [Tween] Failed to capture {typeof(C)} value!");
                     }
                 },
                 InspectorStates.States);
@@ -110,6 +112,7 @@ namespace Obel.MSS.Editor
                 {
                     EditorActions.Add(() => tween.Range = new Vector2(rangeMin, rangeMax), InspectorStates.States, "tween range");
                 }
+
             });
 
             EditorGUI.EndDisabledGroup();
@@ -148,7 +151,7 @@ namespace Obel.MSS.Editor
 
             if (editor == null)
             {
-                EditorGUI.HelpBox(rect, $"unknown tween module: \"{ tween }\"", MessageType.Warning);
+                EditorGUI.HelpBox(rect, $"unknown tween module: \"{tween}\"", MessageType.Warning);
                 return;
             }
 
@@ -175,10 +178,11 @@ namespace Obel.MSS.Editor
 
         #region Inspector callbacks
 
-        public static void Add<T, TC, TV>(EditorGenericTween<T, TC, TV> editor, Func<Rect, GUIContent, TV, TV> drawValueFunc = null)
-            where TV : struct
-            where TC : Component
-            where T : GenericTween<TC, TV>, new()
+        public static void Add<T, C, V>(EditorGenericTween<T, C, V> editor, Func<Rect, GUIContent, V, V> drawValueFunc = null)
+
+            where T : GenericTween<C, V>, new()
+            where V : struct
+            where C : Component
         {
             if (Editors.Contains(editor)) return;
 
@@ -207,8 +211,12 @@ namespace Obel.MSS.Editor
                     EditorActions.Add(() =>
                     {
                         editor.AddAction(state);
+
+                        //TODO move it to EditorState class
                         EditorState.Get(state).OnTweenAdded(state.Last);
-                    }, InspectorStates.States, $"Add tween"));
+
+                    }, 
+                    InspectorStates.States, $"Add tween"));
             }
 
             tweenMenu.ShowAsContext();

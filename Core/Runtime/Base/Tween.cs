@@ -47,31 +47,31 @@ namespace Obel.MSS
     }
 
     [Serializable]
-    public class GenericTween<C, T> : Tween 
-        where T : struct
+    public class GenericTween<C, V> : Tween 
         where C : Component
+        where V : struct
     {
         #region Properties
-
+        
         public C Component;
 
-        public T Value;
+        public V Value;
 
         #endregion
 
         #region Init
-
+        /*
         public GenericTween()
         {
             Debug.Log("SC New tween: " + Name);
         }
-
+        
         public GenericTween(C component)
         {
             Component = component;
             Debug.Log("SC New tween: " + Name);
         }
-
+        */
         #endregion
     }
 }
