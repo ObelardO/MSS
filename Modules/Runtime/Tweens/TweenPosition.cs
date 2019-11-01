@@ -13,7 +13,7 @@ namespace Obel.MSS.Modules.Tweens
             Debug.Log("[MSS] [Tween] Say hello to new position tween");
         }
 
-        public override void Capture(GameObject gameObject) => Value = gameObject.transform.position;
+        public override void Capture() => Value = Component.position;
 
         #endregion
     }

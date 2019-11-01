@@ -82,13 +82,9 @@ namespace Obel.MSS.Editor
             {
                 if (GUI.Button(r, "Capture")) EditorActions.Add(() =>
                 {
-                    //TODO that code is peace of shit 
-                    if (tween.Component == null)
-                        tween.Component = InspectorStates.States.gameObject.GetComponent<C>();
-
                     if (tween.Component != null)
                     {
-                        tween.Capture(InspectorStates.States.gameObject);
+                        tween.Capture();
                         Debug.Log($"[MSS] [Editor] [Tween] Say hello to new {DisplayName} tween!");
                     }
                     else
@@ -205,7 +201,11 @@ namespace Obel.MSS.Editor
 
             foreach (var editor in Editors)
             {
-                if (!editor.IsMultiple && state.Items.Any(t => t.GetType() == editor.Type)) continue;
+                if (!editor.IsMultiple && state.Items.Any(t => t.GetType() == editor.Type))
+                {
+                    tweenMenu.AddDisabledItem(new GUIContent(editor.Name));
+                    continue;
+                }
 
                 tweenMenu.AddItem(new GUIContent(editor.Name), false, () => 
                     EditorActions.Add(() =>

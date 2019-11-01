@@ -23,7 +23,6 @@ namespace Obel.MSS.Base
 
         #region Collection methods
 
-        
         public T Create() => Add(new T());
 
         public T Add(T item)

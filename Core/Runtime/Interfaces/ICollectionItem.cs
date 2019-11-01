@@ -2,6 +2,6 @@
 {
     public interface ICollectionItem
     {
-
+        ICollectionItem Parent { get; }
     }
 }

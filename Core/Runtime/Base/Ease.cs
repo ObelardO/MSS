@@ -9,7 +9,7 @@ namespace Obel.MSS
     {
         #region Properties
 
-        public static Func<float, float, float> DefaultFunc => EaseInfo.Default?.Ease;
+        public static Func<float, float, float> DefaultFunc => EaseInfo.Default?.Ease ?? Linear;
 
         private class EaseInfo
         {

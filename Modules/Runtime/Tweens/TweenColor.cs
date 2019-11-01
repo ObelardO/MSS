@@ -14,7 +14,7 @@ namespace Obel.MSS.Modules.Tweens
             Debug.Log("[MSS] [Tween] Say hello to new color tween!");
         }
 
-        public override void Capture(GameObject gameObject) => Value = Component.color;
+        public override void Capture() => Value = Component.color;
 
         #endregion
     }

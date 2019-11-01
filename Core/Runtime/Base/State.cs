@@ -7,6 +7,8 @@ namespace Obel.MSS
     {
         #region Properties
 
+        public Group Group => (Group)Parent;
+
         public float Delay;
 
         public float Duration = 1;
@@ -26,8 +28,8 @@ namespace Obel.MSS
 
         }
 
-        public bool IsClosedState => this == ((Group)Parent)?.ClosedState;
-        public bool IsOpenedState => this == ((Group)Parent)?.OpenedState;
+        public bool IsClosedState => this == Group?.ClosedState;
+        public bool IsOpenedState => this == Group?.OpenedState;
         public bool IsDefaultState => IsClosedState || IsOpenedState;
 
         #endregion

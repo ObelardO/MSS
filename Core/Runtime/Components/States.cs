@@ -16,9 +16,9 @@ namespace Obel.MSS
 
         #region Unity methods
 
-        private void Reset() => Group = new Group();
+        private void Reset() => Group = new Group(gameObject);
 
-        private void Awake() => Group = Group ?? new Group();
+        private void Awake() => Group = Group ?? new Group(gameObject);
 
         private void OnEnable() { }
 

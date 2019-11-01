@@ -28,6 +28,7 @@ namespace Obel.MSS.Modules.Tweens.Editor
         {
             EditorGUI.DrawRect(rect, Color.green * 0.5f);
             EditorGUI.LabelField(rect, "testing string");
+            tween.Value = EditorGUI.Vector3Field(rect, GUIContent.none, tween.Value);
         }
 
         #endregion

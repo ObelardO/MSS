@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using Obel.MSS.Base;
+using UnityEditor.Graphs;
 
 namespace Obel.MSS
 {
@@ -30,7 +31,16 @@ namespace Obel.MSS
 
         #region Public methods
 
-        public virtual void Capture(GameObject gameObject) { }
+        //public virtual void Capture<T>(ref T property) where T : struct { }
+        public virtual void Capture() { }
+
+        /*
+        public ref struct GetProperty()
+        {
+
+        }
+        */
+
 
         #endregion
 
@@ -52,23 +62,20 @@ namespace Obel.MSS
         where V : struct
     {
         #region Properties
-        
-        public C Component;
+
+        public State State => (State)Parent;
+
+        [SerializeField/* SerializeReference*/] private C _component;
+        public C Component => _component ?? (_component = State.Group.gameObject.GetComponent<C>());
 
         public V Value;
 
         #endregion
 
         #region Init
-        
+        /*
         public GenericTween()
         {
-            Debug.Log("SC New tween: " + Name);
-        }
-        /*
-        public GenericTween(C component)
-        {
-            Component = component;
             Debug.Log("SC New tween: " + Name);
         }
         */
