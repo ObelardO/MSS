@@ -58,7 +58,7 @@ namespace Obel.MSS.Editor
 
                 onAddCallback = list => EditorTween.OnAddButton(_state),
                 onRemoveCallback = list => EditorTween.OnRemoveButton(_state, list.index),
-                drawHeaderCallback = rect => EditorGUI.LabelField(rect, ""),
+                drawHeaderCallback = rect => EditorGUI.LabelField(rect, string.Empty),
                 drawElementCallback = (rect, index, isActive, isFocused) => EditorTween.Draw(rect, _state[index]),
                 elementHeightCallback = index => EditorTween.GetHeight(_state[index].GetType()),
                 drawNoneElementCallback = rect => EditorGUI.LabelField(rect, "Click + to add tween")

@@ -5,8 +5,11 @@ using UnityEngine.UI;
 namespace Obel.MSS.Modules.Tweens
 {
     [Serializable]
-    public class TweenColor : GenericTween<Graphic, Color>
+    public class TweenImage : GenericTween<Graphic, Color>
     {
+
+        public bool IsRaycastTarget = true;
+
         #region Public methods
 
         public override void OnInit()

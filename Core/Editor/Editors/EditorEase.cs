@@ -17,7 +17,7 @@ namespace Obel.MSS.Editor
 
         public static void Draw(Rect rect, Tween tween)
         {
-            if (!GUI.Button(rect, tween.EaseName, EditorStyles.popup)) return;
+            if (!GUI.Button(rect, tween.EaseName, EditorStyles.foldoutHeader/* toolbarPopup*/)) return;
 
             _selectedTween = tween;
             EasesMenu.ShowAsContext();
@@ -30,7 +30,11 @@ namespace Obel.MSS.Editor
         [InitializeOnLoadMethod]
         private static void ApplicationStart()
         {
-            EditorApplication.delayCall += () => Ease.BindAll(OnBind);
+            EditorApplication.delayCall += () =>
+            {
+                Ease.BindAll(OnBind);
+                EasesMenu.AddItem(new GUIContent("Default"), false, () => OnEaseMenu(Ease.DefaultFunc));
+            };
         }
 
         #endregion

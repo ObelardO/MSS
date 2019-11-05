@@ -9,7 +9,7 @@ namespace Obel.MSS.Modules.Tweens.Editor
         #region Properties
 
         public override string Name => "T/Position";
-        public override float Height => 32;
+        public override float Height => 10;
 
         #endregion
 

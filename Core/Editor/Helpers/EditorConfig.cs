@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace Obel.MSS.Editor
 {
-    internal static class EditorConfig
+    public static class EditorConfig
     {
         #region Subclasses
 
@@ -11,6 +11,8 @@ namespace Obel.MSS.Editor
         {
             public static GUIContent IconToolbarMinus = EditorGUIUtility.TrIconContent("Toolbar Minus", "Remove from list");
             public static GUIContent IconToolbarPlus = EditorGUIUtility.TrIconContent("Toolbar Plus", "Add to list");
+            public static GUIContent IconRecord = new GUIContent(EditorResources.IconRecord);
+            public static GUIContent IconReturn = new GUIContent(EditorResources.IconReturn);
         }
 
         public static class Sizes
@@ -26,6 +28,11 @@ namespace Obel.MSS.Editor
             public static GUIStyle PreButton = "RL FooterButton";
             public static GUIStyle Foldout = "Foldout"/* "BoldLabel" */;
             public static GUIStyle MiniLabel = "MiniLabel"/*"SearchCancelButton"*//*"SearchTextField"*//*"MiniLabel"*/;
+
+            public static GUIStyle IconButton = new GUIStyle(EditorStyles.label)
+            { 
+                padding = new RectOffset(4, 4, 4, 4)
+            };
 
             public static GUIStyle GreyMiniLabel = new GUIStyle(MiniLabel)
             {

@@ -20,8 +20,9 @@ namespace Obel.MSS.Editor
         public virtual bool IsMultiple => false;
         public virtual bool ShowValueFuncContent => false;
 
-        public float HeaderHeight => EditorConfig.Sizes.LineHeight * (DrawValueFunc == null ? 2.3f : 3.3f);
-        public float TotalHeight => HeaderHeight + Height;
+        //public float HeaderHeight => EditorConfig.Sizes.LineHeight * (DrawValueFunc == null ? 2.3f : 3.3f);
+        public float HeaderHeight => EditorConfig.Sizes.LineHeight * (DrawValueFunc == null ? 2 : 3) /*+ EditorConfig.Sizes.Offset*/;
+        public float TotalHeight => HeaderHeight + Height + EditorConfig.Sizes.Offset;
 
         public Type Type { get; set; }
         public Action<State> AddAction { get; set; }
@@ -33,11 +34,11 @@ namespace Obel.MSS.Editor
 
         #region Public methods
 
-        public void SetDisplayName()
+        public void SetDisplayName(GUIContent content)
         {
             DisplayName = Name.Contains("/") ? Name.Split('/').Last() : Name;
 
-            if (ShowValueFuncContent) _content = new GUIContent(DisplayName);
+            if (ShowValueFuncContent) _content = content ?? new GUIContent(DisplayName);
         } 
 
         #endregion
@@ -52,35 +53,40 @@ namespace Obel.MSS.Editor
 
         public void DrawHeader(Rect rect, T tween)
         {
-            //TODO Make margin method
-            rect.height -= EditorConfig.Sizes.Offset;
-            GUI.Box(rect, string.Empty, EditorStyles.helpBox);
-            rect.height += EditorConfig.Sizes.Offset;
-            rect.y += EditorConfig.Sizes.Offset;
-            rect.width -= EditorConfig.Sizes.Offset * 2;
+           
 
+            //TODO Make margin method
+            //rect.height -= EditorConfig.Sizes.Offset;
+            //EditorGUI.DrawRect(rect, Color.green * 0.25f);
+
+
+            //rect.height += EditorConfig.Sizes.Offset;
+            //rect.y += EditorConfig.Sizes.Offset;
+            //rect.width -= EditorConfig.Sizes.Offset * 2;
+
+            EditorLayout.SetSize(new Vector2(rect.width, rect.height));
             EditorLayout.SetPosition(rect.x, rect.y);
 
             EditorLayout.Control(18, r =>
             {
-                var tweenEnabled = EditorGUI.ToggleLeft(r, GUIContent.none, tween.Enabled);
+                var tweenEnabled = EditorGUI.ToggleLeft(r, GUIContent.none, tween.Enabled, EditorStyles.label);
                 if (tweenEnabled != tween.Enabled)
                     EditorActions.Add(() => tween.Enabled = tweenEnabled, InspectorStates.States);
             });
 
-            EditorGUI.BeginDisabledGroup(!tween.Enabled);
+            EditorGUI.BeginDisabledGroup(!tween.Enabled/* || !tween.Component*/);
 
-            EditorLayout.Control(100, r => EditorGUI.LabelField(r, DisplayName, EditorStyles.popup));
+            EditorLayout.Control(rect.width - EditorConfig.Sizes.Offset * 4 - 140, r => EditorGUI.LabelField(r, DisplayName, EditorStyles.label /*toolbarButton*/ /* EditorStyles.popup*/));
 
-            EditorLayout.Control(80, r =>
+            EditorLayout.Control(90, r =>
             {
                 if (tween.EaseFunc != null) EditorEase.Draw(r, tween);
                 else EditorGUI.HelpBox(r, tween.EaseName, MessageType.Warning);
             });
 
-            EditorLayout.Control(60, r =>
+            EditorLayout.Control(18, r =>
             {
-                if (GUI.Button(r, "Capture")) EditorActions.Add(() =>
+                if (GUI.Button(r, EditorConfig.Content.IconRecord, EditorConfig.Styles.IconButton)) EditorActions.Add(() =>
                 {
                     if (tween.Component != null)
                     {
@@ -95,7 +101,15 @@ namespace Obel.MSS.Editor
                 InspectorStates.States);
             });
 
-            EditorLayout.Space();
+            EditorLayout.Control(18, r =>
+            {
+                if (GUI.Button(r, EditorConfig.Content.IconReturn, EditorConfig.Styles.IconButton))
+                {
+
+                }
+            });
+
+            EditorLayout.Space(0);
 
             var rangeMin = tween.Range.x;
             var rangeMax = tween.Range.y;
@@ -116,11 +130,9 @@ namespace Obel.MSS.Editor
             if (DrawValueFunc == null) return;
 
             EditorGUI.BeginDisabledGroup(!tween.Enabled);
-
-            EditorLayout.Space(2);
+            EditorLayout.Space(0);
 
             EditorLayout.SetWidth(rect.width);
-
             EditorLayout.PropertyField(ref tween.Value, DrawValueFunc, InspectorStates.Record, _content);
 
             EditorGUI.EndDisabledGroup();
@@ -151,15 +163,37 @@ namespace Obel.MSS.Editor
                 return;
             }
 
+            
+            rect.height -= EditorConfig.Sizes.Offset;
+            GUI.Box(rect, string.Empty, EditorStyles.helpBox);
+
+            rect.x += EditorConfig.Sizes.Offset;
+            rect.y += EditorConfig.Sizes.Offset;
+            rect.width -= EditorConfig.Sizes.Offset * 3;
+            rect.height = EditorConfig.Sizes.LineHeight;
+            //EditorGUI.DrawRect(rect, Color.blue * 0.75f);
+           
+            //EditorGUI.DrawRect(rect, Color.red);
+
             editor.DrawHeader(rect, tween);
+
+
 
             if (editor.Height <= 0) return;
 
-            //TODO Make margin method
-            rect.y += editor.HeaderHeight - EditorConfig.Sizes.Offset;
-            rect.height = editor.Height - EditorConfig.Sizes.Offset;
+            rect.y += editor.HeaderHeight - EditorConfig.Sizes.Offset * 2;
             rect.x += EditorConfig.Sizes.Offset;
-            rect.width -= EditorConfig.Sizes.Offset * 2;
+            //rect.width -= EditorConfig.Sizes.Offset * 2;
+            rect.height = editor.Height;
+
+            //TODO Make margin method
+            //rect.y += editor.HeaderHeight - EditorConfig.Sizes.Offset * 3;
+            //rect.height = editor.Height;// - EditorConfig.Sizes.Offset;
+            //rect.x += EditorConfig.Sizes.Offset;
+            //rect.width -= EditorConfig.Sizes.Offset * 2;
+
+            //rect.y += EditorConfig.Sizes.Offset + rect.height;
+            //rect.height = editor.Height;
 
             EditorGUI.BeginDisabledGroup(!tween.Enabled);
             editor.Draw(rect, tween);
@@ -174,7 +208,7 @@ namespace Obel.MSS.Editor
 
         #region Inspector callbacks
 
-        public static void Add<T, C, V>(EditorGenericTween<T, C, V> editor, Func<Rect, GUIContent, V, V> drawValueFunc = null)
+        public static void Add<T, C, V>(EditorGenericTween<T, C, V> editor, Func<Rect, GUIContent, V, V> drawValueFunc = null, GUIContent content = null)
 
             where T : GenericTween<C, V>, new()
             where V : struct
@@ -184,7 +218,7 @@ namespace Obel.MSS.Editor
 
             Editors.Add(editor);
             editor.Type = typeof(T);
-            editor.SetDisplayName();
+            editor.SetDisplayName(content);
             editor.DrawValueFunc = drawValueFunc;
             editor.AddAction = state => state.Add(new T());
 

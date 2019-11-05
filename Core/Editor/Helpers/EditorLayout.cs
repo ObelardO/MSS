@@ -1,11 +1,10 @@
 ﻿using System;
 using UnityEditor;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Obel.MSS.Editor
 {
-    internal static class EditorLayout
+    public static class EditorLayout
     {
         #region Properties
 

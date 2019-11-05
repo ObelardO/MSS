@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Obel.MSS.Editor
 {
     [CustomEditor(typeof(States))]
-    internal class InspectorStates : UnityEditor.Editor
+    public class InspectorStates : UnityEditor.Editor
     {
         #region Properties
 
