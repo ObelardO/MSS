@@ -53,7 +53,7 @@ namespace Obel.MSS.Editor
         public void DrawHeader(Rect rect, T tween)
         {
             EditorLayout.SetSize(new Vector2(rect.width, rect.height));
-            EditorLayout.SetPosition(rect.x, rect.y);
+            EditorLayout.SetPosition(rect.x, rect.y); 
 
             EditorLayout.Control(18, r =>
             {
@@ -62,75 +62,59 @@ namespace Obel.MSS.Editor
                     EditorActions.Add(() => tween.Enabled = tweenEnabled, InspectorStates.States);
             });
 
+
             EditorGUI.BeginDisabledGroup(!tween.Enabled);
 
-            EditorLayout.Control(rect.width - EditorConfig.Sizes.Offset * 5 - 150, r => EditorGUI.LabelField(r, DisplayName, EditorStyles.label));
+                EditorLayout.Control(rect.width - EditorConfig.Sizes.Offset * 5 - 150, r => EditorGUI.LabelField(r, DisplayName, EditorStyles.label));
 
-            EditorLayout.Control(100, r =>
-            {
-                if (tween.EaseFunc != null) EditorEase.Draw(r, tween);
-                else EditorGUI.HelpBox(r, tween.EaseName, MessageType.Warning);
-            });
-
-            EditorLayout.Control(18, r =>
-            {
-                if (GUI.Button(r, EditorConfig.Content.IconRecord, EditorConfig.Styles.IconButton))
+                EditorLayout.Control(100, r =>
                 {
-                    if (tween.Component != null)
-                    {
-                        EditorActions.Add(tween.Capture, InspectorStates.States);
-                        Debug.Log($"[MSS] [Editor] [Tween] Say hello to {DisplayName} tween!");
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"[MSS] [Editor] [Tween] Failed to capture {typeof(C)} value!");
-                    }
-                }
-            });
+                    if (tween.EaseFunc != null) EditorEase.Draw(r, tween);
+                    else EditorGUI.HelpBox(r, tween.EaseName, MessageType.Warning);
+                });
 
-            EditorLayout.Control(18, r =>
-            {
-                if (GUI.Button(r, EditorConfig.Content.IconReturn, EditorConfig.Styles.IconButton))
+                EditorGUI.BeginDisabledGroup(tween.Component == null);
+
+                    EditorLayout.Control(18, r =>
+                    {
+                        if (GUI.Button(r, EditorConfig.Content.IconRecord, EditorConfig.Styles.IconButton))
+                            EditorActions.Add(tween.Capture, InspectorStates.States);
+                    });
+
+                    EditorLayout.Control(18, r =>
+                    {
+                        if (GUI.Button(r, EditorConfig.Content.IconReturn, EditorConfig.Styles.IconButton))
+                            EditorActions.Add(tween.Apply, tween.Component);
+                    });
+
+                EditorGUI.EndDisabledGroup();
+
+
+                EditorLayout.Space(0);
+
+                var rangeMin = tween.Range.x;
+                var rangeMax = tween.Range.y;
+                EditorLayout.Control(rect.width, r =>
                 {
-                    if (tween.Component != null)
+                    EditorGUI.BeginChangeCheck();
+                    EditorGUI.MinMaxSlider(r, ref rangeMin, ref rangeMax, 0, 1);
+
+                    if (EditorGUI.EndChangeCheck())
                     {
-                        EditorActions.Add(tween.Apply, tween.Component);
-                        Debug.Log($"[MSS] [Editor] [Tween] Say hello to {DisplayName} tween!");
+                        EditorActions.Add(() => tween.Range = new Vector2(rangeMin, rangeMax), InspectorStates.States, "tween range");
                     }
-                    else
-                    {
-                        Debug.LogWarning($"[MSS] [Editor] [Tween] Failed to apply {typeof(C)} value!");
-                    }
-                }
-            });
 
-            EditorLayout.Space(0);
-
-            var rangeMin = tween.Range.x;
-            var rangeMax = tween.Range.y;
-            EditorLayout.Control(rect.width, r =>
-            {
-                EditorGUI.BeginChangeCheck();
-                EditorGUI.MinMaxSlider(r, ref rangeMin, ref rangeMax, 0, 1);
-
-                if (EditorGUI.EndChangeCheck())
-                {
-                    EditorActions.Add(() => tween.Range = new Vector2(rangeMin, rangeMax), InspectorStates.States, "tween range");
-                }
-
-            });
+                });
 
             EditorGUI.EndDisabledGroup();
 
             if (DrawValueFunc == null) return;
 
             EditorGUI.BeginDisabledGroup(!tween.Enabled);
-            EditorLayout.Space(0);
 
-            EditorLayout.SetWidth(rect.width);
-            EditorLayout.PropertyField(ref tween.Value, DrawValueFunc, InspectorStates.Record, _content);
-
-            EditorGUI.EndDisabledGroup();
+                EditorLayout.Space(0);
+                EditorLayout.SetWidth(rect.width);
+                EditorLayout.PropertyField(ref tween.Value, DrawValueFunc, InspectorStates.Record, _content);
 
             EditorGUI.EndDisabledGroup();
         }
