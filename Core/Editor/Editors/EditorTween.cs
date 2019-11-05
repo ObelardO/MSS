@@ -20,8 +20,7 @@ namespace Obel.MSS.Editor
         public virtual bool IsMultiple => false;
         public virtual bool ShowValueFuncContent => false;
 
-        //public float HeaderHeight => EditorConfig.Sizes.LineHeight * (DrawValueFunc == null ? 2.3f : 3.3f);
-        public float HeaderHeight => EditorConfig.Sizes.LineHeight * (DrawValueFunc == null ? 2 : 3) /*+ EditorConfig.Sizes.Offset*/;
+        public float HeaderHeight => EditorConfig.Sizes.LineHeight * (DrawValueFunc == null ? 2 : 3);
         public float TotalHeight => HeaderHeight + Height + EditorConfig.Sizes.Offset;
 
         public Type Type { get; set; }
@@ -53,17 +52,6 @@ namespace Obel.MSS.Editor
 
         public void DrawHeader(Rect rect, T tween)
         {
-           
-
-            //TODO Make margin method
-            //rect.height -= EditorConfig.Sizes.Offset;
-            //EditorGUI.DrawRect(rect, Color.green * 0.25f);
-
-
-            //rect.height += EditorConfig.Sizes.Offset;
-            //rect.y += EditorConfig.Sizes.Offset;
-            //rect.width -= EditorConfig.Sizes.Offset * 2;
-
             EditorLayout.SetSize(new Vector2(rect.width, rect.height));
             EditorLayout.SetPosition(rect.x, rect.y);
 
@@ -74,9 +62,9 @@ namespace Obel.MSS.Editor
                     EditorActions.Add(() => tween.Enabled = tweenEnabled, InspectorStates.States);
             });
 
-            EditorGUI.BeginDisabledGroup(!tween.Enabled/* || !tween.Component*/);
+            EditorGUI.BeginDisabledGroup(!tween.Enabled);
 
-            EditorLayout.Control(rect.width - EditorConfig.Sizes.Offset * 4 - 140, r => EditorGUI.LabelField(r, DisplayName, EditorStyles.label /*toolbarButton*/ /* EditorStyles.popup*/));
+            EditorLayout.Control(rect.width - EditorConfig.Sizes.Offset * 4 - 140, r => EditorGUI.LabelField(r, DisplayName, EditorStyles.label));
 
             EditorLayout.Control(90, r =>
             {
@@ -163,7 +151,6 @@ namespace Obel.MSS.Editor
                 return;
             }
 
-            
             rect.height -= EditorConfig.Sizes.Offset;
             GUI.Box(rect, string.Empty, EditorStyles.helpBox);
 
@@ -171,29 +158,14 @@ namespace Obel.MSS.Editor
             rect.y += EditorConfig.Sizes.Offset;
             rect.width -= EditorConfig.Sizes.Offset * 3;
             rect.height = EditorConfig.Sizes.LineHeight;
-            //EditorGUI.DrawRect(rect, Color.blue * 0.75f);
-           
-            //EditorGUI.DrawRect(rect, Color.red);
 
             editor.DrawHeader(rect, tween);
-
-
 
             if (editor.Height <= 0) return;
 
             rect.y += editor.HeaderHeight - EditorConfig.Sizes.Offset * 2;
             rect.x += EditorConfig.Sizes.Offset;
-            //rect.width -= EditorConfig.Sizes.Offset * 2;
             rect.height = editor.Height;
-
-            //TODO Make margin method
-            //rect.y += editor.HeaderHeight - EditorConfig.Sizes.Offset * 3;
-            //rect.height = editor.Height;// - EditorConfig.Sizes.Offset;
-            //rect.x += EditorConfig.Sizes.Offset;
-            //rect.width -= EditorConfig.Sizes.Offset * 2;
-
-            //rect.y += EditorConfig.Sizes.Offset + rect.height;
-            //rect.height = editor.Height;
 
             EditorGUI.BeginDisabledGroup(!tween.Enabled);
             editor.Draw(rect, tween);
