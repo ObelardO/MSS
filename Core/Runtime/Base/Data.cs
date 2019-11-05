@@ -31,24 +31,13 @@ namespace Obel.MSS.Base
             Last.Init(this);
             return Last;
         }
-        /*
-        public void Remove(int index, bool destroyItem = true)
-        {
-            if (IndexInvalid(index)) return;
-            Remove(items[index], destroyItem);
-        }
-        */
+
         public void Remove(T item, bool destroyItem = true)
         {
             if (!items.Contains(item)) return;
             items.Remove(item);
         }
-        /*
-        public void Clear(bool destroyItem = true)
-        {
-            items.ForEach(item => Remove(item, destroyItem));
-        }
-        */
+
         public T Get(int index)
         {
             return IndexInvalid(index) ? null : items[index];

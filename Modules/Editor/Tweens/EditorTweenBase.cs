@@ -11,7 +11,6 @@ namespace Obel.MSS.Modules.Tweens.Editor
         public override string Name => "T/Base";
         public override string DisplayName => "Empty tween";
         public override bool IsMultiple => true;
-        public override float Height => 32;
 
         #endregion
 
@@ -19,17 +18,6 @@ namespace Obel.MSS.Modules.Tweens.Editor
 
         [InitializeOnLoadMethod]
         private static void ApplicationStart() => EditorTween.Add(new EditorTweenBase());
-
-        #endregion
-
-        #region Inspector
-
-        public override void Draw(Rect rect, TweenBase tween)
-        {
-            EditorGUI.DrawRect(rect, Color.green * 0.5f);
-            EditorGUI.LabelField(rect, "testing string");
-            tween.Value = EditorGUI.Vector3Field(rect, GUIContent.none, tween.Value);
-        }
 
         #endregion
     }

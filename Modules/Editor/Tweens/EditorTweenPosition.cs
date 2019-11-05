@@ -9,7 +9,6 @@ namespace Obel.MSS.Modules.Tweens.Editor
         #region Properties
 
         public override string Name => "T/Position";
-        public override float Height => 10;
 
         #endregion
 
@@ -18,15 +17,6 @@ namespace Obel.MSS.Modules.Tweens.Editor
         [InitializeOnLoadMethod]
         private static void ApplicationStart() => EditorTween.Add(new EditorTweenPosition(), EditorGUI.Vector3Field);
 
-        #endregion
-
-        #region Inspector
-
-        public override void Draw(Rect rect, TweenPosition tween)
-        {
-            EditorGUI.DrawRect(rect, Color.red * 0.5f);
-        }
-        
         #endregion
     }
 }

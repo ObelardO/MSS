@@ -64,9 +64,9 @@ namespace Obel.MSS.Editor
 
             EditorGUI.BeginDisabledGroup(!tween.Enabled);
 
-            EditorLayout.Control(rect.width - EditorConfig.Sizes.Offset * 4 - 140, r => EditorGUI.LabelField(r, DisplayName, EditorStyles.label));
+            EditorLayout.Control(rect.width - EditorConfig.Sizes.Offset * 5 - 150, r => EditorGUI.LabelField(r, DisplayName, EditorStyles.label));
 
-            EditorLayout.Control(90, r =>
+            EditorLayout.Control(100, r =>
             {
                 if (tween.EaseFunc != null) EditorEase.Draw(r, tween);
                 else EditorGUI.HelpBox(r, tween.EaseName, MessageType.Warning);
@@ -74,26 +74,33 @@ namespace Obel.MSS.Editor
 
             EditorLayout.Control(18, r =>
             {
-                if (GUI.Button(r, EditorConfig.Content.IconRecord, EditorConfig.Styles.IconButton)) EditorActions.Add(() =>
+                if (GUI.Button(r, EditorConfig.Content.IconRecord, EditorConfig.Styles.IconButton))
                 {
                     if (tween.Component != null)
                     {
-                        tween.Capture();
-                        Debug.Log($"[MSS] [Editor] [Tween] Say hello to new {DisplayName} tween!");
+                        EditorActions.Add(tween.Capture, InspectorStates.States);
+                        Debug.Log($"[MSS] [Editor] [Tween] Say hello to {DisplayName} tween!");
                     }
                     else
                     {
                         Debug.LogWarning($"[MSS] [Editor] [Tween] Failed to capture {typeof(C)} value!");
                     }
-                },
-                InspectorStates.States);
+                }
             });
 
             EditorLayout.Control(18, r =>
             {
                 if (GUI.Button(r, EditorConfig.Content.IconReturn, EditorConfig.Styles.IconButton))
                 {
-
+                    if (tween.Component != null)
+                    {
+                        EditorActions.Add(tween.Apply, tween.Component);
+                        Debug.Log($"[MSS] [Editor] [Tween] Say hello to {DisplayName} tween!");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[MSS] [Editor] [Tween] Failed to apply {typeof(C)} value!");
+                    }
                 }
             });
 

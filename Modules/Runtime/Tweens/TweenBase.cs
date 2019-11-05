@@ -16,6 +16,8 @@ namespace Obel.MSS.Modules.Tweens
         //TODO make it by REF (C# 7.2)
         public override void Capture() => Value = Component.position;
 
+        public override void Apply() => Component.position = Value;
+
         #endregion
     }
 }

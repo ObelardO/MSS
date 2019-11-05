@@ -28,12 +28,6 @@ namespace Obel.MSS
 
         #endregion
 
-        #region Public methods
-
-        public virtual void Capture() { }
-
-        #endregion
-
         #region Init
 
         public Tween()
@@ -47,7 +41,7 @@ namespace Obel.MSS
     }
 
     [Serializable]
-    public class GenericTween<C, V> : Tween 
+    public abstract class GenericTween<C, V> : Tween 
         where C : Component
         where V : struct
     {
@@ -59,6 +53,10 @@ namespace Obel.MSS
         public C Component => _component == null ? _component = State.Group.gameObject.GetComponent<C>() : _component;
 
         public V Value;
+
+        public abstract void Capture();
+
+        public abstract void Apply();
 
         #endregion
     }

@@ -15,6 +15,8 @@ namespace Obel.MSS.Modules.Tweens
 
         public override void Capture() => Value = Component.position;
 
+        public override void Apply() => Component.position = Value;
+
         #endregion
     }
 }

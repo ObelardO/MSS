@@ -19,6 +19,8 @@ namespace Obel.MSS.Modules.Tweens
 
         public override void Capture() => Value = Component.color;
 
+        public override void Apply() => Component.color = Value;
+
         #endregion
     }
 }
