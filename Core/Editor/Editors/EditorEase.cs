@@ -33,6 +33,7 @@ namespace Obel.MSS.Editor
             EditorApplication.delayCall += () =>
             {
                 Ease.BindAll(OnBind);
+                EasesMenu.AddSeparator(string.Empty);
                 EasesMenu.AddItem(new GUIContent("Default"), false, () => OnEaseMenu(Ease.DefaultFunc));
             };
         }
