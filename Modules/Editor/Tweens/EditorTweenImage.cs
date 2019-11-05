@@ -10,7 +10,7 @@ namespace Obel.MSS.Modules.Tweens.Editor
         #region Properties
 
         public override string Name => "UI/Image";
-        public override bool IsMultiple => true;    
+        //public override bool IsMultiple => true;    
         public override bool ShowValueFuncContent => true;
         public override float Height => EditorConfig.Sizes.SingleLine;
 
