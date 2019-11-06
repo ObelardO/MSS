@@ -69,11 +69,7 @@ namespace Obel.MSS.Editor
 
         public void Open() => _foldout.target = true;
 
-        public static void Open(EditorState editor) => editor.Open();
-
         public void Close() => _foldout.target = false;
-
-        public static void Close(EditorState editor) => editor.Close();
 
         public static EditorState Get(State state) => Editors.ContainsKey(state.Id) ? Editors[state.Id] : new EditorState(state);
 
@@ -122,6 +118,14 @@ namespace Obel.MSS.Editor
 
         public static void DrawBackground(Rect rect, int index, bool isActive, bool isFocused) => EditorGUI.DrawRect(rect, Color.clear);
 
+        public static float GetHeight(EditorState editor)
+        {
+            return (EditorConfig.Sizes.SingleLine + 8 +
+                   (EditorConfig.Sizes.LineHeight * 2 + 36 +
+                   (editor._state.Count == 0 ? 14 : editor.ListHeight - 7)) *
+                    editor._foldout.faded);
+        }
+
         private static void DrawHeader(Rect rect, EditorState editor)
         {
             var rectBackground = new Rect(rect.x, rect.y, rect.width, rect.height - 6);
@@ -152,8 +156,9 @@ namespace Obel.MSS.Editor
             editor._foldout.target = EditorGUI.Foldout(rectFoldout, editor._foldout.target, new GUIContent(editor._state.Name), true, EditorConfig.Styles.Foldout);
 
             var rectRemoveButton = new Rect(rect.width - 5, rect.y + (EditorConfig.Sizes.LineHeight - 20) * 0.5f, 30, 20);
-            if (!editor._state.IsDefaultState &&
-                GUI.Button(rectRemoveButton, EditorConfig.Content.IconToolbarMinus, EditorConfig.Styles.PreButton)) OnRemoveButton(editor._state);
+            EditorGUI.BeginDisabledGroup(editor._state.IsDefaultState);
+            if( GUI.Button(rectRemoveButton, EditorConfig.Content.IconToolbarMinus, EditorConfig.Styles.PreButton)) editor.OnRemoveButton();
+            EditorGUI.EndDisabledGroup();
         }
 
         private static void DrawProperties(Rect rect, EditorState editor)
@@ -196,29 +201,17 @@ namespace Obel.MSS.Editor
             EditorGUI.EndDisabledGroup();
         }
 
-        //public static float GetHeight(State state) => GetHeight(Get(state));
-
-        public static float GetHeight(EditorState editor)
-        {
-            return (EditorConfig.Sizes.SingleLine + 8 +
-                   (EditorConfig.Sizes.LineHeight * 2 + 36 +
-                   (editor._state.Count == 0 ? 14 : editor.ListHeight - 7)) *
-                    editor._foldout.faded);
-        }
-
         #endregion
 
         #region Inspector callbacks
 
-        private static void OnRemoveButton(State state)
+        private void OnRemoveButton()
         {
-            var group = (Group)state.Parent;
-
             EditorActions.Add(() =>
             {
-                Editors.Remove(state.Id);
-                group.Remove(state, false);
-                Reorder(group);
+                Editors.Remove(_state.Id);
+                _state.Group.Remove(_state);
+                Reorder(_state.Group);
             },
             InspectorStates.States, "Remove state");
         }

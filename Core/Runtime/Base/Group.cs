@@ -17,6 +17,7 @@ namespace Obel.MSS
 
         #endregion
 
+
         public Group(GameObject gameObject)
         {
             Create();

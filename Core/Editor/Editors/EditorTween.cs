@@ -18,7 +18,7 @@ namespace Obel.MSS.Editor
         public virtual string DisplayName { get; private set; }
         public virtual float Height { get; }
         public virtual bool IsMultiple => false;
-        public virtual bool ShowValueFuncContent => false;
+        //public virtual bool ShowValueFuncContent => false;
 
         public float HeaderHeight => EditorConfig.Sizes.LineHeight * (DrawValueFunc == null ? 2 : 3);
         public float TotalHeight => HeaderHeight + Height + EditorConfig.Sizes.Offset;
@@ -37,7 +37,7 @@ namespace Obel.MSS.Editor
         {
             DisplayName = Name.Contains("/") ? Name.Split('/').Last() : Name;
 
-            if (ShowValueFuncContent) _content = content ?? new GUIContent(DisplayName);
+            _content = content ?? new GUIContent(DisplayName);
         } 
 
         #endregion
@@ -226,7 +226,7 @@ namespace Obel.MSS.Editor
                 //TODO move it to EditorState class
                 EditorState.Get(state).OnTweenRemoving(state[index]);
 
-                state.Remove(state[index], false);
+                state.Remove(state[index]);
             }, 
             InspectorStates.States, "Remove tween");
         }

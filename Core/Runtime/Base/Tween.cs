@@ -58,6 +58,11 @@ namespace Obel.MSS
 
         public abstract void Apply();
 
+        public static T Create<T>(State state) where T : GenericTween<C, V>, new() => (T)state.Add(new T());
+
+        //public static GenericTween<C, V> Create(State state)  => state.Add(new GenericTween<C, V>());
+
+
         #endregion
     }
 }

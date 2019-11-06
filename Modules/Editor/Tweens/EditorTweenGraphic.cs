@@ -5,13 +5,11 @@ using UnityEngine.UI;
 
 namespace Obel.MSS.Modules.Tweens.Editor
 {
-    internal class EditorTweenImage : EditorGenericTween<TweenImage, Graphic, Color>
+    internal class EditorTweenGraphic : EditorGenericTween<TweenGraphic, Graphic, Color>
     {
         #region Properties
 
         public override string Name => "UI/Image";
-        //public override bool IsMultiple => true;    
-        public override bool ShowValueFuncContent => true;
         public override float Height => EditorConfig.Sizes.SingleLine;
 
         private static readonly GUIContent contentRaycastTarget = new GUIContent("Raycast Target");
@@ -21,19 +19,17 @@ namespace Obel.MSS.Modules.Tweens.Editor
         #region Init
 
         [InitializeOnLoadMethod]
-        private static void ApplicationStart() => EditorTween.Add(new EditorTweenImage(), EditorGUI.ColorField, new GUIContent("Color"));
+        private static void ApplicationStart() => EditorTween.Add(new EditorTweenGraphic(), EditorGUI.ColorField, new GUIContent("Color"));
 
         #endregion
 
         #region Inspector
-        
-        
-        public override void Draw(Rect rect, TweenImage tween)
+
+        public override void Draw(Rect rect, TweenGraphic tween)
         {
             EditorLayout.PropertyField(rect, ref tween.IsRaycastTarget, EditorGUI.Toggle, InspectorStates.Record, contentRaycastTarget);
         }
         
-
         #endregion
     }
 }

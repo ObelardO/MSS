@@ -8,21 +8,21 @@ namespace Obel.MSS
     public class States : MonoBehaviour
     {
         #region Properties
-
+        
         [SerializeReference]
         public Group Group;
-
+        
         #endregion
 
         #region Unity methods
-
+        
         private void Reset() => Group = new Group(gameObject);
 
         private void Awake() => Group = Group ?? new Group(gameObject);
 
-        private void OnEnable() { }
+        private void OnEnable() => Group.Enabled = true;
 
-        private void OnDisable() { }
+        private void OnDisable() => Group.Enabled = false;
 
         #endregion
     }

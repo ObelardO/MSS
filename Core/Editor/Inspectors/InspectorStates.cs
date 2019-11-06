@@ -66,8 +66,7 @@ namespace Obel.MSS.Editor
 
             EditorActions.Process();
 
-            var guiEvent = Event.current;
-            if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") EditorApplication.delayCall += () => OnUndo(States.Group);
+            PrecessUndo();
 
             SerializedState.ApplyModifiedProperties();
         }
@@ -76,16 +75,18 @@ namespace Obel.MSS.Editor
 
         #region Inspector callbacks
 
-        private static void OnUndo(Group group)
+        private void PrecessUndo()
         {
-            if (group == null) return;
-
-            EditorGroup.Enable(group);
-            EditorState.Reorder(group);
+            var guiEvent = Event.current;
+            if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") EditorApplication.delayCall += () =>
+            {
+                EditorGroup.Enable(States.Group);
+                EditorState.Reorder(States.Group);
+                Repaint();
+            };
         }
 
         #endregion
 
     }
 }
-

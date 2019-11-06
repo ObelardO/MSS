@@ -32,7 +32,7 @@ namespace Obel.MSS.Base
             return Last;
         }
 
-        public void Remove(T item, bool destroyItem = true)
+        public void Remove(T item)
         {
             if (!items.Contains(item)) return;
             items.Remove(item);
