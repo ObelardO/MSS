@@ -181,12 +181,12 @@ namespace Obel.MSS.Editor
             editor.Type = typeof(T);
             editor.SetDisplayName(content);
             editor.DrawValueFunc = drawValueFunc;
-            editor.AddAction = state => state.Add(new T());
+            editor.AddAction = state => state.CreateTween<T>();
 
             Debug.Log($"[MSS] [Editor] [Tween] Registered: {editor.DisplayName}");
         }
 
-        public static IGenericTweenEditor Get<T>(T tween) => Get(tween.GetType());
+        public static IGenericTweenEditor Get<T>(T tween) where T : Tween => Get(tween.GetType());
 
         public static IGenericTweenEditor Get(Type type) => Editors.FirstOrDefault(t => t.Type == type);
 

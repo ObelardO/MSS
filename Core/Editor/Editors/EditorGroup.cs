@@ -51,7 +51,7 @@ namespace Obel.MSS.Editor
         {
             EditorActions.Add(() =>
             {
-                var state = group.Create();
+                var state = group.CreateState();
 
                 EditorState.Reorder(group);
                 EditorState.Get(state).Open();

@@ -23,14 +23,18 @@ namespace Obel.MSS.Base
 
         #region Collection methods
 
-        public T Create() => Add(new T());
+        protected T Create() => Add(new T());
 
-        public T Add(T item)
+        protected T Add(T item)
         {
             items.Add(item);
             Last.Init(this);
             return Last;
         }
+
+        public void ForEach(Action<T> callback) => items.ForEach(callback);
+
+        public void ForEachEnabled(Action<T> callback) => items.Where(i => i.Enabled).ToList().ForEach(callback);
 
         public void Remove(T item)
         {

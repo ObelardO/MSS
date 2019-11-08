@@ -17,13 +17,23 @@ namespace Obel.MSS
 
         #endregion
 
+        #region Init
 
         public Group(GameObject gameObject)
         {
-            Create();
-            Create();
+            CreateState();
+            CreateState();
 
             this.gameObject = gameObject;
         }
+
+        #endregion
+
+        #region Public methods
+
+        public State CreateState() => Create();
+    
+        #endregion
+
     }
 }

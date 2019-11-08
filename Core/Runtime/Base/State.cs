@@ -1,4 +1,5 @@
-﻿using Obel.MSS.Base;
+﻿using System;
+using Obel.MSS.Base;
 using UnityEngine;
 
 namespace Obel.MSS
@@ -32,6 +33,25 @@ namespace Obel.MSS
         public bool IsClosedState => this == Group?.ClosedState;
         public bool IsOpenedState => this == Group?.OpenedState;
         public bool IsDefaultState => IsClosedState || IsOpenedState;
+
+        #endregion
+
+        #region Init
+
+        public State()
+        {
+            base.Name = "New State";
+        }
+
+        #endregion
+
+        #region Public methods
+
+        public T CreateTween<T>() where T : Tween, new() => (T)Add(new T());
+
+        public void Capture() => ForEachEnabled(i => i.Capture());
+
+        public void Apply() => ForEachEnabled(i => i.Apply());
 
         #endregion
     }
