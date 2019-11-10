@@ -8,6 +8,12 @@ public class StatesTester : MonoBehaviour
 {
     public States States;
 
+    public void Select(int id)
+    {
+        States.Group[id].Apply();
+
+    }
+
     // Start is called before the first frame update
     void Start()
     {

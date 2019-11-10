@@ -1,4 +1,4 @@
-﻿using Obel.MSS;
+﻿using UnityEngine;
 
 namespace Obel.MSS.Modules.Eases
 {
@@ -8,7 +8,7 @@ namespace Obel.MSS.Modules.Eases
 
         #if UNITY_EDITOR
         [UnityEditor.InitializeOnLoadMethod]
-        #elif UNITY_STANDALONE
+        #else
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         #endif
         private static void ApplicationStart()

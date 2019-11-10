@@ -1,4 +1,6 @@
-﻿namespace Obel.MSS.Modules.Eases
+﻿using UnityEngine;
+
+namespace Obel.MSS.Modules.Eases
 {
     public class EaseCubic
     {
@@ -6,7 +8,7 @@
 
         #if UNITY_EDITOR
         [UnityEditor.InitializeOnLoadMethod]
-        #elif UNITY_STANDALONE
+        #else
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         #endif
         private static void ApplicationStart()
