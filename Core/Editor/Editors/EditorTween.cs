@@ -51,7 +51,9 @@ namespace Obel.MSS.Editor
         public void DrawHeader(Rect rect, T tween)
         {
             EditorLayout.SetSize(new Vector2(rect.width, rect.height));
-            EditorLayout.SetPosition(rect.x, rect.y); 
+            EditorLayout.SetPosition(rect.x, rect.y);
+
+            EditorGUI.BeginDisabledGroup(!tween.Component);
 
             EditorLayout.Control(18, r =>
             {
@@ -60,6 +62,7 @@ namespace Obel.MSS.Editor
                     EditorActions.Add(() => tween.Enabled = tweenEnabled, InspectorStates.States);
             });
 
+            EditorGUI.EndDisabledGroup();
 
             EditorGUI.BeginDisabledGroup(!tween.Enabled);
 
@@ -71,21 +74,21 @@ namespace Obel.MSS.Editor
                     else EditorGUI.HelpBox(r, tween.EaseName, MessageType.Warning);
                 });
 
-                EditorGUI.BeginDisabledGroup(tween.Component == null);
+                //EditorGUI.BeginDisabledGroup(tween.Component == null);
 
-                    EditorLayout.Control(18, r =>
-                    {
-                        if (GUI.Button(r, EditorConfig.Content.IconRecord, EditorConfig.Styles.IconButton))
-                            EditorActions.Add(tween.Capture, InspectorStates.States);
-                    });
+                EditorLayout.Control(18, r =>
+                {
+                    if (GUI.Button(r, EditorConfig.Content.IconRecord, EditorConfig.Styles.IconButton))
+                        EditorActions.Add(tween.Capture, InspectorStates.States);
+                });
 
-                    EditorLayout.Control(18, r =>
-                    {
-                        if (GUI.Button(r, EditorConfig.Content.IconReturn, EditorConfig.Styles.IconButton))
-                            EditorActions.Add(tween.Apply, tween.Component);
-                    });
+                EditorLayout.Control(18, r =>
+                {
+                    if (GUI.Button(r, EditorConfig.Content.IconReturn, EditorConfig.Styles.IconButton))
+                        EditorActions.Add(tween.Apply, tween.Component);
+                });
 
-                EditorGUI.EndDisabledGroup();
+                //EditorGUI.EndDisabledGroup();
 
 
                 EditorLayout.Space(0);

@@ -149,16 +149,22 @@ namespace Obel.MSS.Editor
             }
             else
             {
-                EditorLayout.PropertyField(rectToggle, ref editor._state.Enabled, EditorGUI.Toggle, InspectorStates.Record);
+                editor._state.Enabled = EditorLayout.PropertyField(rectToggle, editor._state.Enabled, EditorGUI.Toggle, InspectorStates.Record);
             }
 
-            var rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 54, EditorConfig.Sizes.SingleLine);
+            var rectFoldout = new Rect(rect.x + 34, rect.y + 2, rect.width - 116, EditorConfig.Sizes.SingleLine);
             editor._foldout.target = EditorGUI.Foldout(rectFoldout, editor._foldout.target, new GUIContent(editor._state.Name), true, EditorConfig.Styles.Foldout);
 
-            var rectRemoveButton = new Rect(rect.width - 5, rect.y + (EditorConfig.Sizes.LineHeight - 20) * 0.5f, 30, 20);
+            var rectButton = new Rect(rect.width, rect.y + 3, 24, EditorConfig.Sizes.SingleLine);
             EditorGUI.BeginDisabledGroup(editor._state.IsDefaultState);
-            if( GUI.Button(rectRemoveButton, EditorConfig.Content.IconToolbarMinus, EditorConfig.Styles.PreButton)) editor.OnRemoveButton();
+            if ( GUI.Button(rectButton, EditorConfig.Content.IconToolbarMinus, EditorConfig.Styles.PreButton)) editor.OnRemoveButton();
             EditorGUI.EndDisabledGroup();
+
+            rectButton.x -= 24;
+            if (GUI.Button(rectButton, EditorConfig.Content.IconReturn, EditorConfig.Styles.IconButton)) editor._state.Apply();
+
+            rectButton.x -= 24;
+            if (GUI.Button(rectButton, EditorConfig.Content.IconRecord, EditorConfig.Styles.IconButton)) EditorActions.Add(editor._state.Capture, InspectorStates.States, "Record state values");
         }
 
         private static void DrawProperties(Rect rect, EditorState editor)

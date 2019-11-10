@@ -21,16 +21,7 @@ namespace Obel.MSS.Base
 
         #endregion
 
-        #region Collection methods
-
-        protected T Create() => Add(new T());
-
-        protected T Add(T item)
-        {
-            items.Add(item);
-            Last.Init(this);
-            return Last;
-        }
+        #region Public methods
 
         public void ForEach(Action<T> callback) => items.ForEach(callback);
 
@@ -45,6 +36,19 @@ namespace Obel.MSS.Base
         public T Get(int index)
         {
             return IndexInvalid(index) ? null : items[index];
+        }
+
+        #endregion
+
+        #region Private methods
+
+        protected T Create() => Add(new T());
+
+        protected T Add(T item)
+        {
+            items.Add(item);
+            Last.Init(this);
+            return Last;
         }
 
         private bool IndexInvalid(int index)
@@ -66,7 +70,8 @@ namespace Obel.MSS.Base
         [field: SerializeField]
         public virtual string Name { set; get; }
 
-        public bool Enabled = true;
+        [field: SerializeField]
+        public virtual bool Enabled { set; get; }
 
         [SerializeReference]
         private ICollectionItem _parent;
@@ -85,6 +90,7 @@ namespace Obel.MSS.Base
             Debug.Log($"[MSS] [Data] Registered: {Name} Parent: {parent}");
             Parent = parent;
             Id = base.GetHashCode();
+            Enabled = true;
             OnInit();
         }
 

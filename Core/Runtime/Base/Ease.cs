@@ -11,7 +11,7 @@ namespace Obel.MSS
 
         public static Func<float, float, float> DefaultFunc => EaseInfo.Default?.Ease ?? Linear;
 
-        private class EaseInfo
+        public class EaseInfo
         {
             public Func<float, float, float> Ease { get; }
             public string Path { get; }
@@ -38,29 +38,18 @@ namespace Obel.MSS
 
         public static void Add(Func<float, float, float> ease, string path = null, int sort = 0)
         {
-            if (path == null) path = ease.Method.Name;
+            if (string.IsNullOrEmpty(path)) path = ease.Method.Name;
 
             if (Eases.Any(e => e.Ease.Equals(ease))) return;
 
             Eases.Add(new EaseInfo(ease, path, sort));
         }
 
-        public static void BindAll(Action<Func<float, float, float>, string> bindCallback)
-        {
-            Debug.Log("[MSS] [Eases] Start binding...");
-            Eases.ForEach(e => bindCallback(e.Ease, e.Path));
-            Debug.Log("[MSS] [Eases] Binding done.");
-        }
+        public static void ForEach(Action<Func<float, float, float>, string> callback) => Eases.ForEach(e => callback(e.Ease, e.Path));
 
-        public static Func<float, float, float> Get(string name)
-        {
-            return Eases.FirstOrDefault(e => e.Ease.Method.Name.Equals(name))?.Ease;
-        }
+        public static Func<float, float, float> Get(string name) => Eases.FirstOrDefault(e => e.Ease.Method.Name.Equals(name))?.Ease;
 
-        public static float Linear(float t, float d)
-        {
-            return t / d;
-        }
+        public static float Linear(float t, float d) => t / d;
 
         #endregion
 

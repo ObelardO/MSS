@@ -32,7 +32,7 @@ namespace Obel.MSS
 
         public Tween()
         {
-            if (Ease.DefaultFunc != null) EaseFunc = Ease.DefaultFunc;
+            EaseFunc = Ease.DefaultFunc;
 
             Debug.Log("BC New tween: " + Name);
         }
@@ -58,9 +58,11 @@ namespace Obel.MSS
         public State State => (State)Parent;
 
         [SerializeField] private C _component;
-        public C Component => _component == null ? _component = State.Group.gameObject.GetComponent<C>() : _component;
+        public C Component => !_component ? _component = State.Group.gameObject.GetComponent<C>() : _component;
 
         public V Value;
+
+        public override bool Enabled => !Component ? false : base.Enabled;
 
         #endregion
     }

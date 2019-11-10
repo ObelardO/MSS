@@ -26,10 +26,10 @@ namespace Obel.MSS.Editor
         public static class Styles
         {
             public static GUIStyle PreButton = "RL FooterButton";
-            public static GUIStyle Foldout = "Foldout"/* "BoldLabel" */;
-            public static GUIStyle MiniLabel = "MiniLabel"/*"SearchCancelButton"*//*"SearchTextField"*//*"MiniLabel"*/;
+            public static GUIStyle Foldout = "Foldout";
+            public static GUIStyle MiniLabel = "MiniLabel";
 
-            public static GUIStyle IconButton = new GUIStyle(EditorStyles.label)
+            public static GUIStyle IconButton = new GUIStyle(PreButton)
             { 
                 padding = new RectOffset(4, 4, 4, 4)
             };

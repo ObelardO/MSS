@@ -17,7 +17,7 @@ namespace Obel.MSS.Editor
 
         public static void Draw(Rect rect, Tween tween)
         {
-            if (!GUI.Button(rect, tween.EaseName, EditorStyles.foldoutHeader/* toolbarPopup*/)) return;
+            if (!GUI.Button(rect, tween.EaseName, EditorStyles.foldoutHeader)) return;
 
             _selectedTween = tween;
             EasesMenu.ShowAsContext();
@@ -32,27 +32,13 @@ namespace Obel.MSS.Editor
         {
             EditorApplication.delayCall += () =>
             {
-                Ease.BindAll(OnBind);
+                Debug.Log("[MSS] [Editor] [Eases] Start binding...");
+                Ease.ForEach((ease, path) => EasesMenu.AddItem(new GUIContent(path), false, () => _selectedTween.EaseFunc = ease));
+                Debug.Log("[MSS] [Editor] [Eases] Binding done.");
+
                 EasesMenu.AddSeparator(string.Empty);
-                EasesMenu.AddItem(new GUIContent("Default"), false, () => OnEaseMenu(Ease.DefaultFunc));
+                EasesMenu.AddItem(new GUIContent("Default"), false, () => _selectedTween.EaseFunc = Ease.DefaultFunc);
             };
-        }
-
-        #endregion
-
-        #region Inspector callbacks
-
-        private static void OnBind(Func<float, float, float> easeFunc, string path)
-        {
-            EasesMenu.AddItem(new GUIContent(path), false, () => OnEaseMenu(easeFunc));
-
-            Debug.Log($"[MSS] [Editor] [Eases] {path} bonded");
-        }
-
-        private static void OnEaseMenu(Func<float, float, float> easeFunc)
-        {
-            _selectedTween.EaseFunc = easeFunc;
-            //TODO UNDO (on undo event assign all ease method by restored name)
         }
 
         #endregion

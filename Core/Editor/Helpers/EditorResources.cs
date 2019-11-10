@@ -5,6 +5,8 @@ namespace Obel.MSS.Editor
 {
     internal static class EditorResources
     {
+        #region Properties
+
         private static Texture2D _iconRecord;
         public static Texture2D IconRecord
         {
@@ -26,6 +28,8 @@ namespace Obel.MSS.Editor
                 return _iconReturn;
             }
         }
+
+        #endregion
 
         #region Private methods
 

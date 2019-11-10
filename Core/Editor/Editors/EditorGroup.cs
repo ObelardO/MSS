@@ -17,7 +17,7 @@ namespace Obel.MSS.Editor
 
         public static void Draw(Group group)
         {
-            if (group == null) return;
+            //if (group == null) return;
 
             GUILayout.Space(3);
             GUILayout.BeginHorizontal();
@@ -37,7 +37,7 @@ namespace Obel.MSS.Editor
             var rectAddButton = EditorGUILayout.GetControlRect();
 
             rectAddButton.y -= 4;
-            rectAddButton.x = rectAddButton.width - 19;
+            rectAddButton.x = rectAddButton.width - 12;
             rectAddButton.width = 30;
 
             if (GUI.Button(rectAddButton, EditorConfig.Content.IconToolbarPlus, EditorConfig.Styles.PreButton)) OnAddStateButton(group);
@@ -58,14 +58,14 @@ namespace Obel.MSS.Editor
             }, 
             InspectorStates.States, "Add State");
         }
-
+    
         #endregion
 
         #region Public methods
 
         public static void Enable(Group group)
         {
-            if (group == null) return;
+            //if (group == null) return;
 
             _statesList = new ReorderableList(group.Items as IList, typeof(State))
             {
