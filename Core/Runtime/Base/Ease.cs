@@ -11,7 +11,7 @@ namespace Obel.MSS
 
         public static Func<float, float, float> DefaultFunc => EaseInfo.Default?.Ease ?? Linear;
 
-        public class EaseInfo
+        private class EaseInfo
         {
             public Func<float, float, float> Ease { get; }
             public string Path { get; }

@@ -46,6 +46,11 @@ namespace Obel.MSS.Editor
             public static Color Green = new Color(0.65f, 1, 0.65f, 1);
             public static Color Grey = new Color(0.35f, 0.35f, 0.35f, 1);
             public static Color LightGrey = Color.white * 0.65f;
+
+            private static readonly Color _editorBackGrey = new Color(0.761f, 0.761f, 0.761f, 1);
+            private static readonly Color _editorBackGreyPro = new Color(0.271f, 0.271f, 0.271f, 1);
+
+            public static Color EditorBackGrey => EditorGUIUtility.isProSkin ? _editorBackGreyPro : _editorBackGrey;
         }
 
         #endregion

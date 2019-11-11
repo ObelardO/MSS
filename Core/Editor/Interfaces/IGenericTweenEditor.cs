@@ -16,7 +16,7 @@ namespace Obel.MSS.Editor
         float Height { get; }
 
         bool IsMultiple { get; }
-        //bool ShowValueFuncContent { get; }
+        bool HasComponent(Tween tween);
 
         #endregion
 

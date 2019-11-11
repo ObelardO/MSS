@@ -6,6 +6,12 @@ namespace Obel.MSS.Modules.Tweens
     [Serializable]
     public class TweenPosition : GenericTween<Transform, Vector3>
     {
+        #region Properties
+
+        public bool IsLocal = true;
+
+        #endregion
+
         #region Public methods
 
         public override void OnInit()
@@ -13,9 +19,18 @@ namespace Obel.MSS.Modules.Tweens
             Debug.Log("[MSS] [Tween] Say hello to new position tween");
         }
 
-        public override void Capture() => Value = Component.position;
+        public override void Capture() => Value = IsLocal ? Component.localPosition : Component.position;
 
-        public override void Apply() => Component.position = Value;
+        public override void Apply()
+        {
+            if (IsLocal)
+            {
+                Component.localPosition = Value;
+                return;
+            }
+
+            Component.position = Value;
+        }
 
         #endregion
     }

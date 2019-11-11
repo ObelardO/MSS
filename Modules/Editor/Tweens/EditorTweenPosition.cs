@@ -9,6 +9,9 @@ namespace Obel.MSS.Modules.Tweens.Editor
         #region Properties
 
         public override string Name => "T/Position";
+        public override float Height => EditorConfig.Sizes.SingleLine;
+
+        private static readonly GUIContent contentLocal = new GUIContent("Is local");
 
         #endregion
 
@@ -16,6 +19,15 @@ namespace Obel.MSS.Modules.Tweens.Editor
 
         [InitializeOnLoadMethod]
         private static void ApplicationStart() => EditorTween.Add(new EditorTweenPosition(), EditorGUI.Vector3Field, GUIContent.none);
+
+        #endregion
+
+        #region Inspector
+
+        public override void Draw(Rect rect, TweenPosition tween)
+        {
+            EditorLayout.PropertyField(rect, ref tween.IsLocal, EditorGUI.Toggle, InspectorStates.Record, contentLocal);
+        }
 
         #endregion
     }

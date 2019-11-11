@@ -20,11 +20,14 @@ namespace Obel.MSS.Editor
         public virtual bool IsMultiple => false;
 
         public float HeaderHeight => EditorConfig.Sizes.LineHeight * (DrawValueFunc == null ? 2 : 3);
-        public float TotalHeight => HeaderHeight + Height + EditorConfig.Sizes.Offset;
+        public float TotalHeight => HeaderHeight + Height;
 
         public Type Type { get; set; }
         public Action<State> AddAction { get; set; }
         public Func<Rect, GUIContent, V, V> DrawValueFunc { set; get; }
+
+        public bool HasComponent(Tween tween) => HasComponent(tween as T);
+        public bool HasComponent(T tween) => tween.Component;
 
         private GUIContent _content = GUIContent.none;
 
@@ -66,15 +69,16 @@ namespace Obel.MSS.Editor
 
             EditorGUI.BeginDisabledGroup(!tween.Enabled);
 
-                EditorLayout.Control(rect.width - EditorConfig.Sizes.Offset * 5 - 150, r => EditorGUI.LabelField(r, DisplayName, EditorStyles.label));
+                EditorLayout.Control(rect.width - EditorConfig.Sizes.Offset * 5 - 150, r =>
+                {
+                    EditorGUI.LabelField(r, DisplayName, EditorStyles.label);
+                });
 
                 EditorLayout.Control(100, r =>
                 {
                     if (tween.EaseFunc != null) EditorEase.Draw(r, tween);
                     else EditorGUI.HelpBox(r, tween.EaseName, MessageType.Warning);
                 });
-
-                //EditorGUI.BeginDisabledGroup(tween.Component == null);
 
                 EditorLayout.Control(18, r =>
                 {
@@ -87,9 +91,6 @@ namespace Obel.MSS.Editor
                     if (GUI.Button(r, EditorConfig.Content.IconReturn, EditorConfig.Styles.IconButton))
                         EditorActions.Add(tween.Apply, tween.Component);
                 });
-
-                //EditorGUI.EndDisabledGroup();
-
 
                 EditorLayout.Space(0);
 
@@ -108,6 +109,20 @@ namespace Obel.MSS.Editor
                 });
 
             EditorGUI.EndDisabledGroup();
+
+            if (!tween.Component)
+            {
+                var rectWarning = new Rect(rect.x, rect.y -EditorConfig.Sizes.Offset, rect.width + EditorConfig.Sizes.Offset * 2, TotalHeight - EditorConfig.Sizes.Offset);
+                EditorGUI.DrawRect(rectWarning, EditorConfig.Colors.EditorBackGrey);
+                EditorGUI.HelpBox(rectWarning, $"Tween {DisplayName} require {typeof(C)} component!", MessageType.Warning);
+
+                var rectButton = new Rect(rect.width, rect.y + rect.height - 30, 50, 20);
+
+                //if (!GUI.Button(rectButton, "add")) return;
+                //tween.State.Group.gameObject.AddComponent<C>();
+                //EditorState.Get(tween.State).Open();
+                return;
+            }
 
             if (DrawValueFunc == null) return;
 
@@ -146,18 +161,19 @@ namespace Obel.MSS.Editor
             rect.height -= EditorConfig.Sizes.Offset;
             GUI.Box(rect, string.Empty, EditorStyles.helpBox);
 
-            rect.x += EditorConfig.Sizes.Offset;
             rect.y += EditorConfig.Sizes.Offset;
-            rect.width -= EditorConfig.Sizes.Offset * 3;
+            rect.width -= EditorConfig.Sizes.Offset * 2;
             rect.height = EditorConfig.Sizes.LineHeight;
 
             editor.DrawHeader(rect, tween);
 
             if (editor.Height <= 0) return;
 
-            rect.y += editor.HeaderHeight - EditorConfig.Sizes.Offset * 2;
+            rect.y += editor.HeaderHeight - EditorConfig.Sizes.Offset * 3;
             rect.x += EditorConfig.Sizes.Offset;
             rect.height = editor.Height;
+
+            if (!editor.HasComponent(tween)) return;
 
             EditorGUI.BeginDisabledGroup(!tween.Enabled);
             editor.Draw(rect, tween);

@@ -38,6 +38,7 @@ namespace Obel.MSS.Editor
 
                 EasesMenu.AddSeparator(string.Empty);
                 EasesMenu.AddItem(new GUIContent("Default"), false, () => _selectedTween.EaseFunc = Ease.DefaultFunc);
+                EasesMenu.AddItem(new GUIContent("Linear"), false, () => _selectedTween.EaseFunc = Ease.Linear);
             };
         }
 

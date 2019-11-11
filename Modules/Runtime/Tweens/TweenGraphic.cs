@@ -7,7 +7,11 @@ namespace Obel.MSS.Modules.Tweens
     [Serializable]
     public class TweenGraphic : GenericTween<Graphic, Color>
     {
+        #region Properties
+
         public bool IsRaycastTarget = true;
+
+        #endregion
 
         #region Public methods
 
