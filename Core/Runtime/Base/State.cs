@@ -1,6 +1,6 @@
 ﻿using System;
-using Obel.MSS.Base;
 using UnityEngine;
+using Obel.MSS.Base;
 
 namespace Obel.MSS
 {

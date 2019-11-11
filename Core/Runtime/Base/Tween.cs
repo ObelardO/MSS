@@ -62,7 +62,7 @@ namespace Obel.MSS
 
         public V Value;
 
-        public override bool Enabled => !Component ? false : base.Enabled;
+        public override bool Enabled => Component && base.Enabled;
 
         #endregion
     }

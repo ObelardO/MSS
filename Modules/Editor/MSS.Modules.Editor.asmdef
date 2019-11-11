@@ -1,5 +1,5 @@
 {
-    "name": "MSS.ModulesEditor",
+    "name": "MSS.Modules.Editor",
     "references": [
         "MSS",
         "MSS.Editor",

@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
-using UnityEngine.Events;
 using UnityEditorInternal;
 
 namespace Obel.MSS.Editor
@@ -140,7 +140,7 @@ namespace Obel.MSS.Editor
             if (editor._state.IsClosedState) tabColor = EditorConfig.Colors.Red;
             EditorGUI.DrawRect(rectStateTabColor, tabColor);
 
-            var rectToggle = new Rect(rect.x + 5, rect.y, 20, EditorConfig.Sizes.SingleLine);
+            var rectToggle = new Rect(rect.x + 5, rect.y + 2, 20, EditorConfig.Sizes.SingleLine);
             if (editor._state.IsDefaultState)
             {
                 EditorGUI.BeginDisabledGroup(true);

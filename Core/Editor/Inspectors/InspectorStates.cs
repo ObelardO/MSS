@@ -1,7 +1,5 @@
-﻿using System;
+﻿using UnityEngine;
 using UnityEditor;
-using UnityEditor.Compilation;
-using UnityEngine;
 
 namespace Obel.MSS.Editor
 {
