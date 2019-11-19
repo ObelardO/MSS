@@ -39,7 +39,7 @@ namespace Obel.MSS.Editor
         {
             DisplayName = Name.Contains("/") ? Name.Split('/').Last() : Name;
             _content = content ?? new GUIContent(DisplayName);
-        } 
+        }
 
         #endregion
 
