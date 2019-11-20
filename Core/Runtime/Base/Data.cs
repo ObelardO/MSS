@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Obel.MSS.Base
 {
     [Serializable]
-    public class Collection<T> : CollectionItem where T : CollectionItem, new()
+    public abstract class Collection<T> : CollectionItem where T : CollectionItem, new()
     {
         #region Properties
 
@@ -60,7 +60,7 @@ namespace Obel.MSS.Base
     }
 
     [Serializable]
-    public class CollectionItem : ICollectionItem
+    public abstract class CollectionItem : ICollectionItem
     {
         #region Properties
 
