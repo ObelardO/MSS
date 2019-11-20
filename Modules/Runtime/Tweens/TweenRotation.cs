@@ -9,7 +9,6 @@ namespace Obel.MSS.Modules.Tweens
         #region Properties
 
         public bool IsLocal = true;
-        public bool IsQuaternion = true;
 
         #endregion
 

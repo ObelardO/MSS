@@ -15,8 +15,8 @@ namespace Obel.MSS.Base
 
         public IReadOnlyList<T> Items => items;
         public int Count => items.Count;
-        public T Last => items.LastOrDefault();
         public T this[int i] => IndexInvalid(i) ? null : items[i];
+        public T Last => items.LastOrDefault();
         public T First => items.FirstOrDefault();
 
         #endregion
@@ -87,6 +87,7 @@ namespace Obel.MSS.Base
 
         public void Init(ICollectionItem parent)
         {
+            if (_parent != null) return;
             Debug.Log($"[MSS] [Data] Registered: {Name} Parent: {parent}");
             Parent = parent;
             Id = base.GetHashCode();

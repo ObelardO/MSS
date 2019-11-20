@@ -9,10 +9,9 @@ namespace Obel.MSS.Modules.Tweens.Editor
         #region Properties
 
         public override string Name => "T/Rotation";
-        public override float Height => EditorConfig.Sizes.SingleLine * 2;
+        public override float Height => EditorConfig.Sizes.SingleLine;
 
         private static readonly GUIContent contentLocal = new GUIContent("Is local");
-        private static readonly GUIContent contentMode = new GUIContent("Is Quaternion");
 
         #endregion
 
@@ -27,10 +26,7 @@ namespace Obel.MSS.Modules.Tweens.Editor
 
         public override void Draw(Rect rect, TweenRotation tween)
         {
-            rect.height = EditorConfig.Sizes.SingleLine;
             EditorLayout.PropertyField(rect, ref tween.IsLocal, EditorGUI.Toggle, InspectorStates.Record, contentLocal);
-            rect.y += EditorConfig.Sizes.SingleLine;
-            EditorLayout.PropertyField(rect, ref tween.IsQuaternion, EditorGUI.Toggle, InspectorStates.Record, contentMode);
         }
 
         private static Quaternion QuaternionField(Rect rect, GUIContent content, Quaternion value)

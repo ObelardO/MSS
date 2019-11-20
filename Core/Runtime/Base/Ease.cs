@@ -45,16 +45,19 @@ namespace Obel.MSS
             Eases.Add(new EaseInfo(ease, path, sort));
         }
 
-        public static void ForEach(Action<Func<float, float, float>, string> callback) => Eases.ForEach(e => callback(e.Ease, e.Path));
+        public static void ForEach(Action<Func<float, float, float>, string> callback) => Eases./*Where(e => e.Path != "Linear").ToList().*/ForEach(e => callback(e.Ease, e.Path));
 
-        public static Func<float, float, float> Get(string name) => Eases.FirstOrDefault(e => e.Ease.Method.Name.Equals(name))?.Ease;
+        public static Func<float, float, float> Get(string name)
+        {
+            if (name == "Linear") return Linear;
+            return Eases.FirstOrDefault(e => e.Ease.Method.Name.Equals(name))?.Ease;
+        }
 
         public static float Linear(float t, float d) => t / d;
 
         #endregion
-
-        /*
-
+ 
+        
         public static float NoneZero(float t, float b, float c, float d)
         {
             return 0;
@@ -336,7 +339,6 @@ namespace Obel.MSS
             if (t < d / 2) return BounceOut(t * 2, b, c / 2, d);
             return BounceIn((t * 2) - d, b + c / 2, c / 2, d);
         }
-        */
-    }
 
+    }
 }
