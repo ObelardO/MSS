@@ -1,16 +1,17 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
+using Unity.Entities;
 
 namespace Obel.MSS
 {
-    [AddComponentMenu("MSS/States"), DisallowMultipleComponent]
-    public class States : MonoBehaviour
+    [AddComponentMenu("MSS/States"), DisallowMultipleComponent, RequiresEntityConversion, RequireComponent(typeof(ConvertToEntity))]
+    public class States : MonoBehaviour, IConvertGameObjectToEntity
     {
         #region Properties
         
         [SerializeReference]
-        public Group Group;
+        public Group Group; 
         
         #endregion
 
@@ -23,6 +24,12 @@ namespace Obel.MSS
         private void OnEnable() => Group.Enabled = true;
 
         private void OnDisable() => Group.Enabled = false;
+
+        public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+        {
+            var data = new StatesData() { Group = this.Group };
+            dstManager.AddComponentData(entity, data);
+        }
 
         #endregion
     }

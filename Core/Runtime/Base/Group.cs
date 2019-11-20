@@ -1,10 +1,12 @@
 ﻿using System;
 using UnityEngine;
 using Obel.MSS.Base;
+using Unity.Entities;
 
 namespace Obel.MSS
 {
     [Serializable]
+    
     public class Group : Collection<State>
     {
         #region Properties
@@ -34,6 +36,5 @@ namespace Obel.MSS
         public State CreateState() => Create();
     
         #endregion
-
     }
 }

@@ -1,6 +1,9 @@
 {
     "name": "MSS",
-    "references": [],
+    "references": [
+        "Unity.Entities",
+        "Unity.Entities.Hybrid"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
