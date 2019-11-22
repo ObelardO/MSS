@@ -4,11 +4,14 @@ using UnityEngine;
 namespace Obel.MSS.Modules.Tweens
 {
     [Serializable]
-    public class TweenRotation : GenericTween<Transform, Quaternion>
+    public class TweenRotation : GenericTween<Transform, Vector3>
     {
         #region Properties
 
         public bool IsLocal = true;
+        public RotationMode Mode;
+
+        public enum RotationMode { Quaternion, Euler }
 
         #endregion
 
@@ -19,17 +22,17 @@ namespace Obel.MSS.Modules.Tweens
             Debug.Log("[MSS] [Tween] Say hello to new rotation tween");
         }
 
-        public override void Capture() => Value = IsLocal ? Component.localRotation : Component.rotation;
+        public override void Capture() => Value = IsLocal ? Component.localEulerAngles : Component.eulerAngles;
 
         public override void Apply()
         {
             if (IsLocal)
             {
-                Component.localRotation = Value;
+                Component.localEulerAngles = Value;
                 return;
             }
 
-            Component.rotation = Value;
+            Component.eulerAngles = Value;
         }
 
         #endregion

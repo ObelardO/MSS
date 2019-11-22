@@ -89,6 +89,20 @@ namespace Obel.MSS.Editor
 
         #region Generic field methods
 
+        public static Enum PropertyField(Rect rect, Enum value, Func<Rect, GUIContent, Enum, Enum> drawFunc,
+            Action onChange = null, GUIContent content = null)
+        {
+            if (content == null) content = GUIContent.none;
+
+            var tempValue = value;
+            tempValue = drawFunc(rect, content, tempValue);
+
+            if (value.Equals(tempValue)) return value;
+
+            onChange?.Invoke();
+            return tempValue;
+        }
+
         public static T PropertyField<T>(Rect rect, T value, Func<Rect, GUIContent, T, T> drawFunc,
             Action onChange = null, GUIContent content = null) where T : struct
         {

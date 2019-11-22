@@ -1,24 +1,26 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using Obel.MSS.Editor;
+using System.Reflection;
 
 namespace Obel.MSS.Modules.Tweens.Editor
 {
-    internal class EditorTweenRotation : EditorGenericTween<TweenRotation, Transform, Quaternion>
+    internal class EditorTweenRotation : EditorGenericTween<TweenRotation, Transform, Vector3>
     {
         #region Properties
 
         public override string Name => "T/Rotation";
-        public override float Height => EditorConfig.Sizes.SingleLine;
+        public override float Height => EditorConfig.Sizes.SingleLine * 2;
 
         private static readonly GUIContent contentLocal = new GUIContent("Is local");
+        private static readonly GUIContent contentMode = new GUIContent("Rotation Mode");
 
         #endregion
 
         #region Init
 
         [InitializeOnLoadMethod]
-        private static void ApplicationStart() => EditorTween.Add(new EditorTweenRotation(), QuaternionField, GUIContent.none);
+        private static void ApplicationStart() => EditorTween.Add(new EditorTweenRotation(), EditorGUI.Vector3Field, GUIContent.none);
 
         #endregion
 
@@ -26,18 +28,46 @@ namespace Obel.MSS.Modules.Tweens.Editor
 
         public override void Draw(Rect rect, TweenRotation tween)
         {
+            rect.height = EditorConfig.Sizes.SingleLine;
             EditorLayout.PropertyField(rect, ref tween.IsLocal, EditorGUI.Toggle, InspectorStates.Record, contentLocal);
+
+            rect.y += EditorConfig.Sizes.SingleLine;
+            tween.Mode = (TweenRotation.RotationMode)EditorLayout.PropertyField(rect, tween.Mode, EditorGUI.EnumPopup, InspectorStates.Record, contentMode);
         }
 
-        private static Quaternion QuaternionField(Rect rect, GUIContent content, Quaternion value)
+        public override void Capture(TweenRotation tween)
         {
-            Vector3 eulerRotation = value.eulerAngles;
+            if (tween.Mode == TweenRotation.RotationMode.Quaternion)
+            {
+                tween.Capture();
+                return;
+            }
 
-            EditorLayout.PropertyField(rect, ref eulerRotation, EditorGUI.Vector3Field, InspectorStates.Record, content);
+            if (tween.IsLocal) tween.Value = GetInspectorRotation(tween.State.Group.gameObject.transform);
+            else tween.Value = tween.State.Group.gameObject.transform.eulerAngles;
 
-            return Quaternion.Euler(eulerRotation);
+            Debug.Log("Rotation tween capturing");
+        }
+
+        private static Vector3 GetInspectorRotation(Transform transform)
+        {
+            Vector3 result = Vector3.zero;
+            MethodInfo mth = typeof(Transform).GetMethod("GetLocalEulerAngles", BindingFlags.Instance | BindingFlags.NonPublic);
+            PropertyInfo pi = typeof(Transform).GetProperty("rotationOrder", BindingFlags.Instance | BindingFlags.NonPublic);
+            object rotationOrder = null;
+            if (pi != null)
+            {
+                rotationOrder = pi.GetValue(transform, null);
+            }
+            if (mth != null)
+            {
+                object retVector3 = mth.Invoke(transform, new object[] { rotationOrder });
+                result = (Vector3)retVector3;
+            }
+            return result;
         }
 
         #endregion
-    }
+
+        }
 }

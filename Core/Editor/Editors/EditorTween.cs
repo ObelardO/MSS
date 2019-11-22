@@ -83,7 +83,7 @@ namespace Obel.MSS.Editor
                 EditorLayout.Control(18, r =>
                 {
                     if (GUI.Button(r, EditorConfig.Content.IconRecord, EditorConfig.Styles.IconButton))
-                        EditorActions.Add(tween.Capture, InspectorStates.States);
+                        EditorActions.Add(() => Capture(tween), InspectorStates.States);
                 });
 
                 EditorLayout.Control(18, r =>
@@ -133,6 +133,15 @@ namespace Obel.MSS.Editor
                 EditorLayout.PropertyField(ref tween.Value, DrawValueFunc, InspectorStates.Record, _content);
 
             EditorGUI.EndDisabledGroup();
+        }
+
+        #endregion
+
+        #region Inspector callbacks
+
+        public virtual void Capture(T tween)
+        {
+            tween.Capture();
         }
 
         #endregion
