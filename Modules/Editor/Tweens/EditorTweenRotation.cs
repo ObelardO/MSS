@@ -43,12 +43,13 @@ namespace Obel.MSS.Modules.Tweens.Editor
                 return;
             }
 
-            if (tween.IsLocal) tween.Value = GetInspectorRotation(tween.State.Group.gameObject.transform);
+            if (tween.IsLocal) tween.Value =  GetInspectorRotation(tween.State.Group.gameObject.transform);
             else tween.Value = tween.State.Group.gameObject.transform.eulerAngles;
 
             Debug.Log("Rotation tween capturing");
         }
 
+        // Dirty way to get inspector rotation
         private static Vector3 GetInspectorRotation(Transform transform)
         {
             Vector3 result = Vector3.zero;
@@ -64,6 +65,7 @@ namespace Obel.MSS.Modules.Tweens.Editor
                 object retVector3 = mth.Invoke(transform, new object[] { rotationOrder });
                 result = (Vector3)retVector3;
             }
+
             return result;
         }
 

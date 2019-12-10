@@ -49,7 +49,7 @@ namespace Obel.MSS
     }
 
     [Serializable]
-    public class GenericTween<C, V> : Tween 
+    public abstract class GenericTween<C, V> : Tween 
         where C : Component
         where V : struct
     {
