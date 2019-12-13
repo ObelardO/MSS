@@ -17,8 +17,6 @@ namespace Obel.MSS.Editor
 
         public static void Draw(Group group)
         {
-            //if (group == null) return;
-
             GUILayout.Space(3);
             GUILayout.BeginHorizontal();
             GUILayout.Space(-6);
@@ -65,8 +63,6 @@ namespace Obel.MSS.Editor
 
         public static void Enable(Group group)
         {
-            //if (group == null) return;
-
             _statesList = new ReorderableList(group.Items as IList, typeof(State))
             {
                 displayAdd = false,

@@ -45,7 +45,7 @@ namespace Obel.MSS
             Eases.Add(new EaseInfo(ease, path, sort));
         }
 
-        public static void ForEach(Action<Func<float, float, float>, string> callback) => Eases./*Where(e => e.Path != "Linear").ToList().*/ForEach(e => callback(e.Ease, e.Path));
+        public static void ForEach(Action<Func<float, float, float>, string> callback) => Eases.ForEach(e => callback(e.Ease, e.Path));
 
         public static Func<float, float, float> Get(string name)
         {

@@ -118,9 +118,6 @@ namespace Obel.MSS.Editor
 
                 var rectButton = new Rect(rect.width, rect.y + rect.height - 30, 50, 20);
 
-                //if (!GUI.Button(rectButton, "add")) return;
-                //tween.State.Group.gameObject.AddComponent<C>();
-                //EditorState.Get(tween.State).Open();
                 return;
             }
 
