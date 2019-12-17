@@ -43,14 +43,14 @@ namespace Obel.MSS.Modules.Tweens.Editor
                 return;
             }
 
-            if (tween.IsLocal) tween.Value =  GetInspectorRotation(tween.State.Group.gameObject.transform);
+            if (tween.IsLocal) tween.Value = TransformUtils.GetInspectorRotation(tween.State.Group.gameObject.transform);
             else tween.Value = tween.State.Group.gameObject.transform.eulerAngles;
 
             Debug.Log("Rotation tween capturing");
         }
 
         // Dirty way to get inspector rotation
-        private static Vector3 GetInspectorRotation(Transform transform)
+        /*private static Vector3 GetInspectorRotation(Transform transform)
         {
             Vector3 result = Vector3.zero;
             MethodInfo mth = typeof(Transform).GetMethod("GetLocalEulerAngles", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -58,7 +58,7 @@ namespace Obel.MSS.Modules.Tweens.Editor
             object rotationOrder = null;
             if (pi != null)
             {
-                rotationOrder = pi.GetValue(transform, null);
+                rotationOrder = pi.GetValue(transform, null);  
             }
             if (mth != null)
             {
@@ -68,8 +68,10 @@ namespace Obel.MSS.Modules.Tweens.Editor
 
             return result;
         }
+        */
+        
 
         #endregion
 
-        }
+    }
 }
