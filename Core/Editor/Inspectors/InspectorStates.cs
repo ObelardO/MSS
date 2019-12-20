@@ -25,8 +25,9 @@ namespace Obel.MSS.Editor
             States = (States)target;
 
             SerializedState = serializedObject;
-
             EditorGroup.Enable(States.Group);
+
+            Undo.undoRedoPerformed += PrecessUndo;
         }
 
         private void OnDisable()
@@ -35,6 +36,8 @@ namespace Obel.MSS.Editor
             EditorState.Clear();
             EditorState.Repaint = null;
             States = null;
+
+            Undo.undoRedoPerformed -= PrecessUndo;
         }
 
         #endregion
@@ -64,7 +67,7 @@ namespace Obel.MSS.Editor
 
             EditorActions.Process();
 
-            PrecessUndo();
+            //PrecessUndo();
 
             SerializedState.ApplyModifiedProperties();
         }
@@ -75,13 +78,13 @@ namespace Obel.MSS.Editor
 
         private void PrecessUndo()
         {
-            var guiEvent = Event.current;
+            /*var guiEvent = Event.current;
             if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") EditorApplication.delayCall += () =>
-            {
+            {*/
                 EditorGroup.Enable(States.Group);
                 EditorState.Reorder(States.Group);
                 Repaint();
-            };
+            //};
         }
 
         #endregion

@@ -1,6 +1,8 @@
 ﻿using System;
 using UnityEngine;
 using UnityEditor;
+//using System.Reflection;
+using UnityEditor.Compilation;
 
 namespace Obel.MSS.Editor
 {
@@ -30,6 +32,32 @@ namespace Obel.MSS.Editor
         [InitializeOnLoadMethod]
         private static void ApplicationStart()
         {
+
+            UnityEngine.Debug.Log("== Player Assemblies ==");
+            Assembly[] playerAssemblies =
+                CompilationPipeline.GetAssemblies(AssembliesType.Player);
+            foreach (var assembly in playerAssemblies)
+            {  
+                UnityEngine.Debug.Log(assembly  );
+            }
+
+            UnityEngine.Debug.Log("== All Assemblies ==");
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if (!assembly.FullName.StartsWith("MSS")) continue;
+
+                foreach (var type in assembly.GetTypes())
+                {
+                    
+                    if (type.IsClass && !type.IsAbstract && typeof(IGenericTweenEditor).IsAssignableFrom(type))
+                    {   
+                        Debug.Log(type);
+                    }
+                }
+
+                
+            }
+
             EditorApplication.delayCall += () =>
             {
                 Debug.Log("[MSS] [Editor] [Eases] Start binding...");
