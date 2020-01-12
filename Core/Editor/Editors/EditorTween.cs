@@ -3,10 +3,11 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.Compilation;
 
 namespace Obel.MSS.Editor
 {
-    public class EditorGenericTween<T, C, V> : IGenericTweenEditor
+    public abstract class EditorGenericTween<T, C, V> : IGenericTweenEditor
 
         where T : GenericTween<C, V>
         where C : Component
@@ -149,6 +150,31 @@ namespace Obel.MSS.Editor
         #region Properties
 
         private static readonly List<IGenericTweenEditor> Editors = new List<IGenericTweenEditor>();
+
+        #endregion
+
+        #region Init
+
+        [InitializeOnLoadMethod]
+        private static void OnApplicationStart() 
+        {
+            UnityEngine.Debug.Log("== All Assemblies ==");
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if (!assembly.FullName.StartsWith("MSS")) continue;
+                 
+                foreach (var type in assembly.GetTypes()) 
+                {
+                    if (type.IsClass && !type.IsAbstract /*&& type.IsPublic */&& typeof(IGenericTweenEditor).IsAssignableFrom(type))
+                    {
+                        Debug.Log(type);
+                    }
+                    
+                }
+
+
+            }
+        }
 
         #endregion
 

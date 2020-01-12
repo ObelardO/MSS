@@ -33,6 +33,7 @@ namespace Obel.MSS.Editor
         private static void ApplicationStart()
         {
 
+            /*
             UnityEngine.Debug.Log("== Player Assemblies ==");
             Assembly[] playerAssemblies =
                 CompilationPipeline.GetAssemblies(AssembliesType.Player);
@@ -40,23 +41,8 @@ namespace Obel.MSS.Editor
             {  
                 UnityEngine.Debug.Log(assembly  );
             }
+            */
 
-            UnityEngine.Debug.Log("== All Assemblies ==");
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                if (!assembly.FullName.StartsWith("MSS")) continue;
-
-                foreach (var type in assembly.GetTypes())
-                {
-                    
-                    if (type.IsClass && !type.IsAbstract && typeof(IGenericTweenEditor).IsAssignableFrom(type))
-                    {   
-                        Debug.Log(type);
-                    }
-                }
-
-                
-            }
 
             EditorApplication.delayCall += () =>
             {

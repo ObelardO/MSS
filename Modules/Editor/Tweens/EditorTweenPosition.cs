@@ -17,7 +17,7 @@ namespace Obel.MSS.Modules.Tweens.Editor
 
         #region Init
 
-        [InitializeOnLoadMethod]
+        //[InitializeOnLoadMethod]
         private static void ApplicationStart() => EditorTween.Add(new EditorTweenPosition(), EditorGUI.Vector3Field, GUIContent.none);
 
         #endregion
