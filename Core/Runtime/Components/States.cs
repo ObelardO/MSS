@@ -25,5 +25,15 @@ namespace Obel.MSS
         private void OnDisable() => Group.Enabled = false;
 
         #endregion
+
+        #region Public methods
+
+        public void Open() => Group.Open();
+
+        public void Close() => Group.Close();
+
+        public void Select(string stateName) => Group.Select(stateName);
+
+        #endregion
     }
 }

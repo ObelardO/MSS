@@ -32,8 +32,20 @@ namespace Obel.MSS
         #region Public methods
 
         public State CreateState() => Create();
-    
-        #endregion
 
+        public void Select(string stateName)
+        {
+            //ForEachEnabled(s => { if (s.Name.Equals(stateName, StringComparison.InvariantCultureIgnoreCase)) Select(s); });
+            foreach (var state in Items)
+                if (state.Enabled && state.Name.Equals(stateName, StringComparison.InvariantCultureIgnoreCase)) state.Select();
+        }
+
+        public void Select(State state) => state.Select();
+
+        public void Open() => Select(OpenedState);
+
+        public void Close() => Select(ClosedState);
+
+        #endregion
     }
 }

@@ -9,6 +9,8 @@ namespace Obel.MSS
     {
         #region Properties
 
+        public State State => (State)Parent;
+
         [SerializeField] private string _ease;
         private Func<float, float, float> _easeFunc;
         public Func<float, float, float> EaseFunc
@@ -54,8 +56,6 @@ namespace Obel.MSS
         where V : struct
     {
         #region Properties
-
-        public State State => (State)Parent;
 
         [SerializeField] private C _component;
         public C Component => !_component ? _component = State.Group.gameObject.GetComponent<C>() : _component;

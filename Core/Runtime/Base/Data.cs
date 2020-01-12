@@ -33,10 +33,7 @@ namespace Obel.MSS.Base
             items.Remove(item);
         }
 
-        public T Get(int index)
-        {
-            return IndexInvalid(index) ? null : items[index];
-        }
+        public T Get(int index) => IndexInvalid(index) ? null : items[index];
 
         #endregion
 
@@ -51,11 +48,8 @@ namespace Obel.MSS.Base
             return Last;
         }
 
-        private bool IndexInvalid(int index)
-        {
-            return items == null || index < 0 || index > Count - 1;
-        }
-
+        private bool IndexInvalid(int index) => items == null || index < 0 || index > Count - 1;
+  
         #endregion
     }
 

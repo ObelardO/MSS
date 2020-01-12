@@ -58,6 +58,8 @@ namespace Obel.MSS
         #endregion
  
         
+
+
         public static float NoneZero(float t, float b, float c, float d)
         {
             return 0;
@@ -73,6 +75,7 @@ namespace Obel.MSS
             return 0;
         }
  
+
 
 
         public static float CubicIn(float t, float b, float c, float d)
@@ -122,6 +125,9 @@ namespace Obel.MSS
             return QuartIn((t * 2) - d, b + c / 2, c / 2, d);
         }
 
+
+
+
         public static float QuintIn(float t, float b, float c, float d)
         {
             return c * (t /= d) * t * t * t * t + b;
@@ -167,6 +173,9 @@ namespace Obel.MSS
             if (t < d / 2) return SineOut(t * 2, b, c / 2, d);
             return SineIn((t * 2) - d, b + c / 2, c / 2, d);
         }
+
+
+
 
         public static float ExpoIn(float t, float b, float c, float d)
         {

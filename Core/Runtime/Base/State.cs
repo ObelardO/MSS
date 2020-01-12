@@ -40,7 +40,7 @@ namespace Obel.MSS
 
         public State()
         {
-            base.Name = "New State";
+            base.Name = "new state";
         }
 
         #endregion
@@ -52,6 +52,11 @@ namespace Obel.MSS
         public void Capture() => ForEachEnabled(i => i.Capture());
 
         public void Apply() => ForEachEnabled(i => i.Apply());
+
+        public void Select()
+        {
+            Debug.Log($"State {Name} selected!");
+        }
 
         #endregion
     }
