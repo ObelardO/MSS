@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Obel.MSS.Base
+namespace Obel.MSS.Data
 {
     [Serializable]
     public abstract class Collection<T> : CollectionItem where T : CollectionItem, new()
@@ -14,8 +14,9 @@ namespace Obel.MSS.Base
         private List<T> items = new List<T>();
 
         public IReadOnlyList<T> Items => items;
+        public IReadOnlyList<T> EnabledItems => items.Where(i => i.Enabled).ToList();
         public int Count => items.Count;
-        public T this[int i] => IndexInvalid(i) ? null : items[i];
+        public T this[int i] => Get(i);
         public T Last => items.LastOrDefault();
         public T First => items.FirstOrDefault();
 
@@ -23,9 +24,9 @@ namespace Obel.MSS.Base
 
         #region Public methods
 
-        public void ForEach(Action<T> callback) => items.ForEach(callback);
+        public void ForEach(Action<T> callback) => items.ForEach( callback);
 
-        public void ForEachEnabled(Action<T> callback) => items.Where(i => i.Enabled).ToList().ForEach(callback);
+        public void ForEachEnabled(Action<T> callback) => EnabledItems.ToList().ForEach(callback);
 
         public void Remove(T item)
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
+using Obel.MSS.Node;
 
 namespace Obel.MSS
 {
@@ -18,7 +19,7 @@ namespace Obel.MSS
         
         private void Reset() => Group = new Group(gameObject);
 
-        private void Awake() => Group = Group ?? new Group(gameObject);
+        private void Awake() => Group = Group ?? new Group(gameObject); // ??= not supported in unity?
 
         private void OnEnable() => Group.Enabled = true;
 
@@ -28,11 +29,11 @@ namespace Obel.MSS
 
         #region Public methods
 
-        public void Open() => Group.Open();
+        public void Open() => Core.SelectState(Group.OpenedState);
 
-        public void Close() => Group.Close();
+        public void Close() => Core.SelectState(Group.ClosedState);
 
-        public void Select(string stateName) => Group.Select(stateName);
+        public void Select(string stateName) => Core.SelectState(Group, stateName);
 
         #endregion
     }

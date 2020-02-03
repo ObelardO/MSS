@@ -10,14 +10,15 @@ public class StatesTester : MonoBehaviour
 
     public void Select(int id)
     {
-        States.Group[id].Apply();
-
+        States.Group[id]?.Apply();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        States.Group.CreateState().CreateTween<TweenGraphic>().Capture();
+        States.Group.CreateState().CreateTween<TweenRotation>().Capture();
+
+        States.Group.Last.CreateTween<Tween>();
     }
 
     // Update is called once per frame

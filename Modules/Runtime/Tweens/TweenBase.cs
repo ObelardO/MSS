@@ -10,6 +10,7 @@ namespace Obel.MSS.Modules.Tweens
 
         public override void OnInit()
         {
+            base.OnInit();
             Debug.Log("[MSS] [Tween] Say hello to new base tween!");
         }
 

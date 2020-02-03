@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using Obel.MSS.Base;
+using Obel.MSS.Data;
 
 namespace Obel.MSS
 {
@@ -36,6 +38,8 @@ namespace Obel.MSS
 
         #endregion
 
+        public List<Dictionary<Type, Tween>> TypedTweens = new List<Dictionary<Type, Tween>>();
+
         #region Init
 
         public State()
@@ -52,11 +56,6 @@ namespace Obel.MSS
         public void Capture() => ForEachEnabled(i => i.Capture());
 
         public void Apply() => ForEachEnabled(i => i.Apply());
-
-        public void Select()
-        {
-            Debug.Log($"State {Name} selected!");
-        }
 
         #endregion
     }

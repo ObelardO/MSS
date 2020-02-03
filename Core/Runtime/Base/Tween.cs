@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using Obel.MSS.Base;
+using Obel.MSS.Data;
 
 namespace Obel.MSS
 {
@@ -63,6 +63,18 @@ namespace Obel.MSS
         public V Value;
 
         public override bool Enabled => Component && base.Enabled;
+
+        public override void OnInit()
+        {
+            int TweenTypedDetected = 0;
+
+            foreach (var typedTween in State.TypedTweens)
+            {
+                if (typedTween.ContainsKey(GetType())) TweenTypedDetected++;
+            }
+
+            Debug.Log("ALLREADY CONTAINS " + GetType() + "   " + TweenTypedDetected);
+        }
 
         #endregion
     }

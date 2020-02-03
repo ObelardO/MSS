@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using Obel.MSS.Base;
+using Obel.MSS.Data;
+using Obel.MSS;
 
 namespace Obel.MSS
 {
@@ -11,6 +14,9 @@ namespace Obel.MSS
 
         public State ClosedState => Get((int)DefaultState.Closed);
         public State OpenedState => Get((int)DefaultState.Opened);
+
+        public IReadOnlyList<State> States => Items;
+        public IReadOnlyList<State> EnabledStates => EnabledItems;
 
         [field: SerializeField]
         public GameObject gameObject { private set; get; }
@@ -32,19 +38,6 @@ namespace Obel.MSS
         #region Public methods
 
         public State CreateState() => Create();
-
-        public void Select(string stateName)
-        {
-            //ForEachEnabled(s => { if (s.Name.Equals(stateName, StringComparison.InvariantCultureIgnoreCase)) Select(s); });
-            foreach (var state in Items)
-                if (state.Enabled && state.Name.Equals(stateName, StringComparison.InvariantCultureIgnoreCase)) state.Select();
-        }
-
-        public void Select(State state) => state.Select();
-
-        public void Open() => Select(OpenedState);
-
-        public void Close() => Select(ClosedState);
 
         #endregion
     }
