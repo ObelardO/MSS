@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Obel.MSS.Data;
-using Obel.MSS;
 
 namespace Obel.MSS
 {
@@ -31,6 +30,7 @@ namespace Obel.MSS
             CreateState();
 
             this.gameObject = gameObject;
+            Init(gameObject.GetComponentInParent<State>()?.Group);
         }
 
         #endregion

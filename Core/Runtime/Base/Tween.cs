@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using Obel.MSS.Data;
+using System.Collections.Generic;
 
 namespace Obel.MSS
 {
@@ -11,20 +12,20 @@ namespace Obel.MSS
 
         public State State => (State)Parent;
 
-        [SerializeField] private string _ease;
+        [SerializeField] private string _easeName;
         private Func<float, float, float> _easeFunc;
         public Func<float, float, float> EaseFunc
         {
-            get => _easeFunc ?? (_easeFunc = Ease.Get(_ease));
+            get => _easeFunc ?? (_easeFunc = Ease.Get(_easeName));
 
             set
             {
                 _easeFunc = value;
-                if (_easeFunc != null) _ease = _easeFunc.Method.Name;
+                if (_easeFunc != null) _easeName = _easeFunc.Method.Name;
             }
         }
 
-        public string EaseName => EaseFunc?.Method.Name ?? _ease;
+        public string EaseName => EaseFunc?.Method.Name ?? _easeName;
 
         public Vector2 Range = Vector2.up;
 
@@ -35,8 +36,6 @@ namespace Obel.MSS
         public Tween()
         {
             EaseFunc = Ease.DefaultFunc;
-
-            Debug.Log("BC New tween: " + Name);
         }
 
         #endregion
@@ -51,30 +50,18 @@ namespace Obel.MSS
     }
 
     [Serializable]
-    public abstract class GenericTween<C, V> : Tween 
+    public abstract class GenericTween<C, V> : Tween
         where C : Component
         where V : struct
     {
         #region Properties
 
         [SerializeField] private C _component;
-        public C Component => !_component ? _component = State.Group.gameObject.GetComponent<C>() : _component;
+        public C Component => _component ? _component : _component = State.Group.gameObject.GetComponent<C>();
 
         public V Value;
 
         public override bool Enabled => Component && base.Enabled;
-
-        public override void OnInit()
-        {
-            int TweenTypedDetected = 0;
-
-            foreach (var typedTween in State.TypedTweens)
-            {
-                if (typedTween.ContainsKey(GetType())) TweenTypedDetected++;
-            }
-
-            Debug.Log("ALLREADY CONTAINS " + GetType() + "   " + TweenTypedDetected);
-        }
 
         #endregion
     }
