@@ -10,7 +10,7 @@ namespace Obel.MSS.Data
     {
         #region Properties
 
-        [SerializeReference] // can't be readonly - editor Undo can't fill readonly fields
+        [SerializeReference]
         private List<T> items = new List<T>();
 
         public IReadOnlyList<T> Items => items;

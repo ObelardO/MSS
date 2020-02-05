@@ -30,7 +30,7 @@ namespace Obel.MSS
             CreateState();
 
             this.gameObject = gameObject;
-            Init(gameObject.GetComponentInParent<State>()?.Group);
+            Init(gameObject.GetComponentInParent<States>()?.Group);
         }
 
         #endregion

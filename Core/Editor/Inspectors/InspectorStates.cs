@@ -68,8 +68,6 @@ namespace Obel.MSS.Editor
 
             EditorActions.Process();
 
-            //PrecessUndo();
-
             SerializedState.ApplyModifiedProperties();
         }
 
@@ -79,13 +77,9 @@ namespace Obel.MSS.Editor
 
         private void PrecessUndo()
         {
-            /*var guiEvent = Event.current;
-            if (guiEvent.type == EventType.ValidateCommand && guiEvent.commandName == "UndoRedoPerformed") EditorApplication.delayCall += () =>
-            {*/
             EditorGroup.Enable(States.Group);
             EditorState.Reorder(States.Group);
             Repaint();
-            /*};*/
         }
 
         #endregion
