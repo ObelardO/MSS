@@ -6,7 +6,7 @@ using Obel.MSS.Data;
 
 namespace Obel.MSS
 {
-    [System.Serializable]
+    [Serializable]
     public class State : Collection<Tween>
     {
         #region Properties
@@ -38,8 +38,6 @@ namespace Obel.MSS
 
         #endregion
 
-        public List<Dictionary<Type, Tween>> TypedTweens = new List<Dictionary<Type, Tween>>();
-
         #region Init
 
         public State()
@@ -51,7 +49,20 @@ namespace Obel.MSS
 
         #region Public methods
 
-        public T CreateTween<T>() where T : Tween, new() => (T)Add(new T());
+        public T CreateTween<T>() where T : Tween, new()
+        {
+            T tween = (T)Add(new T());
+            Group.OnTweenCreated(tween);
+
+            return tween;
+        }
+
+        public void RemoveTween<T>(T tween) where T : Tween
+        {
+            Group.OnTweenRemoved(tween);
+
+            Remove(tween);
+        }
 
         public void Capture() => ForEachEnabled(i => i.Capture());
 

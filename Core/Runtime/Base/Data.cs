@@ -28,10 +28,10 @@ namespace Obel.MSS.Data
 
         public void ForEachEnabled(Action<T> callback) => EnabledItems.ToList().ForEach(callback);
 
-        public void Remove(T item)
+        public bool Remove(T item)
         {
-            if (!items.Contains(item)) return;
-            items.Remove(item);
+            if (!items.Contains(item)) return false;
+            return items.Remove(item);
         }
 
         public T Get(int index) => IndexInvalid(index) ? null : items[index];

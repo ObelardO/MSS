@@ -24,13 +24,34 @@ namespace Obel.MSS
 
         #region Init
 
+
+        [Serializable]
+        public struct TypedTweens<T> where T : Tween
+        {
+            public Type TweenType;
+
+            public List<T> Tweens;
+
+            public override int GetHashCode() => TweenType.GetHashCode();
+        }
+
+        public void OnTweenCreated<T>(T tween)
+        {
+            Debug.Log("hi tween: " + tween.GetType());
+        }
+
+        public void OnTweenRemoved<T>(T tween)
+        {
+            Debug.Log("bye tween: " + tween.GetType());
+        }
+
+
         public Group(GameObject gameObject)
         {
-            CreateState();
-            CreateState();
-
             this.gameObject = gameObject;
-            Init(gameObject.GetComponentInParent<States>()?.Group);
+
+            CreateState();
+            CreateState();
         }
 
         #endregion
@@ -38,6 +59,10 @@ namespace Obel.MSS
         #region Public methods
 
         public State CreateState() => Create();
+
+        public void RemoveState(State state) => Remove(state);
+
+        public override int GetHashCode() => gameObject.GetHashCode();
 
         #endregion
     }
