@@ -2,9 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Obel.MSS.Data;
 
-namespace Obel.MSS
+namespace Obel.MSS.Data
 {
     [Serializable]
     public class State : Collection<Tween>
@@ -13,16 +12,22 @@ namespace Obel.MSS
 
         public Group Group => (Group)Parent;
 
+        public GameObject GameObject => Group.GameObject;
+
         public float Delay;
 
         public float Duration = 1;
+
+        private static readonly string closedName = "closed";
+        private static readonly string openedName = "opened";
+        private static readonly string defaultName = "new state";
 
         public override string Name
         {
             get
             {
-                if (IsClosedState) return "closed";
-                if (IsOpenedState) return "opened";
+                if (IsClosedState) return closedName;
+                if (IsOpenedState) return openedName;
                 return base.Name;
             }
             set
@@ -42,27 +47,16 @@ namespace Obel.MSS
 
         public State()
         {
-            base.Name = "new state";
+            base.Name = defaultName;
         }
 
         #endregion
 
         #region Public methods
 
-        public T CreateTween<T>() where T : Tween, new()
-        {
-            T tween = (T)Add(new T());
-            Group.OnTweenCreated(tween);
+        public T CreateTween<T>() where T : Tween, new() => (T)Add(new T());
 
-            return tween;
-        }
-
-        public void RemoveTween<T>(T tween) where T : Tween
-        {
-            Group.OnTweenRemoved(tween);
-
-            Remove(tween);
-        }
+        public bool RemoveTween<T>(T tween) where T : Tween => Remove(tween);
 
         public void Capture() => ForEachEnabled(i => i.Capture());
 

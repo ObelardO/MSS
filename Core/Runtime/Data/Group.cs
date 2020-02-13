@@ -2,12 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Obel.MSS.Data;
 
-namespace Obel.MSS
+namespace Obel.MSS.Data
 {
     [Serializable]
-    public class Group : Collection<State>
+    public sealed class Group : Collection<State>
     {
         #region Properties
 
@@ -18,13 +17,15 @@ namespace Obel.MSS
         public IReadOnlyList<State> EnabledStates => EnabledItems;
 
         [field: SerializeField]
-        public GameObject gameObject { private set; get; }
+        public States StatesComponent { private set; get; }
+
+        public GameObject GameObject => StatesComponent.gameObject;
 
         #endregion
 
         #region Init
 
-
+        /*
         [Serializable]
         public struct TypedTweens<T> where T : Tween
         {
@@ -44,11 +45,14 @@ namespace Obel.MSS
         {
             Debug.Log("bye tween: " + tween.GetType());
         }
+        */
 
 
-        public Group(GameObject gameObject)
+        public Group(States states)
         {
-            this.gameObject = gameObject;
+            Debug.Log(states);
+
+            StatesComponent = states;
 
             CreateState();
             CreateState();
@@ -62,7 +66,7 @@ namespace Obel.MSS
 
         public void RemoveState(State state) => Remove(state);
 
-        public override int GetHashCode() => gameObject.GetHashCode();
+        public override int GetHashCode() => GameObject.GetHashCode();
 
         #endregion
     }

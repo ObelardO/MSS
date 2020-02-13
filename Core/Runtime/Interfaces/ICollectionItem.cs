@@ -1,4 +1,4 @@
-﻿namespace Obel.MSS
+﻿namespace Obel.MSS.Data
 {
     public interface ICollectionItem
     {

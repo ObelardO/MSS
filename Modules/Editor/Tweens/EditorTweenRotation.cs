@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using Obel.MSS.Editor;
-using System.Reflection;
 
 namespace Obel.MSS.Modules.Tweens.Editor
 {
@@ -43,8 +42,8 @@ namespace Obel.MSS.Modules.Tweens.Editor
                 return;
             }
 
-            if (tween.IsLocal) tween.Value = TransformUtils.GetInspectorRotation(tween.State.Group.gameObject.transform);
-            else tween.Value = tween.State.Group.gameObject.transform.eulerAngles;
+            if (tween.IsLocal) tween.Value = TransformUtils.GetInspectorRotation(tween.State.Group.GameObject.transform);
+            else tween.Value = tween.State.Group.GameObject.transform.eulerAngles;
 
             Debug.Log("Rotation tween capturing");
         }

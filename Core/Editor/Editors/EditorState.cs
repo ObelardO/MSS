@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEditor;
+using UnityEngine.Events;
 using UnityEditor.AnimatedValues;
 using UnityEditorInternal;
+using Obel.MSS.Data;
 
 namespace Obel.MSS.Editor
 {
@@ -14,11 +15,12 @@ namespace Obel.MSS.Editor
 
         private static readonly GUIContent ContentLabel = new GUIContent("Name"),
                                            DelayLabel = new GUIContent("Delay"),
-                                           DurationLabel = new GUIContent("Duration");
+                                           DurationLabel = new GUIContent("Duration"),
+                                           AddFirstTweenLabel = new GUIContent("Click + to add tween");
 
         private static readonly Dictionary<int, EditorState> Editors = new Dictionary<int, EditorState>();
 
-        private State _state;
+        private Data.State _state;
 
         private readonly AnimBool _foldout;
         private ReorderableList _tweensList;
@@ -32,7 +34,7 @@ namespace Obel.MSS.Editor
 
         #region Public methods
 
-        public EditorState(State state)
+        public EditorState(Data.State state)
         {
             _foldout = new AnimBool(false);
             _state = state;
@@ -61,7 +63,7 @@ namespace Obel.MSS.Editor
                 drawHeaderCallback = rect => EditorGUI.LabelField(rect, string.Empty),
                 drawElementCallback = (rect, index, isActive, isFocused) => EditorTween.Draw(rect, _state[index]),
                 elementHeightCallback = index => EditorTween.GetHeight(_state[index].GetType()),
-                drawNoneElementCallback = rect => EditorGUI.LabelField(rect, "Click + to add tween")
+                drawNoneElementCallback = rect => EditorGUI.LabelField(rect, AddFirstTweenLabel)
             };
 
             CalculateListHeight();
@@ -71,7 +73,7 @@ namespace Obel.MSS.Editor
 
         public void Close() => _foldout.target = false;
 
-        public static EditorState Get(State state) => Editors.ContainsKey(state.Id) ? Editors[state.Id] : new EditorState(state);
+        public static EditorState Get(Data.State state) => Editors.ContainsKey(state.Id) ? Editors[state.Id] : new EditorState(state);
 
         public static void Clear() => Editors.Clear();
 
@@ -107,7 +109,7 @@ namespace Obel.MSS.Editor
 
         #region Inspector
 
-        public static void Draw(Rect rect, State state) => Draw(rect, Get(state));
+        public static void Draw(Rect rect, Data.State state) => Draw(rect, Get(state));
 
         public static void Draw(Rect rect, EditorState editor)
         {
@@ -120,10 +122,10 @@ namespace Obel.MSS.Editor
 
         public static float GetHeight(EditorState editor)
         {
-            return (EditorConfig.Sizes.SingleLine + 8 +
-                   (EditorConfig.Sizes.LineHeight * 2 + 36 +
-                   (editor._state.Count == 0 ? 14 : editor.ListHeight - 7)) *
-                    editor._foldout.faded);
+            return EditorConfig.Sizes.SingleLine + 8 +
+                  (EditorConfig.Sizes.LineHeight * 2 + 36 +
+                  (editor._state.Count == 0 ? 14 : editor.ListHeight - 7)) *
+                   editor._foldout.faded;
         }
 
         private static void DrawHeader(Rect rect, EditorState editor)
@@ -159,6 +161,8 @@ namespace Obel.MSS.Editor
             EditorGUI.BeginDisabledGroup(editor._state.IsDefaultState);
             if ( GUI.Button(rectButton, EditorConfig.Content.IconToolbarMinus, EditorConfig.Styles.PreButton)) editor.OnRemoveButton();
             EditorGUI.EndDisabledGroup();
+
+            
 
             rectButton.x -= 24;
             if (GUI.Button(rectButton, EditorConfig.Content.IconReturn, EditorConfig.Styles.IconButton)) editor._state.Apply();
@@ -216,7 +220,7 @@ namespace Obel.MSS.Editor
             EditorActions.Add(() =>
             {
                 Editors.Remove(_state.Id);
-                _state.Group.Remove(_state);
+                _state.Group.RemoveState(_state);
                 Reorder(_state.Group);
             },
             InspectorStates.States, "Remove state");

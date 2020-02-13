@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Obel.MSS
+namespace Obel.MSS.Base
 {
     public static class Ease
     {

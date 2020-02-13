@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Obel.MSS.Data;
 
 namespace Obel.MSS.Editor
 {
@@ -156,7 +157,7 @@ namespace Obel.MSS.Editor
 
         public static void Draw(Rect rect, Tween tween)
         {
-            IGenericTweenEditor editor = Get(tween.GetType());
+            IGenericTweenEditor editor = Get(tween/*.GetType()*/);
 
             if (editor == null)
             {
@@ -236,7 +237,7 @@ namespace Obel.MSS.Editor
                         EditorState.Get(state).OnTweenAdded(state.Last);
 
                     }, 
-                    InspectorStates.States, $"Add tween"));
+                    InspectorStates.States, "Add tween"));
             }
 
             tweenMenu.ShowAsContext();
@@ -249,7 +250,7 @@ namespace Obel.MSS.Editor
                 //TODO move it to EditorState class
                 EditorState.Get(state).OnTweenRemoving(state[index]);
 
-                state.Remove(state[index]);
+                state.RemoveTween(state[index]);
             }, 
             InspectorStates.States, "Remove tween");
         }

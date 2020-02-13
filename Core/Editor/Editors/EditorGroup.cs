@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
+using Obel.MSS.Data;
 
 namespace Obel.MSS.Editor
 {
@@ -63,7 +64,7 @@ namespace Obel.MSS.Editor
 
         public static void Enable(Group group)
         {
-            _statesList = new ReorderableList(group.Items as IList, typeof(State))
+            _statesList = new ReorderableList(group.Items as IList, typeof(UnityEditor.Animations.AnimatorState))
             {
                 displayAdd = false,
                 displayRemove = false,

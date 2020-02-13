@@ -1,43 +1,30 @@
 ﻿using System;
 using UnityEngine;
+using Obel.MSS.Data;
+using System.Collections.Generic;
 
-namespace Obel.MSS.Node
+namespace Obel.MSS.Base
 { 
-    internal static class Core
+    internal sealed class Core : Singleton<Core>
     {
         private struct ProcessingGroup
         {
+
             public Group Group;
 
-            public override int GetHashCode() => Group.gameObject.GetHashCode();
+            public override int GetHashCode() => Group.GetHashCode();
         }
+
+        public List<States> StatesComponents = new List<States>();
 
         public static void SelectState(State state)
         {
             Debug.Log("SELECT STATE: " + state.Name);
+
+            if (Instance.StatesComponents.Contains(state.Group.StatesComponent)) return;
+
+            Instance.StatesComponents.Add(state.Group.StatesComponent);
         }
-
-        /*
-        public override void OnInit()
-        {
-            int TweenTypedDetected = 0;
-
-            foreach (var typedTween in State.TypedTweens)
-            {
-                if (typedTween.ContainsKey(GetType())) TweenTypedDetected++;
-            }
-
-            Debug.Log("ALLREADY CONTAINS " + GetType() + "   " + TweenTypedDetected);
-
-            if (TweenTypedDetected == 0)
-            {
-                var typedTween = new Dictionary<Type, Tween>();
-                typedTween.Add(GetType(), this);
-
-                State.TypedTweens.Add(typedTween);
-            }
-        }
-        */
 
         public static void SelectState(Group group, string stateName)
         {
@@ -50,7 +37,7 @@ namespace Obel.MSS.Node
                 }
             }
 
-            Debug.LogWarning($"[MSS] [Core] Object \"{group.gameObject.name}\" doesn't contains \"{stateName}\" state!");
+            Debug.LogWarning($"[MSS] [Core] Object \"{group.GameObject.name}\" doesn't contains \"{stateName}\" state!");
         }
     }
 }

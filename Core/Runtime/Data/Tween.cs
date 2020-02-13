@@ -1,9 +1,10 @@
 ﻿using System;
-using UnityEngine;
-using Obel.MSS.Data;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using Obel.MSS.Base;
 
-namespace Obel.MSS
+namespace Obel.MSS.Data
 {
     [Serializable]
     public class Tween : CollectionItem
@@ -11,6 +12,8 @@ namespace Obel.MSS
         #region Properties
 
         public State State => (State)Parent;
+
+        public GameObject GameObject => State.GameObject;
 
         [SerializeField] private string _easeName;
         private Func<float, float, float> _easeFunc;
@@ -57,7 +60,7 @@ namespace Obel.MSS
         #region Properties
 
         [SerializeField] private C _component;
-        public C Component => _component ? _component : _component = State.Group.gameObject.GetComponent<C>();
+        public C Component => _component ? _component : _component = GameObject.GetComponent<C>();
 
         public V Value;
 

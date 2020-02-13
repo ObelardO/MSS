@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Obel.MSS.Data;
 
 namespace Obel.MSS.Modules.Tweens
 {

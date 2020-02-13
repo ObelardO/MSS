@@ -1,7 +1,8 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
-using Obel.MSS.Node;
+using Obel.MSS.Data;
+using Obel.MSS.Base;
 
 namespace Obel.MSS
 {
@@ -17,9 +18,9 @@ namespace Obel.MSS
 
         #region Unity methods
         
-        private void Reset() => Group = new Group(gameObject);
+        private void Reset() => Group = new Group(this);
 
-        private void Awake() => Group = Group ?? new Group(gameObject); // ??= not supported in unity?
+        private void Awake() => Group = Group ?? new Group(this); // ??= not supported in unity?
 
         private void OnEnable() => Group.Enabled = true;
 

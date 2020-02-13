@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Obel.MSS;
 using Obel.MSS.Modules.Tweens;
+using Obel.MSS.Data;
 
 public class StatesTester : MonoBehaviour
 {

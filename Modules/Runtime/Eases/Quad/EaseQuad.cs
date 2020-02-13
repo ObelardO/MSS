@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Obel.MSS.Base;
 
 namespace Obel.MSS.Modules.Eases
 {
